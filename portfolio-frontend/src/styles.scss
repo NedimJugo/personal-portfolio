@@ -1,0 +1,67 @@
+// Import Angular Material theming - correct for Angular 20
+@use '@angular/material' as mat;
+
+// Include core styles first
+@include mat.core();
+
+// Define the theme
+$theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+    tertiary: mat.$violet-palette,
+  ),
+  typography: (
+    brand-family: 'Roboto',
+    plain-family: 'Roboto',
+  ),
+  density: (
+    scale: 0,
+  )
+));
+
+// Apply the theme
+:root {
+  @include mat.all-component-themes($theme);
+}
+
+// Alternative: If you want specific component themes
+// @include mat.all-component-themes($theme);
+
+// Global styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Roboto', sans-serif;
+  background-color: #fafafa;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.text-center {
+  text-align: center;
+}
+
+// Component overrides
+.mat-mdc-card {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+  border-radius: 8px !important;
+}
+
+.mat-mdc-button,
+.mat-mdc-raised-button {
+  border-radius: 8px !important;
+}

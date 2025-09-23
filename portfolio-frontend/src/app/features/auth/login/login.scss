@@ -1,0 +1,62 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 1rem;
+
+  .mat-mdc-card-header {
+    text-align: center;
+    padding-bottom: 1.5rem;
+
+    .mat-mdc-card-title {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .mat-mdc-card-subtitle {
+      color: #666;
+    }
+  }
+
+  .mat-mdc-form-field {
+    margin-bottom: 1rem;
+
+    &.full-width {
+      width: 100%;
+    }
+  }
+
+  .error-message {
+    color: #f44336;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    padding: 0.5rem;
+    background: rgba(244, 67, 54, 0.1);
+    border-radius: 4px;
+  }
+
+  .login-actions {
+    padding: 0;
+    margin-top: 1.5rem;
+
+    button {
+      height: 48px;
+      font-size: 1rem;
+      font-weight: 500;
+
+      &[disabled] {
+        opacity: 0.6;
+      }
+    }
+  }
+}
