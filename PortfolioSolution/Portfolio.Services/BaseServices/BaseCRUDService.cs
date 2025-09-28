@@ -12,18 +12,19 @@ using System.Threading.Tasks;
 
 namespace Portfolio.Services.BaseServices
 {
-    public abstract class BaseCRUDService<T, TSearch, TEntity, TInsert, TUpdate>
-        : BaseService<T, TSearch, TEntity>, ICRUDService<T, TSearch, TInsert, TUpdate>
+    public abstract class BaseCRUDService<T, TSearch, TEntity, TInsert, TUpdate, TId>
+        : BaseService<T, TSearch, TEntity, TId>, ICRUDService<T, TSearch, TInsert, TUpdate, TId>
         where T : class
         where TSearch : BaseSearchObject
         where TEntity : class, new()
         where TInsert : class
         where TUpdate : class
+        where TId : struct
     {
         protected BaseCRUDService(
             ApplicationDbContext context,
             IMapper mapper,
-            ILogger<BaseService<T, TSearch, TEntity>> logger)
+            ILogger<BaseService<T, TSearch, TEntity, TId>> logger)
             : base(context, mapper, logger)
         {
         }
@@ -47,7 +48,7 @@ namespace Portfolio.Services.BaseServices
                 await transaction.CommitAsync(cancellationToken);
 
                 _logger.LogInformation("Entity created successfully with id: {Id}",
-                    EF.Property<int>(entity, "Id"));
+                    EF.Property<TId>(entity, "Id"));
 
                 return MapToResponse(entity);
             }
@@ -59,7 +60,7 @@ namespace Portfolio.Services.BaseServices
             }
         }
 
-        public virtual async Task<T?> UpdateAsync(int id, TUpdate request, CancellationToken cancellationToken = default)
+        public virtual async Task<T?> UpdateAsync(TId id, TUpdate request, CancellationToken cancellationToken = default)
         {
             using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
             try
@@ -91,7 +92,7 @@ namespace Portfolio.Services.BaseServices
             }
         }
 
-        public virtual async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
+        public virtual async Task<bool> DeleteAsync(TId id, CancellationToken cancellationToken = default)
         {
             using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
             try
@@ -123,10 +124,8 @@ namespace Portfolio.Services.BaseServices
             }
         }
 
-        public virtual async Task<bool> SoftDeleteAsync(int id, CancellationToken cancellationToken = default)
+        public virtual async Task<bool> SoftDeleteAsync(TId id, CancellationToken cancellationToken = default)
         {
-            // Implement soft delete logic if your entities support it
-            // This is a placeholder - adapt based on your soft delete strategy
             throw new NotImplementedException("Soft delete not implemented in base class");
         }
 
@@ -164,7 +163,7 @@ namespace Portfolio.Services.BaseServices
         }
 
         public virtual async Task<bool> DeleteBulkAsync(
-            IEnumerable<int> ids,
+            IEnumerable<TId> ids,
             CancellationToken cancellationToken = default)
         {
             using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
@@ -172,7 +171,7 @@ namespace Portfolio.Services.BaseServices
             {
                 var idList = ids.ToList();
                 var entities = await _context.Set<TEntity>()
-                    .Where(e => idList.Contains(EF.Property<int>(e, "Id")))
+                    .Where(e => idList.Contains(EF.Property<TId>(e, "Id")))
                     .ToListAsync(cancellationToken);
 
                 if (!entities.Any())
@@ -202,12 +201,12 @@ namespace Portfolio.Services.BaseServices
             await Task.CompletedTask;
         }
 
-        protected virtual async Task ValidateUpdateAsync(int id, TUpdate request, CancellationToken cancellationToken = default)
+        protected virtual async Task ValidateUpdateAsync(TId id, TUpdate request, CancellationToken cancellationToken = default)
         {
             await Task.CompletedTask;
         }
 
-        protected virtual async Task ValidateDeleteAsync(int id, CancellationToken cancellationToken = default)
+        protected virtual async Task ValidateDeleteAsync(TId id, CancellationToken cancellationToken = default)
         {
             await Task.CompletedTask;
         }

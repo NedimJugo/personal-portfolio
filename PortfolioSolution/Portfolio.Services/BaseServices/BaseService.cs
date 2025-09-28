@@ -13,19 +13,20 @@ using System.Threading.Tasks;
 
 namespace Portfolio.Services.BaseServices
 {
-    public abstract class BaseService<T, TSearch, TEntity> : IService<T, TSearch>
+    public abstract class BaseService<T, TSearch, TEntity, TId> : IService<T, TSearch, TId>
        where T : class
        where TSearch : BaseSearchObject
        where TEntity : class
+       where TId : struct
     {
         protected readonly ApplicationDbContext _context;
         protected readonly IMapper _mapper;
-        protected readonly ILogger<BaseService<T, TSearch, TEntity>> _logger;
+        protected readonly ILogger<BaseService<T, TSearch, TEntity, TId>> _logger;
 
         protected BaseService(
             ApplicationDbContext context,
             IMapper mapper,
-            ILogger<BaseService<T, TSearch, TEntity>> logger)
+            ILogger<BaseService<T, TSearch, TEntity, TId>> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -69,9 +70,15 @@ namespace Portfolio.Services.BaseServices
             }
         }
 
+        protected virtual IQueryable<TEntity> ApplyIncludes(IQueryable<TEntity> query)
+        {
+            return query;
+        }
+
         protected virtual IQueryable<TEntity> GetBaseQuery()
         {
-            return _context.Set<TEntity>().AsQueryable();
+            var query = _context.Set<TEntity>().AsQueryable();
+            return ApplyIncludes(query);
         }
 
         protected virtual IQueryable<TEntity> ApplyFilter(IQueryable<TEntity> query, TSearch search)
@@ -112,7 +119,7 @@ namespace Portfolio.Services.BaseServices
             return query;
         }
 
-        public virtual async Task<T?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        public virtual async Task<T?> GetByIdAsync(TId id, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -127,7 +134,7 @@ namespace Portfolio.Services.BaseServices
         }
 
         public virtual async Task<IEnumerable<T>> GetByIdsAsync(
-            IEnumerable<int> ids,
+            IEnumerable<TId> ids,
             CancellationToken cancellationToken = default)
         {
             try
@@ -136,7 +143,7 @@ namespace Portfolio.Services.BaseServices
                 if (!idList.Any()) return Enumerable.Empty<T>();
 
                 var entities = await _context.Set<TEntity>()
-                    .Where(e => idList.Contains(EF.Property<int>(e, "Id")))
+                    .Where(e => idList.Contains(EF.Property<TId>(e, "Id")))
                     .ToListAsync(cancellationToken);
 
                 return entities.Select(MapToResponse);
@@ -148,12 +155,12 @@ namespace Portfolio.Services.BaseServices
             }
         }
 
-        public virtual async Task<bool> ExistsAsync(int id, CancellationToken cancellationToken = default)
+        public virtual async Task<bool> ExistsAsync(TId id, CancellationToken cancellationToken = default)
         {
             try
             {
                 return await _context.Set<TEntity>()
-                    .Where(e => EF.Property<int>(e, "Id") == id)
+                    .Where(e => EF.Property<TId>(e, "Id").Equals(id))
                     .AnyAsync(cancellationToken);
             }
             catch (Exception ex)
@@ -163,7 +170,7 @@ namespace Portfolio.Services.BaseServices
             }
         }
 
-        protected virtual async Task<TEntity?> GetEntityByIdAsync(int id, CancellationToken cancellationToken = default)
+        protected virtual async Task<TEntity?> GetEntityByIdAsync(TId id, CancellationToken cancellationToken = default)
         {
             return await _context.Set<TEntity>().FindAsync(new object[] { id }, cancellationToken);
         }

@@ -11,7 +11,7 @@ namespace Portfolio.WebAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class BlogPostsController
-        : BaseCRUDController<BlogPostResponse, BlogPostSearchObject, BlogPostInsertRequest, BlogPostUpdateRequest>
+        : BaseCRUDController<BlogPostResponse, BlogPostSearchObject, BlogPostInsertRequest, BlogPostUpdateRequest, Guid>
     {
         public BlogPostsController(IBlogPostService service, ILogger<BlogPostsController> logger)
             : base(service, logger)

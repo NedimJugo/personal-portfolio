@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 namespace Portfolio.Services.Services
 {
     public class BlogPostService
-        : BaseCRUDService<BlogPostResponse, BlogPostSearchObject, BlogPost, BlogPostInsertRequest, BlogPostUpdateRequest>,
+        : BaseCRUDService<BlogPostResponse, BlogPostSearchObject, BlogPost, BlogPostInsertRequest, BlogPostUpdateRequest, Guid>,
           IBlogPostService
     {
         public BlogPostService(ApplicationDbContext context, IMapper mapper, ILogger<BlogPostService> logger)

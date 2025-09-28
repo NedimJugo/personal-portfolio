@@ -1,4 +1,5 @@
 ﻿using EcoChallenge.Models.SearchObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Portfolio.Services.BaseInterfaces;
 
@@ -6,28 +7,29 @@ namespace Portfolio.WebAPI.BaseContoller
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class BaseCRUDController<T, TSearch, TInsert, TUpdate>
-        : BaseController<T, TSearch>
+    [Authorize]
+    public class BaseCRUDController<T, TSearch, TInsert, TUpdate, TId>
+        : BaseController<T, TSearch, TId>
         where T : class
         where TSearch : BaseSearchObject, new()
         where TInsert : class
         where TUpdate : class
+        where TId : struct
     {
-        protected new readonly ICRUDService<T, TSearch, TInsert, TUpdate> _service;
+        protected new readonly ICRUDService<T, TSearch, TInsert, TUpdate, TId> _service;
 
         public BaseCRUDController(
-            ICRUDService<T, TSearch, TInsert, TUpdate> service,
-            ILogger<BaseCRUDController<T, TSearch, TInsert, TUpdate>> logger) : base(service, logger)
+            ICRUDService<T, TSearch, TInsert, TUpdate, TId> service,
+            ILogger<BaseCRUDController<T, TSearch, TInsert, TUpdate, TId>> logger) : base(service, logger)
         {
             _service = service;
         }
 
-        /// <summary>
-        /// Create new item
-        /// </summary>
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
         public virtual async Task<ActionResult<T>> Create(
             [FromBody] TInsert request,
             CancellationToken cancellationToken = default)
@@ -47,22 +49,21 @@ namespace Portfolio.WebAPI.BaseContoller
             }
         }
 
-        /// <summary>
-        /// Update existing item
-        /// </summary>
         [HttpPut("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
         public virtual async Task<ActionResult<T>> Update(
-            int id,
+            TId id,
             [FromBody] TUpdate request,
             CancellationToken cancellationToken = default)
         {
             try
             {
-                if (id <= 0)
-                    return BadRequest("ID must be greater than 0");
+                if (IsDefaultValue(id))
+                    return BadRequest("Invalid ID");
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
@@ -80,19 +81,19 @@ namespace Portfolio.WebAPI.BaseContoller
             }
         }
 
-        /// <summary>
-        /// Delete item
-        /// </summary>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]
-        public virtual async Task<IActionResult> Delete(int id, CancellationToken cancellationToken = default)
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
+        [Authorize(Roles = "Admin")]
+        public virtual async Task<IActionResult> Delete(TId id, CancellationToken cancellationToken = default)
         {
             try
             {
-                if (id <= 0)
-                    return BadRequest("ID must be greater than 0");
+                if (IsDefaultValue(id))
+                    return BadRequest("Invalid ID");
 
                 var success = await _service.DeleteAsync(id, cancellationToken);
                 if (!success)
@@ -109,10 +110,8 @@ namespace Portfolio.WebAPI.BaseContoller
 
         protected virtual object GetEntityId(T entity)
         {
-            // This is a simple implementation - you might want to use reflection
-            // or a more sophisticated approach to get the ID
             var property = typeof(T).GetProperty("Id");
-            return property?.GetValue(entity) ?? 0;
+            return property?.GetValue(entity) ?? default(TId);
         }
     }
 }

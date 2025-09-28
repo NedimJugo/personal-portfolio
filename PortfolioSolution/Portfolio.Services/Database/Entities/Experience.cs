@@ -1,4 +1,5 @@
-﻿using Portfolio.Services.Interfaces;
+﻿using Portfolio.Models.Enums;
+using Portfolio.Services.Interfaces;
 
 namespace Portfolio.Services.Database.Entities
 {
@@ -24,11 +25,5 @@ namespace Portfolio.Services.Database.Entities
         public int? DeletedById { get; set; }
         public virtual ApplicationUser? DeletedBy { get; set; }
     }
-    public enum EmploymentType
-    {
-        FullTime = 0,
-        PartTime = 1,
-        Contract = 2,
-        Internship = 3
-    }
+
 }

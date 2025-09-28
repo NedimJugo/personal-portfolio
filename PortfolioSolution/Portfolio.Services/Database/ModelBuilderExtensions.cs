@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Portfolio.Models.Enums;
 using Portfolio.Services.Database.Entities;
 
 namespace Portfolio.Services.Database
