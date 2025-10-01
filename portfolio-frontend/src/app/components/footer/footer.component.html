@@ -1,0 +1,16 @@
+<footer class="footer-comic">
+    <div class="container">
+        <div class="footer-content-comic">
+            <div class="footer-social-comic">
+                @for (link of socialLinks$ | async; track link.url) {
+                <a [href]="link.url" target="_blank" class="social-link-comic" [title]="link.displayName">
+                    {{ link.platform }}
+                </a>
+                }
+            </div>
+            <p class="footer-text">
+                © {{ currentYear }} John Doe. Crafted with ❤️ and lots of ☕
+            </p>
+        </div>
+    </div>
+</footer>

@@ -1,0 +1,264 @@
+<app-nav-bar></app-nav-bar>
+
+<main class="portfolio-comic">
+  
+  <!-- Hero Section with Comic Style -->
+<section class="hero-comic">
+  <div class="container">
+    <!-- Dynamic hero section -->
+     @if (heroContent$ | async; as hero) {
+    <div class="hero-content">
+      <div class="hero-illustration">
+        <!-- Flip Card Container -->
+        <div class="flip-card" (mouseenter)="onFlipCardHover()" (mouseleave)="onFlipCardLeave()">
+          <div class="flip-card-inner" [class.flipped]="isFlipped">
+            <!-- Front Side (Character Image) -->
+            <div class="flip-card-front">
+              <img [src]="hero.flipPhotoUrl" 
+                   alt="Developer character" 
+                   class="character-img" />
+              <div class="flip-hint">
+                <span>Hover me</span>
+              </div>
+            </div>
+            
+            <div class="flip-card-back">
+              <img [src]="hero.characterImageUrl" 
+                   alt="Additional photo" 
+                   class="flip-photo" />
+              <div class="flip-text">
+                <p>{{ hero.flipPhotoCaption }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="speech-bubble">
+          <p>{{ hero.speechBubbleText }}</p>
+        </div>
+      </div>
+      
+      <div class="hero-text">
+        <!-- Rest of your hero text content remains the same -->
+        <div class="comic-badge">
+          <span>{{ hero.badgeText }}</span>
+        </div>
+        <h1 class="hero-title" [innerHTML]="hero.title"></h1>
+        <h2 class="hero-subtitle">{{ hero.subtitle }}</h2>
+        <p class="hero-description">
+          {{ hero.description }}
+        </p>
+        <div class="hero-actions">
+          <button class="btn-comic primary" (click)="viewProjects()">
+            <span>{{ hero.primaryButtonText }}</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </button>
+          <button class="btn-comic secondary" (click)="contactMe()">
+            <span>{{ hero.secondaryButtonText }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+    <div class="comic-dots top-left"></div>
+    <div class="comic-dots bottom-right"></div>
+  </div>
+</section>
+
+  <!-- Moved Projects Section to second position -->
+  <section class="projects-comic">
+    <div class="container">
+      <div class="section-header-comic">
+        <div class="pow-effect">POW!</div>
+        <h2 class="section-title-comic">Featured Projects</h2>
+        <p class="section-subtitle-comic">Check out my latest creations</p>
+      </div>
+
+      <div class="projects-grid-comic">
+         @for (project of featuredProjects$ | async; track project.title) {
+        <article class="project-panel">
+          <div class="project-frame">
+            <div class="project-image-comic">
+  <img [src]="project.heroImageUrl || defaultProjectImage" 
+       [alt]="project.heroImageAlt || project.title"
+       (error)="onImageError($event)" />
+  <div class="image-overlay">
+    <div class="project-links-comic">
+      <a *ngIf="project.repoUrl" [href]="project.repoUrl" target="_blank" class="link-badge">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+        </svg>
+        Code
+      </a>
+      <a *ngIf="project.liveUrl" [href]="project.liveUrl" target="_blank" class="link-badge">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
+        Live
+      </a>
+    </div>
+  </div>
+</div>
+            <div class="project-info">
+              <h3 class="project-title-comic">{{ project.title }}</h3>
+              <p class="project-desc-comic">{{ project.shortDescription }}</p>
+            </div>
+          </div>
+        </article>
+      }
+       @if ((featuredProjects$ | async)?.length === 0) {
+        <div class="empty-panel">
+          <p>Projects loading...</p>
+        </div>
+        }
+      </div>
+
+      <!-- Added "See All Projects" button -->
+      <div class="section-cta">
+        <button class="btn-comic primary">
+          <span>See All Projects</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Moved Experience Section to third position -->
+  <section class="experience-comic">
+    <div class="container">
+      <div class="section-header-comic">
+        <h2 class="section-title-comic">My Journey</h2>
+        <p class="section-subtitle-comic">The story so far...</p>
+      </div>
+
+      <div class="experience-timeline">
+        @for (exp of experiences$ | async; let i = $index; track exp) {
+        <article
+                 class="experience-panel"
+                 [class.left]="i % 2 === 0"
+                 [class.right]="i % 2 !== 0">
+          <div class="panel-content">
+            <div class="panel-header">
+              <h3 class="position-comic">{{ exp.position }}</h3>
+              <div class="company-badge">{{ exp.companyName }}</div>
+            </div>
+            <div class="period-tag">
+              {{ exp.startDate }} - {{ exp.isCurrent ? 'Present' : exp.endDate }}
+            </div>
+            <p class="description-comic">{{ exp.description }}</p>
+          </div>
+          <div class="timeline-dot"></div>
+        </article>
+      }
+      @if ((experiences$ | async)?.length === 0) {
+        <div class="empty-panel">
+          <p>Experience coming soon!</p>
+        </div>
+      }
+      </div>
+
+      <!-- Added "See All Experience" button -->
+      <div class="section-cta">
+        <button class="btn-comic primary">
+          <span>See All Experience</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Moved Skills Section to fourth position and made it more compact -->
+  <section class="skills-comic">
+    <div class="container">
+      <div class="section-header-comic">
+        <div class="action-lines"></div>
+        <h2 class="section-title-comic">My Superpowers</h2>
+        <p class="section-subtitle-comic">Tools & Technologies I Master</p>
+      </div>
+      
+      <div class="skills-panels">
+        @for (skill of skills$ | async; track skill) {
+        <div class="skill-panel">
+          <div class="panel-border">
+            <div class="skill-icon-comic">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+            </div>
+            <h3 class="skill-name-comic">{{ skill.name }}</h3>
+            <div class="skill-badge">{{ skill.proficiencyLevel }}</div>
+          </div>
+        </div>
+      }
+      @if ((skills$ | async)?.length === 0) {
+        <div class="empty-panel">
+          <p>Skills loading... Stay tuned!</p>
+        </div>
+      }
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Section -->
+  <section class="blog-comic">
+    <div class="container">
+      <div class="section-header-comic">
+        <h2 class="section-title-comic">Latest Writings</h2>
+        <p class="section-subtitle-comic">Thoughts, tutorials & musings</p>
+      </div>
+
+      <div class="blog-grid-comic">
+        @for (post of latestBlogPosts$ | async; track post) {
+        <article class="blog-panel">
+          <div class="blog-frame">
+            <div class="blog-meta-comic">
+              <span class="date-badge">{{ post.publishedAt | date:'MMM d, yyyy' }}</span>
+              <span class="reading-badge">{{ post.readingTime }} min</span>
+            </div>
+            <h3 class="blog-title-comic">{{ post.title }}</h3>
+            <p class="blog-excerpt-comic">{{ post.excerpt }}</p>
+            <a href="#" class="read-more-comic">
+              Read More →
+            </a>
+          </div>
+        </article>
+      }
+      @if ((latestBlogPosts$ | async)?.length === 0) {
+        <div class="empty-panel">
+          <p>Blog posts coming soon!</p>
+        </div>
+      }
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section with Comic Flair -->
+  <section class="contact-comic">
+    <div class="container">
+      <div class="contact-content-comic">
+        <div class="boom-effect">BOOM!</div>
+        <h2 class="contact-title-comic">Let's Create Something Epic!</h2>
+        <p class="contact-description-comic">
+          Got a project in mind? Need a developer sidekick? I'm always up for a new adventure. 
+          Drop me a message and let's make magic happen!
+        </p>
+        <button class="btn-comic large primary" (click)="contactMe()">
+          <span>Start a Conversation</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+</main>
+<app-footer></app-footer>

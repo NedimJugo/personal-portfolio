@@ -47,8 +47,9 @@ namespace Portfolio.Services.BaseServices
 
                 await transaction.CommitAsync(cancellationToken);
 
-                _logger.LogInformation("Entity created successfully with id: {Id}",
-                    EF.Property<TId>(entity, "Id"));
+                var idProperty = typeof(TEntity).GetProperty("Id");
+                var idValue = idProperty?.GetValue(entity);
+                _logger.LogInformation("Entity created successfully with id: {Id}", idValue);
 
                 return MapToResponse(entity);
             }

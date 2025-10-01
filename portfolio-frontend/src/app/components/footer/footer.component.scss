@@ -1,0 +1,57 @@
+// Comic Color Palette
+$comic-yellow: #FFD93D;
+$comic-black: #1A202C;
+$comic-white: #FFFFFF;
+$comic-gray: #718096;
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+
+  @media (max-width: 768px) {
+    padding: 0 20px;
+  }
+}
+
+// Footer
+.footer-comic {
+  padding: 48px 0;
+  background: $comic-black;
+  color: $comic-white;
+  border-top: 6px solid $comic-yellow;
+}
+
+.footer-content-comic {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.footer-social-comic {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.social-link-comic {
+  font-size: 16px;
+  font-weight: 700;
+  color: $comic-yellow;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &:hover {
+    color: $comic-white;
+    transform: translateY(-2px);
+  }
+}
+
+.footer-text {
+  font-size: 14px;
+  color: $comic-gray;
+  margin: 0;
+}

@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/contact-messages', pathMatch: 'full' },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
   { 
-    path: 'contact-messages', 
-    loadComponent: () => import('./components/contact-messages/contact-message-list.component').then(m => m.ContactMessageListComponent)
+    path: 'home', 
+    loadComponent: () => import('./components/home.component').then(m => m.HomeComponent)
   },
-  { path: '**', redirectTo: '/contact-messages' }
+  { path: '**', redirectTo: '/home' }
 ];

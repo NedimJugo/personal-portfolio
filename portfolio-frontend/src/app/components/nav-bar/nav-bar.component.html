@@ -1,0 +1,70 @@
+<nav class="nav-bar">
+  <div class="nav-container">
+    <!-- Logo with improved styling -->
+    <div class="nav-logo">
+      <a href="#home" aria-label="Home">
+        <img
+          src="https://ecochallengeblob.blob.core.windows.net/ecochallenge/ChatGPT Image Oct 1, 2025, 12_01_12 PM.png"
+          alt="NJ Logo" class="logo-img" />
+      </a>
+    </div>
+
+
+    <!-- Desktop Navigation -->
+    <ul class="nav-menu desktop-nav">
+      @for (link of navLinks; track link; let i = $index) {
+      <li>
+        <a [href]="link.href" class="nav-link">
+          <span class="nav-number">0{{ i + 1 }}.</span>
+          <span class="nav-label">{{ link.label }}</span>
+        </a>
+      </li>
+      }
+    </ul>
+
+    <!-- Resume button with improved styling -->
+    <button class="resume-btn" (click)="downloadResume()" aria-label="Download resume">
+      <span>Resume</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+    </button>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-toggle" (click)="toggleMenu()" [class.active]="isMenuOpen" aria-label="Toggle menu"
+      aria-expanded="isMenuOpen">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <!-- Mobile Navigation Overlay -->
+  <div class="mobile-overlay" [class.open]="isMenuOpen" (click)="toggleMenu()"></div>
+
+  <!-- Mobile Navigation -->
+  <div class="mobile-nav" [class.open]="isMenuOpen">
+    <ul class="mobile-nav-links">
+      @for (link of navLinks; track link; let i = $index) {
+      <li [style.animation-delay]="(i * 0.05) + 's'">
+        <a [href]="link.href" class="nav-link" (click)="toggleMenu()">
+          <span class="nav-number">0{{ i + 1 }}.</span>
+          <span class="nav-label">{{ link.label }}</span>
+        </a>
+      </li>
+      }
+      <li style="animation-delay: 0.25s">
+        <button class="resume-btn mobile" (click)="downloadResume(); toggleMenu()">
+          <span>Resume</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+        </button>
+      </li>
+    </ul>
+  </div>
+</nav>
