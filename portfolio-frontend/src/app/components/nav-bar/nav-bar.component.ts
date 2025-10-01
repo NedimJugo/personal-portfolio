@@ -1,27 +1,28 @@
 import { Component } from "@angular/core"
 import { CommonModule } from "@angular/common"
+import { RouterModule } from "@angular/router" // Add this import
 
 @Component({
   selector: "app-nav-bar",
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule], // Add RouterModule here
   templateUrl: "./nav-bar.component.html",
   styleUrls: ["./nav-bar.component.scss"],
 })
 export class NavBarComponent {
   isMenuOpen = false
 
+  // Update href to use router links
   navLinks = [
-    { label: "About", href: "#about" },
-    { label: "Experience", href: "#experience" },
-    { label: "Work", href: "#projects" },
-    { label: "Writing", href: "#blog" },
-    { label: "Contact", href: "#contact" },
+    { label: "About", href: "/about" },
+    { label: "Experience", href: "/experience" },
+    { label: "Work", href: "/projects" }, // Changed from #projects to /projects
+    { label: "Writing", href: "/blog" },
+    { label: "Contact", href: "/contact" },
   ]
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen
-    // Prevent body scroll when mobile menu is open
     if (this.isMenuOpen) {
       document.body.style.overflow = "hidden"
     } else {
@@ -30,7 +31,6 @@ export class NavBarComponent {
   }
 
   downloadResume(): void {
-    // Implement resume download logic
     console.log("Downloading resume...")
   }
 }

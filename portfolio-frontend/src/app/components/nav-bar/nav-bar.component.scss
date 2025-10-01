@@ -237,3 +237,17 @@ $comic-dark: #2D3748;
     font-size: 16px;
   }
 }
+
+.nav-link.active {
+  color: var(--accent-color); // Your accent color
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--accent-color);
+  }
+}

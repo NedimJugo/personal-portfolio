@@ -1,20 +1,19 @@
 <nav class="nav-bar">
   <div class="nav-container">
-    <!-- Logo with improved styling -->
+    <!-- Logo with router link -->
     <div class="nav-logo">
-      <a href="#home" aria-label="Home">
+      <a routerLink="/" aria-label="Home"> <!-- Changed from href to routerLink -->
         <img
           src="https://ecochallengeblob.blob.core.windows.net/ecochallenge/ChatGPT Image Oct 1, 2025, 12_01_12 PM.png"
           alt="NJ Logo" class="logo-img" />
       </a>
     </div>
 
-
     <!-- Desktop Navigation -->
     <ul class="nav-menu desktop-nav">
       @for (link of navLinks; track link; let i = $index) {
       <li>
-        <a [href]="link.href" class="nav-link">
+        <a [routerLink]="link.href" class="nav-link" routerLinkActive="active"> <!-- Changed to routerLink -->
           <span class="nav-number">0{{ i + 1 }}.</span>
           <span class="nav-label">{{ link.label }}</span>
         </a>
@@ -22,7 +21,7 @@
       }
     </ul>
 
-    <!-- Resume button with improved styling -->
+    <!-- Resume button remains the same -->
     <button class="resume-btn" (click)="downloadResume()" aria-label="Download resume">
       <span>Resume</span>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -32,7 +31,7 @@
       </svg>
     </button>
 
-    <!-- Mobile Menu Toggle -->
+    <!-- Mobile Menu Toggle remains the same -->
     <button class="mobile-toggle" (click)="toggleMenu()" [class.active]="isMenuOpen" aria-label="Toggle menu"
       aria-expanded="isMenuOpen">
       <span></span>
@@ -49,7 +48,7 @@
     <ul class="mobile-nav-links">
       @for (link of navLinks; track link; let i = $index) {
       <li [style.animation-delay]="(i * 0.05) + 's'">
-        <a [href]="link.href" class="nav-link" (click)="toggleMenu()">
+        <a [routerLink]="link.href" class="nav-link" (click)="toggleMenu()" routerLinkActive="active"> <!-- Changed to routerLink -->
           <span class="nav-number">0{{ i + 1 }}.</span>
           <span class="nav-label">{{ link.label }}</span>
         </a>

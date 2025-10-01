@@ -603,10 +603,9 @@ $comic-gray: #718096;
 .pow-effect {
   position: absolute;
   top: -40px;
-  right: 5%;
+  right: 10%;
   font-size: 48px;
   font-weight: 900;
-  background-color: $comic-yellow;
   color: $comic-red;
   -webkit-text-stroke: 3px $comic-black;
   transform: rotate(15deg);

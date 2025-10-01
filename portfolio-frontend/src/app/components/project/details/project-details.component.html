@@ -1,0 +1,206 @@
+<app-nav-bar></app-nav-bar>
+
+<main class="portfolio-comic">
+  <!-- <CHANGE> Updated to use projectState$ instead of project$ -->
+  @if (projectState$ | async; as state) {
+    @if (state.loading) {
+      <!-- Loading State -->
+      <section class="project-loading-comic">
+        <div class="container">
+          <div class="loading-panel">
+            <div class="loading-spinner">
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+                <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round">
+                  <animateTransform
+                    attributeName="transform"
+                    type="rotate"
+                    from="0 12 12"
+                    to="360 12 12"
+                    dur="1s"
+                    repeatCount="indefinite"/>
+                </path>
+              </svg>
+            </div>
+            <h2>Loading Project...</h2>
+            <p>Please wait while we fetch the project details</p>
+          </div>
+        </div>
+      </section>
+    } @else if (state.project) {
+      <!-- Project Content - Only shown when loaded AND project exists -->
+      <section class="project-hero-comic">
+        <div class="container">
+          <button class="back-button-comic" (click)="goBack()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to Projects
+          </button>
+
+          <div class="project-header">
+            <div class="project-status-badge" [class]="state.project.status">
+              {{ state.project.status }}
+            </div>
+            <h1 class="project-title-detail">{{ state.project.title }}</h1>
+            <p class="project-subtitle-detail">{{ state.project.shortDescription }}</p>
+
+            <div class="project-meta-detail">
+              @if (state.project.startDate) {
+              <div class="meta-item">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span>
+                  {{ state.project.startDate | date:'MMM yyyy' }}
+                  @if (state.project.endDate) {
+                    - {{ state.project.endDate | date:'MMM yyyy' }}
+                  } @else {
+                    - Present
+                  }
+                </span>
+              </div>
+              }
+              <div class="meta-item">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <span>{{ state.project.viewCount }} views</span>
+              </div>
+              <div class="meta-item">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                  <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                </svg>
+                <span>{{ state.project.projectType }}</span>
+              </div>
+            </div>
+
+            <div class="project-actions-detail">
+              @if (state.project.repoUrl) {
+              <a [href]="state.project.repoUrl" target="_blank" class="btn-comic primary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                </svg>
+                View Code
+              </a>
+              }
+              @if (state.project.liveUrl) {
+              <a [href]="state.project.liveUrl" target="_blank" class="btn-comic secondary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+                Live Demo
+              </a>
+              }
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Project Images Gallery -->
+      @if (state.project.images && state.project.images.length > 0) {
+      <section class="project-gallery-comic">
+        <div class="container">
+          <h2 class="section-title-comic">Project Gallery</h2>
+          <div class="gallery-grid">
+            @for (image of state.project.images; track image.url) {
+            <div class="gallery-item">
+              <div class="gallery-frame">
+                <img 
+                  [src]="image.url" 
+                  [alt]="image.alt"
+                  (error)="onImageError($event)" />
+                @if (image.caption) {
+                <div class="image-caption">{{ image.caption }}</div>
+                }
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+      </section>
+      }
+
+      <!-- Project Description -->
+      <section class="project-description-comic">
+        <div class="container">
+          <div class="description-panel">
+            <h2 class="section-title-comic">About This Project</h2>
+            <div class="description-content" [innerHTML]="state.project.fullDescription"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Technologies Used -->
+      @if (state.project.techs && state.project.techs.length > 0) {
+      <section class="project-tech-comic">
+        <div class="container">
+          <h2 class="section-title-comic">Technologies Used</h2>
+          <div class="tech-grid">
+            @for (tech of state.project.techs; track tech.id) {
+            <div class="tech-badge-large">
+              <div class="tech-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="16 18 22 12 16 6"></polyline>
+                  <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+              </div>
+              <div class="tech-info">
+                <h4>{{ tech.name }}</h4>
+                <span class="tech-category">{{ tech.category }}</span>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+      </section>
+      }
+
+      <!-- Project Tags -->
+      @if (state.project.tags && state.project.tags.length > 0) {
+      <section class="project-tags-comic">
+        <div class="container">
+          <h3 class="tags-title">Tags</h3>
+          <div class="tags-list">
+            @for (tag of state.project.tags; track tag.id) {
+            <span class="tag-badge">{{ tag.name }}</span>
+            }
+          </div>
+        </div>
+      </section>
+      }
+    } @else {
+      <!-- Error State - Only shown when loaded AND no project found -->
+      <section class="project-error-comic">
+        <div class="container">
+          <div class="error-panel">
+            <div class="error-illustration">
+              <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <h2>Project Not Found</h2>
+            <p>The project you're looking for doesn't exist or has been removed.</p>
+            <button class="btn-comic primary" (click)="goBack()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+              Back to Projects
+            </button>
+          </div>
+        </div>
+      </section>
+    }
+  }
+</main>
+
+<app-footer></app-footer>

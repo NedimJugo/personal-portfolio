@@ -1,0 +1,177 @@
+import { Component, type OnInit } from "@angular/core"
+import { CommonModule } from "@angular/common"
+import { ActivatedRoute, Router } from "@angular/router"
+import { forkJoin, type Observable, of } from "rxjs"
+import { catchError, map, switchMap, startWith } from "rxjs/operators"
+import { ProjectDetails } from "../../../models/project/project-details.model"
+import { ProjectService } from "../../../services/project.service"
+import { ProjectImageService } from "../../../services/project-image.service"
+import { MediaService } from "../../../services/media.service"
+import { ProjectTagService } from "../../../services/project-tag.service"
+import { ProjectTechService } from "../../../services/project-tech.service"
+import { TagService } from "../../../services/tag.service"
+import { TechService } from "../../../services/tech.service"
+import { NavBarComponent } from "../../nav-bar/nav-bar.component";
+import { FooterComponent } from "../../footer/footer.component";
+import { TagResponse } from "../../../models/tag/tag-response.model"
+import { TechResponse } from "../../../models/tech/tech-response.model"
+import { ProjectImage } from "../../../models/project-image/project-image.model"
+
+// <CHANGE> Added interface to track loading state
+interface ProjectState {
+  loading: boolean
+  project: ProjectDetails | null
+}
+
+@Component({
+  selector: "app-project-details",
+  standalone: true,
+  imports: [CommonModule, NavBarComponent, FooterComponent],
+  templateUrl: "./project-details.component.html",
+  styleUrls: ["./project-details.component.scss"],
+})
+export class ProjectDetailsComponent implements OnInit {
+  // <CHANGE> Changed from Observable<ProjectDetails | null> to Observable<ProjectState>
+  projectState$!: Observable<ProjectState>
+  
+  readonly defaultProjectImage = 'https://ecochallengeblob.blob.core.windows.net/ecochallenge/istockphoto-2173059563-612x612.jpg'
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private projectService: ProjectService,
+    private projectImageService: ProjectImageService,
+    private mediaService: MediaService,
+    private projectTagService: ProjectTagService,
+    private projectTechService: ProjectTechService,
+    private tagService: TagService,
+    private techService: TechService  ) {}
+
+  ngOnInit(): void {
+    // <CHANGE> Updated to emit loading state first, then project data
+    this.projectState$ = this.route.paramMap.pipe(
+      switchMap(params => {
+        const projectId = params.get('id')
+        if (!projectId) {
+          return of({ loading: false, project: null })
+        }
+        return this.loadProjectDetails(projectId).pipe(
+          map(project => ({ loading: false, project })),
+          startWith({ loading: true, project: null })
+        )
+      })
+    )
+  }
+
+  private loadProjectDetails(projectId: string): Observable<ProjectDetails | null> {
+    return this.projectService.getById(projectId).pipe(
+      switchMap((project) => {
+        return forkJoin({
+          project: of(project),
+          images: this.loadProjectImages(projectId),
+          tags: this.loadProjectTags(projectId),
+          techs: this.loadProjectTechs(projectId)
+        })
+      }),
+      map(({ project, images, tags, techs }) => ({
+        ...project,
+        images,
+        tags,
+        techs
+      } as ProjectDetails)),
+      catchError((error) => {
+        console.error('Error loading project details:', error)
+        return of(null)
+      })
+    )
+  }
+
+  private loadProjectImages(projectId: string): Observable<ProjectImage[]> {
+    return this.projectImageService.get({ projectId, pageSize: 100 }).pipe(
+      switchMap((result) => {
+        const projectImages = result.items || []
+        
+        if (projectImages.length === 0) {
+          return of([])
+        }
+
+        const imageObservables = projectImages.map(projectImage =>
+          this.mediaService.getById(projectImage.mediaId).pipe(
+            map(media => ({
+              url: media.fileUrl,
+              alt: media.altText || projectImage.caption || 'Project image',
+              caption: projectImage.caption,
+              order: projectImage.order
+            } as ProjectImage)),
+            catchError(() => of(null))
+          )
+        )
+
+        return forkJoin(imageObservables).pipe(
+          map(images => images.filter((img): img is ProjectImage => img !== null)
+            .sort((a, b) => a.order - b.order))
+        )
+      }),
+      catchError(() => of([]))
+    )
+  }
+
+  private loadProjectTags(projectId: string): Observable<TagResponse[]> {
+    return this.projectTagService.get({ projectId, pageSize: 100 }).pipe(
+      switchMap((result) => {
+        const projectTags = result.items || []
+        
+        if (projectTags.length === 0) {
+          return of([])
+        }
+
+        const tagObservables = projectTags.map(pt =>
+          this.tagService.getById(pt.tagId).pipe(
+            catchError(() => of(null))
+          )
+        )
+
+        return forkJoin(tagObservables).pipe(
+          map(tags => tags.filter((tag): tag is TagResponse => tag !== null))
+        )
+      }),
+      catchError(() => of([]))
+    )
+  }
+
+  private loadProjectTechs(projectId: string): Observable<TechResponse[]> {
+    return this.projectTechService.get({ projectId, pageSize: 100 }).pipe(
+      switchMap((result) => {
+        const projectTechs = result.items || []
+        
+        if (projectTechs.length === 0) {
+          return of([])
+        }
+
+        const techObservables = projectTechs.map(pt =>
+          this.techService.getById(pt.techId).pipe(
+            catchError(() => of(null))
+          )
+        )
+
+        return forkJoin(techObservables).pipe(
+          map(techs => techs.filter((tech): tech is TechResponse => tech !== null))
+        )
+      }),
+      catchError(() => of([]))
+    )
+  }
+
+  goBack(event?: Event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    this.router.navigate(['/projects']);
+  }
+
+  onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement
+    img.src = this.defaultProjectImage
+  }
+}

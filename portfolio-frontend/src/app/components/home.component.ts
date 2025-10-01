@@ -28,7 +28,7 @@ import { ProjectWithImage } from "../models/project-image/project-with-image.mod
 @Component({
   selector: "app-home",
   standalone: true,
-  imports: [CommonModule, FormsModule, NavBarComponent, FooterComponent],
+  imports: [CommonModule, NavBarComponent, FooterComponent],
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
 })
