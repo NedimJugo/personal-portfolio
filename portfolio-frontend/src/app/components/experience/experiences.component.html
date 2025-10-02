@@ -1,0 +1,162 @@
+<app-nav-bar></app-nav-bar>
+
+<main class="experience-page-comic">
+  <section class="page-hero-comic">
+    <div class="container">
+      <div class="hero-content-center">
+        <div class="comic-badge">My Journey</div>
+        <h1 class="page-title-comic">Experience & Expertise</h1>
+        <p class="page-subtitle-comic">
+          A comprehensive look at my professional journey, technical skills, and what others say about working with me.
+        </p>
+      </div>
+      <div class="comic-dots top-left"></div>
+      <div class="comic-dots bottom-right"></div>
+    </div>
+  </section>
+  <section class="experience-section-comic">
+    <div class="container">
+      <div class="section-header-comic">
+        <h2 class="section-title-comic">Professional Experience</h2>
+        <p class="section-subtitle-comic">My career path and achievements</p>
+      </div>
+
+      <div class="experience-timeline">
+        @for (exp of experiences$ | async; let i = $index; track exp.id) {
+        <article
+          class="experience-panel"
+          [class.left]="i % 2 === 0"
+          [class.right]="i % 2 !== 0">
+          <div class="panel-content">
+            <div class="panel-header">
+              <h3 class="position-comic">{{ exp.position }}</h3>
+              <div class="company-info">
+                <div class="company-badge">{{ exp.companyName }}</div>
+                <div class="location-tag">{{ exp.location }}</div>
+              </div>
+            </div>
+            <div class="period-tag">
+              {{ exp.startDate }} - {{ exp.isCurrent ? 'Present' : exp.endDate }}
+              <span class="employment-type">{{ exp.employmentType }}</span>
+            </div>
+            <p class="description-comic">{{ exp.description }}</p>
+            
+            @if (exp.achievementsList.length > 0) {
+            <div class="achievements-section">
+              <h4 class="subsection-title">Key Achievements</h4>
+              <ul class="achievements-list">
+                @for (achievement of exp.achievementsList; track achievement) {
+                <li>{{ achievement }}</li>
+                }
+              </ul>
+            </div>
+            }
+
+            @if (exp.technologiesList.length > 0) {
+            <div class="technologies-section">
+              <h4 class="subsection-title">Technologies Used</h4>
+              <div class="tech-tags">
+                @for (tech of exp.technologiesList; track tech) {
+                <span class="tech-tag">{{ tech }}</span>
+                }
+              </div>
+            </div>
+            }
+          </div>
+          <div class="timeline-dot"></div>
+        </article>
+        }
+        @if ((experiences$ | async)?.length === 0) {
+        <div class="empty-panel">
+          <p>Experience data loading...</p>
+        </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="skills-section-comic">
+    <div class="container">
+      <div class="section-header-comic">
+        <div class="action-lines"></div>
+        <h2 class="section-title-comic">Technical Skills</h2>
+        <p class="section-subtitle-comic">My complete technology stack</p>
+      </div>
+      @for (category of getSkillCategories(skills$ | async); track category) {
+      <div class="skill-category-group">
+        <h3 class="category-title-comic">{{ category }}</h3>
+        <div class="skills-grid">
+          @for (skill of getSkillsByCategory(skills$ | async, category); track skill.id) {
+          <div class="skill-card">
+            <div class="skill-card-content">
+              <div class="skill-header">
+                <h4 class="skill-name-comic">{{ skill.name }}</h4>
+                <div class="proficiency-badge">{{ getProficiencyLabel(skill.proficiencyLevel) }}</div>
+              </div>
+              <div class="skill-meta">
+                <span class="years-badge">{{ skill.yearsExperience }} years</span>
+                @if (skill.isFeatured) {
+                <span class="featured-badge">Featured</span>
+                }
+              </div>
+              <div class="proficiency-bar">
+                <div class="proficiency-fill" [style.width.%]="skill.proficiencyLevel"></div>
+              </div>
+              <div class="proficiency-label">{{ skill.proficiencyLevel }}% Proficiency</div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+      }
+      @if ((skills$ | async)?.length === 0) {
+      <div class="empty-panel">
+        <p>Skills data loading...</p>
+      </div>
+      }
+    </div>
+  </section>
+  <section class="testimonials-section-comic">
+    <div class="container">
+      <div class="section-header-comic">
+        <div class="pow-effect">WOW!</div>
+        <h2 class="section-title-comic">What People Say</h2>
+        <p class="section-subtitle-comic">Testimonials from clients and colleagues</p>
+      </div>
+
+      <div class="testimonials-grid">
+        @for (testimonial of testimonials$ | async; track testimonial.id) {
+        <article class="testimonial-card">
+          <div class="testimonial-content">
+            <div class="rating-stars">
+              @for (star of getStars(testimonial.rating); track $index) {
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="star-icon">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+              }
+            </div>
+            <blockquote class="testimonial-text">
+              "{{ testimonial.content }}"
+            </blockquote>
+            <div class="testimonial-author">
+              <div class="author-info">
+                <h4 class="author-name">{{ testimonial.clientName }}</h4>
+                <p class="author-title">{{ testimonial.clientTitle }}</p>
+                <p class="author-company">{{ testimonial.clientCompany }}</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        }
+        @if ((testimonials$ | async)?.length === 0) {
+        <div class="empty-panel">
+          <p>Testimonials loading...</p>
+        </div>
+        }
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<app-footer></app-footer>

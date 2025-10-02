@@ -1,0 +1,754 @@
+@use "sass:color";
+
+// Comic Color Palette (matching home component)
+$comic-yellow: #FFD93D;
+$comic-red: #FF6B6B;
+$comic-blue: #4ECDC4;
+$comic-purple: #A78BFA;
+$comic-dark: #2D3748;
+$comic-black: #1A202C;
+$comic-white: #FFFFFF;
+$comic-cream: #FFF8E7;
+$comic-gray: #718096;
+
+// Comic Mixins
+@mixin comic-border {
+  border: 4px solid $comic-black;
+  box-shadow: 6px 6px 0 $comic-black;
+}
+
+@mixin halftone-dots {
+  background-image: radial-gradient(circle, $comic-black 1px, transparent 1px);
+  background-size: 8px 8px;
+  opacity: 0.1;
+}
+
+.experience-page-comic {
+  background: $comic-cream;
+  min-height: 100vh;
+  padding-top: 72px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  @media (max-width: 768px) {
+    padding-top: 64px;
+  }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+
+  @media (max-width: 768px) {
+    padding: 0 20px;
+  }
+}
+
+// Page Hero Section
+.page-hero-comic {
+  padding: 60px 0 80px;
+  background: linear-gradient(
+    135deg,
+    $comic-cream 0%,
+    color.adjust($comic-blue, $lightness: 35%) 100%
+  );
+  position: relative;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 40px 0 60px;
+  }
+}
+
+.hero-content-center {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.comic-badge {
+  display: inline-block;
+  background: $comic-red;
+  color: $comic-white;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 8px 20px;
+  border: 3px solid $comic-black;
+  box-shadow: 4px 4px 0 $comic-black;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transform: rotate(-2deg);
+}
+
+.page-title-comic {
+  font-size: clamp(40px, 8vw, 64px);
+  font-weight: 900;
+  color: $comic-black;
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  position: relative;
+  display: inline-block;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background: $comic-yellow;
+    transform: skew(-2deg);
+    z-index: -1;
+  }
+}
+
+.page-subtitle-comic {
+  font-size: 18px;
+  color: $comic-gray;
+  line-height: 1.7;
+  max-width: 600px;
+  margin: 0 auto;
+  font-weight: 600;
+}
+
+.comic-dots {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  @include halftone-dots;
+  
+  &.top-left {
+    top: 20px;
+    left: 20px;
+  }
+  
+  &.bottom-right {
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+// Section Headers
+.section-header-comic {
+  text-align: center;
+  margin-bottom: 64px;
+  position: relative;
+
+  @media (max-width: 768px) {
+    margin-bottom: 48px;
+  }
+}
+
+.action-lines {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 40px;
+  background: 
+    linear-gradient(90deg, transparent 48%, $comic-yellow 48%, $comic-yellow 52%, transparent 52%),
+    linear-gradient(85deg, transparent 48%, $comic-yellow 48%, $comic-yellow 52%, transparent 52%),
+    linear-gradient(95deg, transparent 48%, $comic-yellow 48%, $comic-yellow 52%, transparent 52%);
+  opacity: 0.3;
+}
+
+.section-title-comic {
+  font-size: clamp(36px, 6vw, 56px);
+  font-weight: 900;
+  color: $comic-black;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+  position: relative;
+  display: inline-block;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background: $comic-yellow;
+    transform: skew(-2deg);
+    z-index: -1;
+  }
+}
+
+.section-subtitle-comic {
+  font-size: 18px;
+  color: $comic-gray;
+  font-weight: 600;
+}
+
+// Experience Section
+.experience-section-comic {
+  padding: 100px 0;
+  background: linear-gradient(
+    135deg,
+    color.adjust($comic-purple, $lightness: 30%) 0%,
+    $comic-cream 100%
+  );
+
+  @media (max-width: 768px) {
+    padding: 80px 0;
+  }
+}
+
+.experience-timeline {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background: $comic-black;
+    transform: translateX(-50%);
+
+    @media (max-width: 768px) {
+      left: 20px;
+    }
+  }
+}
+
+.experience-panel {
+  position: relative;
+  margin-bottom: 60px;
+  display: grid;
+  grid-template-columns: 1fr 40px 1fr;
+  gap: 40px;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 40px 1fr;
+    gap: 20px;
+    margin-left: 0;
+  }
+
+  &.left {
+    .panel-content {
+      grid-column: 1;
+      text-align: right;
+
+      @media (max-width: 768px) {
+        grid-column: 2;
+        text-align: left;
+      }
+    }
+
+    .timeline-dot {
+      grid-column: 2;
+    }
+  }
+
+  &.right {
+    .panel-content {
+      grid-column: 3;
+      text-align: left;
+
+      @media (max-width: 768px) {
+        grid-column: 2;
+      }
+    }
+
+    .timeline-dot {
+      grid-column: 2;
+
+      @media (max-width: 768px) {
+        grid-column: 1;
+      }
+    }
+  }
+}
+
+.timeline-dot {
+  width: 24px;
+  height: 24px;
+  background: $comic-yellow;
+  border: 4px solid $comic-black;
+  border-radius: 50%;
+  position: relative;
+  z-index: 2;
+  justify-self: center;
+}
+
+.panel-content {
+  background: $comic-white;
+  @include comic-border;
+  padding: 32px;
+  position: relative;
+}
+
+.panel-header {
+  margin-bottom: 16px;
+}
+
+.position-comic {
+  font-size: 24px;
+  font-weight: 800;
+  color: $comic-black;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.company-info {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+
+  .experience-panel.left & {
+    justify-content: flex-end;
+
+    @media (max-width: 768px) {
+      justify-content: flex-start;
+    }
+  }
+}
+
+.company-badge {
+  display: inline-block;
+  background: $comic-blue;
+  color: $comic-white;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 6px 16px;
+  border: 3px solid $comic-black;
+  box-shadow: 3px 3px 0 $comic-black;
+  text-transform: uppercase;
+}
+
+.location-tag {
+  display: inline-block;
+  background: $comic-cream;
+  color: $comic-dark;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border: 2px solid $comic-black;
+  text-transform: uppercase;
+}
+
+.period-tag {
+  font-size: 14px;
+  color: $comic-gray;
+  font-weight: 700;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+
+  .experience-panel.left & {
+    justify-content: flex-end;
+
+    @media (max-width: 768px) {
+      justify-content: flex-start;
+    }
+  }
+}
+
+.employment-type {
+  display: inline-block;
+  background: $comic-yellow;
+  color: $comic-black;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border: 2px solid $comic-black;
+  border-radius: 20px;
+}
+
+.description-comic {
+  font-size: 16px;
+  color: $comic-dark;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.achievements-section,
+.technologies-section {
+  margin-top: 20px;
+}
+
+.subsection-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: $comic-black;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+.achievements-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    font-size: 14px;
+    color: $comic-dark;
+    line-height: 1.6;
+    margin-bottom: 8px;
+    padding-left: 24px;
+    position: relative;
+
+    &::before {
+      content: '⚡';
+      position: absolute;
+      left: 0;
+      font-size: 16px;
+    }
+  }
+}
+
+.tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  .experience-panel.left & {
+    justify-content: flex-end;
+
+    @media (max-width: 768px) {
+      justify-content: flex-start;
+    }
+  }
+}
+
+.tech-tag {
+  display: inline-block;
+  background: $comic-black;
+  color: $comic-yellow;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+// Skills Section
+.skills-section-comic {
+  padding: 100px 0;
+  background: $comic-white;
+
+  @media (max-width: 768px) {
+    padding: 80px 0;
+  }
+}
+
+.skill-category-group {
+  margin-bottom: 60px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.category-title-comic {
+  font-size: 28px;
+  font-weight: 800;
+  color: $comic-black;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  padding-bottom: 12px;
+  border-bottom: 4px solid $comic-black;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 120px;
+    height: 4px;
+    background: $comic-yellow;
+  }
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.skill-card {
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px) rotate(-1deg);
+  }
+}
+
+.skill-card-content {
+  background: $comic-cream;
+  @include comic-border;
+  padding: 24px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 8px 8px 0 $comic-black;
+  }
+}
+
+.skill-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.skill-name-comic {
+  font-size: 20px;
+  font-weight: 800;
+  color: $comic-black;
+  text-transform: uppercase;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.proficiency-badge {
+  display: inline-block;
+  background: $comic-red;
+  color: $comic-white;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 6px 12px;
+  border: 2px solid $comic-black;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.skill-meta {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.years-badge {
+  display: inline-block;
+  background: $comic-blue;
+  color: $comic-white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border: 2px solid $comic-black;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+
+.featured-badge {
+  display: inline-block;
+  background: $comic-yellow;
+  color: $comic-black;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border: 2px solid $comic-black;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+
+.proficiency-bar {
+  width: 100%;
+  height: 12px;
+  background: $comic-white;
+  border: 3px solid $comic-black;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.proficiency-fill {
+  height: 100%;
+  background: linear-gradient(90deg, $comic-blue, $comic-purple);
+  transition: width 0.6s ease;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    @include halftone-dots;
+    opacity: 0.2;
+  }
+}
+
+.proficiency-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: $comic-gray;
+  text-align: right;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+// Testimonials Section
+.testimonials-section-comic {
+  padding: 100px 0;
+  background: linear-gradient(
+    135deg,
+    $comic-cream 0%,
+    color.adjust($comic-red, $lightness: 35%) 100%
+  );
+  position: relative;
+
+  @media (max-width: 768px) {
+    padding: 80px 0;
+  }
+}
+
+.pow-effect {
+  position: absolute;
+  top: -40px;
+  right: 5%;
+  font-size: 48px;
+  font-weight: 900;
+  background-color: $comic-yellow;
+  color: $comic-red;
+  -webkit-text-stroke: 3px $comic-black;
+  transform: rotate(15deg);
+  animation: pulse 2s ease-in-out infinite;
+
+  @media (max-width: 768px) {
+    font-size: 32px;
+    top: -30px;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: rotate(15deg) scale(1); }
+  50% { transform: rotate(15deg) scale(1.1); }
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 32px;
+}
+
+.testimonial-card {
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: rotate(1deg) translateY(-4px);
+  }
+}
+
+.testimonial-content {
+  background: $comic-white;
+  @include comic-border;
+  padding: 32px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 8px 8px 0 $comic-black;
+  }
+}
+
+.rating-stars {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  color: $comic-yellow;
+  filter: drop-shadow(2px 2px 0 $comic-black);
+}
+
+.star-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.testimonial-text {
+  font-size: 16px;
+  line-height: 1.7;
+  color: $comic-dark;
+  font-style: italic;
+  margin: 0 0 24px 0;
+  flex-grow: 1;
+  position: relative;
+  padding-left: 20px;
+
+  &::before {
+    content: '"';
+    position: absolute;
+    left: 0;
+    top: -10px;
+    font-size: 48px;
+    font-weight: 900;
+    color: $comic-yellow;
+    line-height: 1;
+    -webkit-text-stroke: 2px $comic-black;
+  }
+}
+
+.testimonial-author {
+  border-top: 3px solid $comic-black;
+  padding-top: 20px;
+}
+
+.author-info {
+  text-align: left;
+}
+
+.author-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: $comic-black;
+  text-transform: uppercase;
+  margin: 0 0 6px 0;
+}
+
+.author-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: $comic-blue;
+  margin: 0 0 4px 0;
+}
+
+.author-company {
+  font-size: 14px;
+  font-weight: 600;
+  color: $comic-gray;
+  margin: 0;
+}
+
+// Empty States
+.empty-panel {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  
+  p {
+    font-size: 18px;
+    font-weight: 700;
+    color: $comic-gray;
+    text-transform: uppercase;
+    margin: 0;
+  }
+}
+    
