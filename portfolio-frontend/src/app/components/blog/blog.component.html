@@ -1,0 +1,181 @@
+<app-nav-bar></app-nav-bar>
+<main class="blog-page-comic">
+  <div class="container">
+    @if (!selectedPost) {
+      <div class="blog-list-view">
+        <section class="blog-hero">
+          <div class="zap-effect">ZAP!</div>
+          <h1 class="blog-page-title">The Blog</h1>
+          <p class="blog-page-subtitle">Stories, tutorials, and thoughts from the digital frontier</p>
+        </section>
+        @if (featuredPost$ | async; as featured) {
+          <section class="featured-section">
+            <div class="featured-badge">
+              <span>⭐ Featured Post</span>
+            </div>
+            <article class="featured-post-panel" (click)="selectPost(featured)">
+              <div class="featured-image">
+                <img [src]="getImageUrl(featured)" 
+                     [alt]="featured.title"
+                     (error)="onImageError($event)" />
+                <div class="featured-overlay">
+                  <span class="read-featured">Read Article →</span>
+                </div>
+              </div>
+              <div class="featured-content">
+                <div class="featured-meta">
+                  <span class="date-badge">{{ formatDate(featured.publishedAt || featured.createdAt) }}</span>
+                  <span class="reading-badge">{{ featured.readingTime }} min read</span>
+                  <span class="views-badge">👁 {{ featured.viewCount }} views</span>
+                </div>
+                <h2 class="featured-title">{{ featured.title }}</h2>
+                <p class="featured-excerpt">{{ featured.excerpt }}</p>
+                <div class="featured-tags">
+                  @for (tag of featured.parsedTags.slice(0, 3); track tag) {
+                    <span class="tag-pill">
+                      #{{ tag }}
+                    </span>
+                  }
+                </div>
+              </div>
+            </article>
+          </section>
+        }
+        @if (categories$ | async; as categories) {
+          <section class="categories-section">
+            <h3 class="categories-title">Browse by Category</h3>
+            <div class="categories-grid">
+              @for (category of categories; track category) {
+                <button 
+                  class="category-badge"
+                  [class.active]="selectedCategory === category"
+                  (click)="filterByCategory(category)">
+                  {{ category }}
+                </button>
+              }
+            </div>
+          </section>
+        }
+        <section class="blog-grid-section">
+          <div class="blog-grid">
+            @for (post of blogPosts$ | async; track post.id) {
+              <article 
+                class="blog-card-panel"
+                (click)="selectPost(post)">
+                <div class="blog-card-frame">
+                  <div class="blog-card-image">
+                    <img [src]="getImageUrl(post)" 
+                         [alt]="post.title"
+                         (error)="onImageError($event)" />
+                    <div class="image-overlay-blog">
+                      <span class="read-more-overlay">Read More →</span>
+                    </div>
+                  </div>
+                  <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                      <span class="date-badge">{{ formatDate(post.publishedAt || post.createdAt) }}</span>
+                      <span class="reading-badge">{{ post.readingTime }} min</span>
+                    </div>
+                    <h3 class="blog-card-title">{{ post.title }}</h3>
+                    <p class="blog-card-excerpt">{{ post.excerpt }}</p>
+                    <div class="blog-card-footer">
+                      <div class="blog-tags">
+                        @for (tag of post.parsedTags.slice(0, 2); track tag) {
+                          <span class="tag-mini">
+                            #{{ tag }}
+                          </span>
+                        }
+                      </div>
+                      <div class="blog-stats">
+                        <span class="stat-item">👁 {{ post.viewCount }}</span>
+                        <span class="stat-item">❤️ {{ post.likeCount }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            }
+          </div>
+          @if ((blogPosts$ | async)?.length === 0) {
+            <div class="empty-state-panel">
+              <div class="empty-icon">📝</div>
+              <h3>No Posts Found</h3>
+              <p>Check back soon for new content!</p>
+            </div>
+          }
+        </section>
+      </div>
+    }
+    @if (selectedPost) {
+      <div class="blog-detail-view">
+        <nav class="breadcrumb-comic">
+          <button class="back-btn-comic" (click)="backToList()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            <span>Back to Blog</span>
+          </button>
+        </nav>
+        <article class="article-panel">
+          <header class="article-header">
+            <div class="article-meta-top">
+              <span class="date-badge-large">{{ formatDate(selectedPost.publishedAt || selectedPost.createdAt) }}</span>
+              <span class="reading-badge-large">{{ selectedPost.readingTime }} min read</span>
+            </div>
+            <h1 class="article-title">{{ selectedPost.title }}</h1>
+            <p class="article-excerpt">{{ selectedPost.excerpt }}</p>
+            
+            <div class="article-stats-bar">
+              <div class="stat-group">
+                <span class="stat-large">👁 {{ selectedPost.viewCount }} views</span>
+                <span class="stat-large">❤️ {{ selectedPost.likeCount }} likes</span>
+              </div>
+              <div class="article-categories">
+                @for (category of selectedPost.parsedCategories; track category) {
+                  <span class="category-pill">
+                    {{ category }}
+                  </span>
+                }
+              </div>
+            </div>
+          </header>
+          @if (selectedPost.featuredImage) {
+            <div class="article-featured-image">
+              <img [src]="getImageUrl(selectedPost)" 
+                   [alt]="selectedPost.title"
+                   (error)="onImageError($event)" />
+            </div>
+          }
+          <div class="article-content">
+            <div class="content-frame">
+              <div [innerHTML]="selectedPost.content"></div>
+            </div>
+          </div>
+          <footer class="article-footer">
+            <div class="article-tags-section">
+              <h4 class="tags-heading">Tags</h4>
+              <div class="tags-list">
+                @for (tag of selectedPost.parsedTags; track tag) {
+                  <span class="tag-badge-large">
+                    #{{ tag }}
+                  </span>
+                }
+              </div>
+            </div>
+
+            <div class="article-actions">
+              <button class="btn-comic secondary" (click)="backToList()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                <span>Back to All Posts</span>
+              </button>
+            </div>
+          </footer>
+        </article>
+      </div>
+    }
+
+  </div>
+</main>
+<app-footer></app-footer>
