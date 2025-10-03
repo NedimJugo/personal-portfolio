@@ -14,5 +14,6 @@ namespace Portfolio.Services.Interfaces
     public interface IBlogPostService
         : ICRUDService<BlogPostResponse, BlogPostSearchObject, BlogPostInsertRequest, BlogPostUpdateRequest, Guid>
     {
+        Task<bool> IncrementViewCountAsync(Guid blogPostId, CancellationToken cancellationToken = default);
     }
 }

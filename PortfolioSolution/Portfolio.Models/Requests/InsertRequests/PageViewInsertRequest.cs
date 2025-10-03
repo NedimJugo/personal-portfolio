@@ -14,6 +14,7 @@ namespace Portfolio.Models.Requests.InsertRequests
         public string? IpAddress { get; set; }
         public string? Country { get; set; }
         public string? City { get; set; }
+        public string? VisitorKey { get; set; } // Add this
         public Guid? ProjectId { get; set; }
         public Guid? BlogPostId { get; set; }
     }

@@ -6,6 +6,7 @@ export interface PageViewResponse {
   ipAddress?: string;
   country?: string;
   city?: string;
+  visitorKey?: string;  // Add this
   viewedAt: string;     // ISO date string
   projectId?: string;
   blogPostId?: string;

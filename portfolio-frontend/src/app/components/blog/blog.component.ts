@@ -1,13 +1,16 @@
-import { Component, type OnInit, ChangeDetectionStrategy } from "@angular/core"
+import { Component, type OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core"
 import { CommonModule } from "@angular/common"
-import { type Observable, of } from "rxjs"
-import { map, catchError } from "rxjs/operators"
+import { forkJoin, type Observable, of } from "rxjs"
+import { map, catchError, switchMap } from "rxjs/operators"
 import { BlogPostResponse } from "../../models/blog-post/blog-post-response.model"
 import { BlogPostService } from "../../services/blog-post.service"
 import { BlogPostStatus } from "../../models/enums/blog-post-status.enum"
 import { NavBarComponent } from "../nav-bar/nav-bar.component";
 import { FooterComponent } from "../footer/footer.component";
 import { BlogPostWithParsedData } from "../../models/blog-post/blog-post-with-parsed-data.model"
+import { VisitorTrackingService } from "../../services/visitor-tracking.service"
+import { BlogPostLikeService } from "../../services/blog-post-like.service"
+
 
 
 @Component({
@@ -25,13 +28,23 @@ export class BlogComponent implements OnInit {
 
   selectedPost: BlogPostWithParsedData | null = null
   selectedCategory: string | null = null
+  visitorId: string = ''
 
   readonly defaultBlogImage =
     "https://ecochallengeblob.blob.core.windows.net/ecochallenge/istockphoto-2173059563-612x612.jpg"
 
-  constructor(private blogService: BlogPostService) {}
+  constructor(private blogService: BlogPostService,
+    private visitorTrackingService: VisitorTrackingService,
+    private blogPostLikeService: BlogPostLikeService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
+    this.visitorId = this.visitorTrackingService.getOrCreateVisitorId()
+    this.visitorTrackingService.trackPageView('/blog').subscribe({
+      next: () => console.log('Blog page view tracked'),
+      error: (err) => console.error('Error tracking page view:', err)
+    })
     this.loadBlogPosts()
     this.loadFeaturedPost()
     this.loadCategories()
@@ -45,6 +58,7 @@ export class BlogComponent implements OnInit {
       })
       .pipe(
         map((result) => this.parseBlogPosts(result.items || [])),
+        switchMap((posts) => this.loadLikeStatusForPosts(posts)),
         catchError(() => of([])),
       )
   }
@@ -61,6 +75,10 @@ export class BlogComponent implements OnInit {
         map((result) => {
           const posts = this.parseBlogPosts(result.items || [])
           return posts.length > 0 ? posts[0] : null
+        }),
+        switchMap((post) => {
+          if (!post) return of(null)
+          return this.loadLikeStatusForPost(post)
         }),
         catchError(() => of(null)),
       )
@@ -92,9 +110,51 @@ export class BlogComponent implements OnInit {
     }
   }
 
+  private loadLikeStatusForPosts(posts: BlogPostWithParsedData[]): Observable<BlogPostWithParsedData[]> {
+    if (posts.length === 0) return of([])
+
+    const likeStatusRequests = posts.map(post =>
+      this.blogPostLikeService.getLikeStatus(post.id, this.visitorId).pipe(
+        map(status => ({ ...post, likeStatus: status })),
+        catchError(() => of({ ...post, likeStatus: { isLiked: false, totalLikes: post.likeCount } }))
+      )
+    )
+
+    return forkJoin(likeStatusRequests)
+  }
+
+  private loadLikeStatusForPost(post: BlogPostWithParsedData): Observable<BlogPostWithParsedData> {
+    return this.blogPostLikeService.getLikeStatus(post.id, this.visitorId).pipe(
+      map(status => ({ ...post, likeStatus: status })),
+      catchError(() => of({ ...post, likeStatus: { isLiked: false, totalLikes: post.likeCount } }))
+    )
+  }
+
+  toggleLike(post: BlogPostWithParsedData, event: Event): void {
+    event.stopPropagation()
+
+    this.blogPostLikeService.toggleLike(post.id, this.visitorId).subscribe({
+      next: (status) => {
+        post.likeStatus = status
+        post.likeCount = status.totalLikes
+        this.cdr.markForCheck()
+      },
+      error: (err) => {
+        console.error('Error toggling like:', err)
+      }
+    })
+  }
+  
+
   selectPost(post: BlogPostWithParsedData): void {
     this.selectedPost = post
     window.scrollTo({ top: 0, behavior: "smooth" })
+
+    // Track blog post view
+    this.visitorTrackingService.trackPageView(`/blog/${post.slug}`, undefined, post.id).subscribe({
+      next: () => console.log('Blog post view tracked'),
+      error: (err) => console.error('Error tracking blog post view:', err)
+    })
   }
 
   backToList(): void {
@@ -116,6 +176,7 @@ export class BlogComponent implements OnInit {
             const parsed = this.parseBlogPosts(result.items || [])
             return parsed.filter((post) => post.parsedCategories.includes(this.selectedCategory!))
           }),
+          switchMap((posts) => this.loadLikeStatusForPosts(posts)),
           catchError(() => of([])),
         )
     } else {

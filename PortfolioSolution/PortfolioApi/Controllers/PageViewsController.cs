@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Portfolio.Models.Requests.InsertRequests;
 using Portfolio.Models.Requests.UpdateRequests;
 using Portfolio.Models.Responses;
@@ -16,6 +17,17 @@ namespace Portfolio.WebAPI.Controllers
         public PageViewsController(IPageViewService service, ILogger<PageViewsController> logger)
             : base(service, logger)
         {
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        public override async Task<ActionResult<PageViewResponse>> Create(
+            [FromBody] PageViewInsertRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            return await base.Create(request, cancellationToken);
         }
     }
 }

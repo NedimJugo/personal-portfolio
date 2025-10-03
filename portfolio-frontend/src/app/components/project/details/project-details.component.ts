@@ -16,6 +16,7 @@ import { FooterComponent } from "../../footer/footer.component";
 import { TagResponse } from "../../../models/tag/tag-response.model"
 import { TechResponse } from "../../../models/tech/tech-response.model"
 import { ProjectImage } from "../../../models/project-image/project-image.model"
+import { VisitorTrackingService } from "../../../services/visitor-tracking.service"
 
 // <CHANGE> Added interface to track loading state
 interface ProjectState {
@@ -31,7 +32,6 @@ interface ProjectState {
   styleUrls: ["./project-details.component.scss"],
 })
 export class ProjectDetailsComponent implements OnInit {
-  // <CHANGE> Changed from Observable<ProjectDetails | null> to Observable<ProjectState>
   projectState$!: Observable<ProjectState>
   
   readonly defaultProjectImage = 'https://ecochallengeblob.blob.core.windows.net/ecochallenge/istockphoto-2173059563-612x612.jpg'
@@ -45,7 +45,9 @@ export class ProjectDetailsComponent implements OnInit {
     private projectTagService: ProjectTagService,
     private projectTechService: ProjectTechService,
     private tagService: TagService,
-    private techService: TechService  ) {}
+    private techService: TechService,
+    private visitorTrackingService: VisitorTrackingService
+  ) {}
 
   ngOnInit(): void {
     // <CHANGE> Updated to emit loading state first, then project data
@@ -55,6 +57,12 @@ export class ProjectDetailsComponent implements OnInit {
         if (!projectId) {
           return of({ loading: false, project: null })
         }
+
+        this.visitorTrackingService.trackPageView(`/projects/${projectId}`, projectId).subscribe({
+          next: () => console.log('Project view tracked'),
+          error: (err) => console.error('Error tracking project view:', err)
+        })
+        
         return this.loadProjectDetails(projectId).pipe(
           map(project => ({ loading: false, project })),
           startWith({ loading: true, project: null })

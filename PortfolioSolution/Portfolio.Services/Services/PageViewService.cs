@@ -13,6 +13,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Portfolio.Services.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 namespace Portfolio.Services.Services
 {
@@ -20,8 +23,16 @@ namespace Portfolio.Services.Services
         : BaseCRUDService<PageViewResponse, PageViewSearchObject, PageView, PageViewInsertRequest, PageViewUpdateRequest, Guid>,
           IPageViewService
     {
-        public PageViewService(ApplicationDbContext context, IMapper mapper, ILogger<PageViewService> logger)
-            : base(context, mapper, logger) { }
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IGeolocationService _geolocationService;
+        public PageViewService(ApplicationDbContext context, IMapper mapper, ILogger<PageViewService> logger, IHttpContextAccessor httpContextAccessor,
+            IGeolocationService geolocationService)
+            : base(context, mapper, logger)
+        {
+            _httpContextAccessor = httpContextAccessor;
+            _geolocationService = geolocationService;
+        }
+
 
         protected override IQueryable<PageView> ApplyFilter(IQueryable<PageView> query, PageViewSearchObject? search = null)
         {
@@ -48,12 +59,65 @@ namespace Portfolio.Services.Services
         protected override async Task BeforeInsertAsync(PageView entity, PageViewInsertRequest request, CancellationToken cancellationToken = default)
         {
             entity.ViewedAt = DateTimeOffset.UtcNow;
+
+            if (_httpContextAccessor.HttpContext != null)
+            {
+                entity.IpAddress = IpAddressHelper.GetClientIpAddress(_httpContextAccessor.HttpContext);
+
+                // Get geolocation if we have an IP
+                if (!string.IsNullOrEmpty(entity.IpAddress))
+                {
+                    var (country, city) = await _geolocationService.GetLocationFromIpAsync(entity.IpAddress);
+                    entity.Country = country;
+                    entity.City = city;
+                }
+            }
+
             await Task.CompletedTask;
         }
 
         protected override async Task BeforeUpdateAsync(PageView entity, PageViewUpdateRequest request, CancellationToken cancellationToken = default)
         {
             await Task.CompletedTask;
+        }
+
+        protected override async Task AfterInsertAsync(PageView entity, PageViewInsertRequest request, CancellationToken cancellationToken = default)
+        {
+            // Increment blog post view count if this is a blog post view
+            if (entity.BlogPostId.HasValue)
+            {
+                var blogPost = await _context.BlogPosts
+                    .FirstOrDefaultAsync(bp => bp.Id == entity.BlogPostId.Value, cancellationToken);
+
+                if (blogPost != null)
+                {
+                    blogPost.ViewCount++;
+                    await _context.SaveChangesAsync(cancellationToken);
+                    _logger.LogInformation("Incremented view count for blog post {BlogPostId}. New count: {ViewCount}",
+                        blogPost.Id, blogPost.ViewCount);
+                }
+                else
+                {
+                    _logger.LogWarning("Blog post {BlogPostId} not found for view count increment", entity.BlogPostId.Value);
+                }
+            }
+
+            // Similarly for projects if needed
+            if (entity.ProjectId.HasValue)
+            {
+                var project = await _context.Projects
+                    .FirstOrDefaultAsync(p => p.Id == entity.ProjectId.Value, cancellationToken);
+
+                if (project != null)
+                {
+                    project.ViewCount++;
+                    await _context.SaveChangesAsync(cancellationToken);
+                    _logger.LogInformation("Incremented view count for project {ProjectId}. New count: {ViewCount}",
+                        project.Id, project.ViewCount);
+                }
+            }
+
+            await base.AfterInsertAsync(entity, request, cancellationToken);
         }
     }
 }

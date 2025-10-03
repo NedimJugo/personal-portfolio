@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Portfolio.Services.Database.Entities;
 using Portfolio.Services.Interfaces;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using System.Reflection.Emit;
 
 namespace Portfolio.Services.Database
 {
@@ -42,7 +43,7 @@ namespace Portfolio.Services.Database
         public DbSet<Testimonial> Testimonials { get; set; }
         public DbSet<Subscriber> Subscribers { get; set; }
         public DbSet<EmailTemplate> EmailTemplates { get; set; }
-
+        public DbSet<BlogPostLike> BlogPostLikes { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -77,12 +78,34 @@ namespace Portfolio.Services.Database
             ConfigureTestimonial(builder);
             ConfigureSubscriber(builder);
             ConfigureEmailTemplate(builder);
+            ConfigureBlogPostLike(builder);
 
             // Apply soft delete query filters
             ApplySoftDeleteQueryFilters(builder);
 
             // Seed data
             builder.SeedData();
+        }
+
+        private void ConfigureBlogPostLike(ModelBuilder builder)
+        {
+            builder.Entity<BlogPostLike>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasIndex(e => new { e.BlogPostId, e.VisitorKey })
+                      .IsUnique()
+                      .HasDatabaseName("IX_BlogPostLike_BlogPostId_VisitorKey");
+
+                entity.Property(e => e.VisitorKey)
+                      .IsRequired()
+                      .HasMaxLength(100);
+
+                entity.HasOne(e => e.BlogPost)
+                      .WithMany()
+                      .HasForeignKey(e => e.BlogPostId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
         }
 
         private void ApplySoftDeleteQueryFilters(ModelBuilder builder)

@@ -55,5 +55,30 @@ namespace Portfolio.Services.Services
             entity.UpdatedAt = DateTimeOffset.UtcNow;
             await Task.CompletedTask;
         }
+
+        public async Task<bool> IncrementViewCountAsync(Guid blogPostId, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var blogPost = await _context.BlogPosts.FindAsync(new object[] { blogPostId }, cancellationToken);
+                if (blogPost == null)
+                {
+                    _logger.LogWarning("Blog post not found for view count increment: {Id}", blogPostId);
+                    return false;
+                }
+
+                blogPost.ViewCount++;
+                await _context.SaveChangesAsync(cancellationToken);
+
+                _logger.LogInformation("View count incremented for blog post: {Id}, new count: {ViewCount}",
+                    blogPostId, blogPost.ViewCount);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error incrementing view count for blog post: {Id}", blogPostId);
+                return false;
+            }
+        }
     }
 }

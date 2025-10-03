@@ -10,6 +10,7 @@ import { ProjectImageService } from "../../services/project-image.service"
 import { MediaService } from "../../services/media.service"
 import { ProjectWithImage } from "../../models/project-image/project-with-image.model"
 import { ProjectResponse } from "../../models/project/project-response.model"
+import { VisitorTrackingService } from "../../services/visitor-tracking.service"
 
 @Component({
   selector: "app-projects",
@@ -27,10 +28,15 @@ export class ProjectsComponent implements OnInit {
     private projectService: ProjectService,
     private projectImageService: ProjectImageService,
     private mediaService: MediaService,
-    private router: Router
+    private router: Router,
+    private visitorTrackingService: VisitorTrackingService
   ) {}
 
   ngOnInit(): void {
+    this.visitorTrackingService.trackPageView('/projects').subscribe({
+      next: () => console.log('Projects page view tracked'),
+      error: (err) => console.error('Error tracking page view:', err)
+    })
     this.projects$ = this.loadProjectsWithImages()
   }
 

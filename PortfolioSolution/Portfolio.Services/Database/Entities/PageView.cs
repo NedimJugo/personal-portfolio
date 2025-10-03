@@ -1,4 +1,6 @@
-﻿namespace Portfolio.Services.Database.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Portfolio.Services.Database.Entities
 {
     public class PageView
     {
@@ -14,7 +16,8 @@
         // For tracking specific content views
         public Guid? ProjectId { get; set; }
         public Guid? BlogPostId { get; set; }
-
+        [MaxLength(100)]
+        public string? VisitorKey { get; set; }
         // Navigation properties
         public virtual Project? Project { get; set; }
         public virtual BlogPost? BlogPost { get; set; }

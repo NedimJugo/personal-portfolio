@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { VisitorTrackingService } from './services/visitor-tracking.service';
 
 @Component({
   selector: 'app-root',
@@ -17,4 +18,11 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class AppComponent {
   title = 'portfolio-admin';
+
+  constructor(private visitorTrackingService: VisitorTrackingService) {}
+
+  ngOnInit(): void {
+    // Initialize visitor ID on app load
+    this.visitorTrackingService.getOrCreateVisitorId();
+  }
 }
