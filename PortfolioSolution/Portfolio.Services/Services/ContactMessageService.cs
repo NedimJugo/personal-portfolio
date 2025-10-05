@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Portfolio.Services.Helpers;
 
 namespace Portfolio.Services.Services
 {
@@ -20,8 +22,16 @@ namespace Portfolio.Services.Services
         : BaseCRUDService<ContactMessageResponse, ContactMessageSearchObject, ContactMessage, ContactMessageInsertRequest, ContactMessageUpdateRequest, Guid>,
           IContactMessageService
     {
-        public ContactMessageService(ApplicationDbContext context, IMapper mapper, ILogger<ContactMessageService> logger)
-            : base(context, mapper, logger) { }
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IGeolocationService _geolocationService;
+        public ContactMessageService(ApplicationDbContext context, IMapper mapper, ILogger<ContactMessageService> logger, IHttpContextAccessor httpContextAccessor,
+            IGeolocationService geolocationService)
+            : base(context, mapper, logger)
+        {
+            _httpContextAccessor = httpContextAccessor;
+            _geolocationService = geolocationService;
+        }
+
 
         protected override IQueryable<ContactMessage> ApplyFilter(IQueryable<ContactMessage> query, ContactMessageSearchObject? search = null)
         {
@@ -52,6 +62,11 @@ namespace Portfolio.Services.Services
         {
             entity.CreatedAt = DateTimeOffset.UtcNow;
             entity.UpdatedAt = DateTimeOffset.UtcNow;
+
+            if (_httpContextAccessor.HttpContext != null)
+            {
+                entity.IpAddress = IpAddressHelper.GetClientIpAddress(_httpContextAccessor.HttpContext);
+            }
             await Task.CompletedTask;
         }
 

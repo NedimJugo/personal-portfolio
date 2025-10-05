@@ -3,6 +3,7 @@ import { ProjectsComponent } from './components/project/projects.component';
 import { ProjectDetailsComponent } from './components/project/details/project-details.component';
 import { ExperiencesComponent } from './components/experience/experiences.component';
 import { BlogComponent } from './components/blog/blog.component';
+import { ContactComponent } from './components/contact/contact.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -15,6 +16,6 @@ export const routes: Routes = [
   // { path: 'about', component: AboutComponent },
   { path: 'experience', component: ExperiencesComponent },
   { path: 'blog', component: BlogComponent },
-  // { path: 'contact', component: ContactComponent },
+  { path: 'contact', component: ContactComponent },
   { path: '**', redirectTo: '' } // redirect to home for unknown routes
 ];
