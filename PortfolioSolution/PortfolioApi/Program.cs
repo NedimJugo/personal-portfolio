@@ -22,7 +22,7 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(ApplicationUserP
     typeof(PageViewProfile).Assembly, typeof(ProjectImageProfile).Assembly, typeof(ProjectProfile).Assembly, typeof(ProjectTagProfile).Assembly,
     typeof(ProjectTechProfile).Assembly, typeof(SettingsProfile).Assembly, typeof(SiteContentProfile).Assembly, typeof(SkillProfile).Assembly,
     typeof(SocialLinkProfile).Assembly, typeof(SubscriberProfile).Assembly, typeof(TagProfile).Assembly, typeof(TechProfile).Assembly,
-    typeof(TestimonialProfile).Assembly, typeof(BlogPostLikeProfile).Assembly);
+    typeof(TestimonialProfile).Assembly, typeof(BlogPostLikeProfile).Assembly, typeof(CertificateProfile).Assembly, typeof(EducationProfile).Assembly);
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient<IGeolocationService, GeolocationService>();
@@ -50,6 +50,8 @@ builder.Services.AddScoped<ITestimonialService, TestimonialService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IBlogPostLikeService, BlogPostLikeService>();
 builder.Services.AddScoped<IGeolocationService, GeolocationService>();
+builder.Services.AddScoped<ICertificateService, CertificateService>();
+builder.Services.AddScoped<IEducationService, EducationService>();
 // Add services to the container.
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

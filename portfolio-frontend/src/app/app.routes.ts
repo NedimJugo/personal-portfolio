@@ -4,6 +4,7 @@ import { ProjectDetailsComponent } from './components/project/details/project-de
 import { ExperiencesComponent } from './components/experience/experiences.component';
 import { BlogComponent } from './components/blog/blog.component';
 import { ContactComponent } from './components/contact/contact.component';
+import { AboutComponent } from './components/about/about.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -13,7 +14,7 @@ export const routes: Routes = [
   },
    { path: 'projects', component: ProjectsComponent },
   { path: 'projects/:id', component: ProjectDetailsComponent }, // if you have a details page
-  // { path: 'about', component: AboutComponent },
+  { path: 'about', component: AboutComponent },
   { path: 'experience', component: ExperiencesComponent },
   { path: 'blog', component: BlogComponent },
   { path: 'contact', component: ContactComponent },

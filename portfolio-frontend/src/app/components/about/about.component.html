@@ -1,0 +1,178 @@
+<app-nav-bar></app-nav-bar>
+
+<main class="about-page-comic">
+  <section class="about-intro-comic">
+    <div class="container">
+      <div class="section-header-comic">
+        <div class="action-lines"></div>
+        <h1 class="section-title-comic">About Me</h1>
+        <p class="section-subtitle-comic">Get to know the person behind the code</p>
+      </div>
+
+      @if (aboutContent$ | async; as about) {
+        <div class="about-content-panel">
+          <div class="panel-border">
+            <div class="content-text" [innerHTML]="about.intro"></div>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+  <section class="education-comic">
+    <div class="container">
+      <div class="section-header-comic">
+        <div class="pow-effect">LEARN!</div>
+        <h2 class="section-title-comic">Education</h2>
+        <p class="section-subtitle-comic">My academic journey</p>
+      </div>
+
+      <div class="education-timeline">
+        @for (edu of educations$ | async; let i = $index; track edu.id) {
+          <article
+            class="education-panel"
+            [class.left]="i % 2 === 0"
+            [class.right]="i % 2 !== 0">
+            
+            <div class="panel-content">
+              <div class="education-logo">
+                <img 
+                  [src]="edu.logoUrl || defaultLogo" 
+                  [alt]="edu.institutionName"
+                  (error)="onImageError($event)" />
+              </div>
+              
+              <div class="panel-header">
+                <h3 class="degree-comic">{{ edu.degree }}</h3>
+                @if (edu.fieldOfStudy) {
+                  <div class="field-badge">{{ edu.fieldOfStudy }}</div>
+                }
+              </div>
+              
+              <div class="institution-name">{{ edu.institutionName }}</div>
+              
+              @if (edu.location) {
+                <div class="location-tag">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                  {{ edu.location }}
+                </div>
+              }
+              
+              <div class="period-tag">
+                {{ formatDate(edu.startDate) }} - {{ edu.isCurrent ? 'Present' : formatDate(edu.endDate) }}
+              </div>
+              
+              @if (edu.grade) {
+                <div class="grade-badge">Grade: {{ edu.grade }}</div>
+              }
+              
+              @if (edu.description) {
+                <p class="description-comic">{{ edu.description }}</p>
+              }
+            </div>
+            
+            <div class="timeline-dot"></div>
+          </article>
+        }
+        
+        @if ((educations$ | async)?.length === 0) {
+          <div class="empty-panel">
+            <p>Education information coming soon!</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+  <section class="certificates-comic">
+    <div class="container">
+      <div class="section-header-comic">
+        <div class="boom-effect">CERTIFIED!</div>
+        <h2 class="section-title-comic">Certifications</h2>
+        <p class="section-subtitle-comic">Professional achievements & credentials</p>
+      </div>
+
+      <div class="certificates-grid">
+        @for (cert of certificates$ | async; track cert.id) {
+          <article class="certificate-panel">
+            <div class="certificate-frame">
+              
+              <div class="cert-logo">
+                <img 
+                  [src]="cert.logoUrl || defaultLogo" 
+                  [alt]="cert.issuingOrganization"
+                  (error)="onImageError($event)" />
+              </div>
+              
+              <div class="cert-type-badge">{{ cert.certificateType }}</div>
+              
+              <h3 class="cert-title-comic">{{ cert.name }}</h3>
+              
+              <div class="cert-issuer">{{ cert.issuingOrganization }}</div>
+              
+              <div class="cert-dates">
+                <div class="date-item">
+                  <span class="date-label">Issued:</span>
+                  <span class="date-value">{{ formatDate(cert.issueDate) }}</span>
+                </div>
+                @if (cert.expirationDate) {
+                  <div class="date-item">
+                    <span class="date-label">Expires:</span>
+                    <span class="date-value">{{ formatDate(cert.expirationDate) }}</span>
+                  </div>
+                }
+              </div>
+              
+              @if (cert.description) {
+                <p class="cert-description">{{ cert.description }}</p>
+              }
+              
+              @if (cert.skills) {
+                <div class="cert-skills">
+                  <strong>Skills:</strong> {{ cert.skills }}
+                </div>
+              }
+              
+              <div class="cert-actions">
+                @if (cert.credentialUrl) {
+                  <a [href]="cert.credentialUrl" target="_blank" class="btn-comic small primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                      <polyline points="15 3 21 3 21 9"></polyline>
+                      <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                    View Credential
+                  </a>
+                }
+                
+                @if (cert.certificateUrl) {
+                  <a [href]="cert.certificateUrl" target="_blank" class="btn-comic small secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    Certificate
+                  </a>
+                }
+              </div>
+              
+              @if (cert.credentialId) {
+                <div class="credential-id">ID: {{ cert.credentialId }}</div>
+              }
+            </div>
+          </article>
+        }
+        
+        @if ((certificates$ | async)?.length === 0) {
+          <div class="empty-panel">
+            <p>Certifications coming soon!</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<app-footer></app-footer>

@@ -44,6 +44,8 @@ namespace Portfolio.Services.Database
         public DbSet<Subscriber> Subscribers { get; set; }
         public DbSet<EmailTemplate> EmailTemplates { get; set; }
         public DbSet<BlogPostLike> BlogPostLikes { get; set; }
+        public DbSet<Education> Educations { get; set; }
+        public DbSet<Certificate> Certificates { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -79,7 +81,8 @@ namespace Portfolio.Services.Database
             ConfigureSubscriber(builder);
             ConfigureEmailTemplate(builder);
             ConfigureBlogPostLike(builder);
-
+            ConfigureEducation(builder);
+            ConfigureCertificate(builder);
             // Apply soft delete query filters
             ApplySoftDeleteQueryFilters(builder);
 
@@ -121,6 +124,8 @@ namespace Portfolio.Services.Database
             builder.Entity<ProjectImage>().HasQueryFilter(e => !e.Project.IsDeleted);
             builder.Entity<ProjectTag>().HasQueryFilter(e => !e.Project.IsDeleted);
             builder.Entity<ProjectTech>().HasQueryFilter(e => !e.Project.IsDeleted);
+            builder.Entity<Education>().HasQueryFilter(e => !e.IsDeleted);
+            builder.Entity<Certificate>().HasQueryFilter(e => !e.IsDeleted);
         }
 
         private void ConfigureUser(ModelBuilder builder)
@@ -133,6 +138,103 @@ namespace Portfolio.Services.Database
 
                 entity.HasIndex(e => e.Email)
                     .IsUnique();
+            });
+        }
+
+        private void ConfigureEducation(ModelBuilder builder)
+        {
+            builder.Entity<Education>(entity =>
+            {
+                entity.Property(e => e.InstitutionName)
+                    .HasMaxLength(200)
+                    .IsRequired();
+
+                entity.Property(e => e.Degree)
+                    .HasMaxLength(200)
+                    .IsRequired();
+
+                entity.Property(e => e.FieldOfStudy)
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.Location)
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.Grade)
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(2000);
+
+                entity.Property(e => e.EducationType)
+                    .HasMaxLength(50)
+                    .IsRequired();
+
+                entity.HasOne(e => e.LogoMedia)
+                    .WithMany()
+                    .HasForeignKey(e => e.LogoMediaId)
+                    .OnDelete(DeleteBehavior.SetNull);
+
+                // Soft delete relationship
+                entity.HasOne(e => e.DeletedBy)
+                    .WithMany()
+                    .HasForeignKey(e => e.DeletedById)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasIndex(e => e.DisplayOrder);
+                entity.HasIndex(e => e.IsDeleted);
+                entity.HasIndex(e => new { e.StartDate, e.EndDate });
+            });
+        }
+
+        private void ConfigureCertificate(ModelBuilder builder)
+        {
+            builder.Entity<Certificate>(entity =>
+            {
+                entity.Property(e => e.Name)
+                    .HasMaxLength(256)
+                    .IsRequired();
+
+                entity.Property(e => e.IssuingOrganization)
+                    .HasMaxLength(200)
+                    .IsRequired();
+
+                entity.Property(e => e.CredentialId)
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.CredentialUrl)
+                    .HasMaxLength(1000);
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(2000);
+
+                entity.Property(e => e.Skills)
+                    .HasMaxLength(1000);
+
+                entity.Property(e => e.CertificateType)
+                    .HasMaxLength(50)
+                    .IsRequired();
+
+                entity.HasOne(e => e.LogoMedia)
+                    .WithMany()
+                    .HasForeignKey(e => e.LogoMediaId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(e => e.CertificateMedia)
+                    .WithMany()
+                    .HasForeignKey(e => e.CertificateMediaId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                // Soft delete relationship
+                entity.HasOne(e => e.DeletedBy)
+                    .WithMany()
+                    .HasForeignKey(e => e.DeletedById)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasIndex(e => e.DisplayOrder);
+                entity.HasIndex(e => e.IsDeleted);
+                entity.HasIndex(e => e.IsPublished);
+                entity.HasIndex(e => new { e.IsActive, e.IssueDate });
+                entity.HasIndex(e => e.ExpirationDate);
             });
         }
 
