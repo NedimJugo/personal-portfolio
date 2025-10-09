@@ -3,9 +3,11 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { AuthService } from '../services/auth.service';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
+  const authService = inject(AuthService);
 
   return next(req).pipe(
     catchError((error: any) => {
@@ -28,11 +30,18 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
             errorMessage = error.error?.message || 'Bad request. Please check your input.';
             break;
           case 401:
-            // Unauthorized - redirect to login
-            if (router) {
-              router.navigate(['/login']);
+            // Only handle 401 for auth endpoints (login/register)
+            // Let auth interceptor handle 401 for other endpoints (token refresh)
+            const isAuthEndpoint = req.url.includes('/auth/login') || 
+                                  req.url.includes('/auth/register');
+            
+            if (isAuthEndpoint) {
+              errorMessage = error.error?.message || 'Invalid credentials';
+            } else {
+              // For non-auth endpoints, the auth interceptor will handle token refresh
+              // Just pass through the error message
+              errorMessage = error.error?.message || 'Session expired. Please log in again.';
             }
-            errorMessage = 'Unauthorized access. Please log in.';
             break;
           case 403:
             errorMessage = 'You do not have permission to perform this action.';
