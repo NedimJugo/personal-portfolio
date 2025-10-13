@@ -1,0 +1,593 @@
+@import './admin-comic-variables.scss';
+
+// ============================================
+// SHARED ADMIN COMPONENTS - COMIC STYLE
+// Use these classes across all admin pages
+// ============================================
+
+// BUTTONS
+// ============================================
+.btn {
+  padding: 12px 24px;
+  border-radius: $radius-md;
+  font-size: 15px;
+  font-weight: $font-weight-bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  position: relative;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.btn-primary {
+  @include comic-button-primary;
+}
+
+.btn-secondary {
+  @include comic-button-secondary;
+}
+
+.btn-success {
+  background: $success-color;
+  color: $comic-white;
+  border-color: darken($success-color, 10%);
+  box-shadow: $shadow-comic;
+
+  &:hover:not(:disabled) {
+    background: darken($success-color, 5%);
+    transform: translate(-2px, -2px);
+    box-shadow: $shadow-comic-hover;
+  }
+}
+
+.btn-danger {
+  background: $error-color;
+  color: $comic-white;
+  border-color: darken($error-color, 10%);
+  box-shadow: $shadow-comic;
+
+  &:hover:not(:disabled) {
+    background: darken($error-color, 5%);
+    transform: translate(-2px, -2px);
+    box-shadow: $shadow-comic-hover;
+  }
+}
+
+.btn-outline {
+  background: transparent;
+  color: $comic-dark;
+  border-color: $comic-gray-light;
+
+  &:hover:not(:disabled) {
+    background: $comic-gray-lighter;
+    border-color: $comic-blue;
+    color: $comic-blue;
+  }
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 13px;
+}
+
+.btn-lg {
+  padding: 16px 32px;
+  font-size: 17px;
+}
+
+// BADGES
+// ============================================
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: $font-weight-bold;
+  padding: 6px 12px;
+  border-radius: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 2px solid;
+}
+
+.badge-primary {
+  @include comic-badge($comic-blue);
+}
+
+.badge-success {
+  @include comic-badge($success-color);
+}
+
+.badge-warning {
+  @include comic-badge($warning-color);
+}
+
+.badge-danger {
+  @include comic-badge($error-color);
+}
+
+.badge-info {
+  @include comic-badge($info-color);
+}
+
+.badge-outline {
+  background: transparent;
+  color: $comic-dark;
+  border-color: $comic-gray-light;
+}
+
+// CARDS
+// ============================================
+.card {
+  @include comic-card;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid $comic-gray-light;
+
+  h2, h3 {
+    margin: 0;
+    font-weight: $font-weight-black;
+    color: $comic-black;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+  }
+
+  h2 { font-size: 22px; }
+  h3 { font-size: 18px; }
+}
+
+.card-body {
+  color: $comic-dark;
+  line-height: 1.6;
+}
+
+.card-footer {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 2px solid $comic-gray-light;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+// TABLES
+// ============================================
+.table-container {
+  background: $comic-white;
+  border-radius: $radius-lg;
+  border: 2px solid $comic-gray-light;
+  box-shadow: $shadow-md;
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  thead {
+    background: linear-gradient(135deg, $comic-blue-soft 0%, $comic-purple-soft 100%);
+
+    th {
+      padding: 16px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: $font-weight-black;
+      color: $comic-black;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 3px solid $comic-black;
+
+      &:first-child {
+        padding-left: 24px;
+      }
+
+      &:last-child {
+        padding-right: 24px;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      transition: all 0.2s;
+      border-bottom: 1px solid $comic-gray-light;
+
+      &:hover {
+        background: $comic-blue-soft;
+        transform: scale(1.01);
+
+        td {
+          color: $comic-black;
+        }
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    td {
+      padding: 16px;
+      font-size: 14px;
+      color: $comic-dark;
+      font-weight: $font-weight-normal;
+
+      &:first-child {
+        padding-left: 24px;
+        font-weight: $font-weight-semibold;
+      }
+
+      &:last-child {
+        padding-right: 24px;
+      }
+    }
+  }
+}
+
+// FORMS
+// ============================================
+.form-group {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    font-size: 14px;
+    font-weight: $font-weight-bold;
+    color: $comic-dark;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    .required {
+      color: $error-color;
+      margin-left: 4px;
+    }
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="date"],
+  input[type="time"],
+  select,
+  textarea {
+    @include comic-input;
+    width: 100%;
+    font-family: $font-primary;
+
+    &:disabled {
+      background: $comic-gray-lighter;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    &.error {
+      border-color: $error-color;
+      background: $error-light;
+    }
+  }
+
+  textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.6;
+  }
+
+  select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a5568' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+  }
+
+  .helper-text {
+    font-size: 13px;
+    color: $comic-gray;
+    margin-top: 6px;
+    font-weight: $font-weight-normal;
+  }
+
+  .error-text {
+    font-size: 13px;
+    color: $error-color;
+    font-weight: $font-weight-semibold;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    &::before {
+      content: '⚠';
+    }
+  }
+}
+
+// MODALS
+// ============================================
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba($comic-black, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal {
+  background: $comic-white;
+  border-radius: $radius-xl;
+  border: 3px solid $comic-black;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalSlide 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $comic-gray-lighter;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $comic-gray;
+    border-radius: 4px;
+  }
+}
+
+@keyframes modalSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  padding: 24px 28px;
+  border-bottom: 3px solid $comic-gray-light;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, $comic-blue-soft 0%, $comic-purple-soft 100%);
+
+  h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: $font-weight-black;
+    color: $comic-black;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    color: $comic-dark;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: $radius-md;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: rgba($error-color, 0.1);
+      color: $error-color;
+      transform: rotate(90deg);
+    }
+  }
+}
+
+.modal-body {
+  padding: 28px;
+}
+
+.modal-footer {
+  padding: 20px 28px;
+  border-top: 2px solid $comic-gray-light;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  background: $comic-gray-lighter;
+}
+
+// ALERTS
+// ============================================
+.alert {
+  padding: 16px 20px;
+  border-radius: $radius-md;
+  border: 2px solid;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: $font-weight-semibold;
+
+  svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  &.alert-success {
+    background: $success-light;
+    border-color: $success-color;
+    color: darken($success-color, 20%);
+  }
+
+  &.alert-warning {
+    background: $warning-light;
+    border-color: $warning-color;
+    color: darken($warning-color, 20%);
+  }
+
+  &.alert-error {
+    background: $error-light;
+    border-color: $error-color;
+    color: darken($error-color, 20%);
+  }
+
+  &.alert-info {
+    background: $info-light;
+    border-color: $info-color;
+    color: darken($info-color, 20%);
+  }
+}
+
+// PAGINATION
+// ============================================
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+
+  button {
+    @include comic-button-secondary;
+    padding: 10px 16px;
+    font-size: 14px;
+    min-width: 44px;
+
+    &.active {
+      @include comic-button-primary;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+    }
+  }
+}
+
+// LOADING STATES
+// ============================================
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba($comic-cream, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid $comic-gray-light;
+  border-top-color: $comic-blue;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    $comic-gray-light 25%,
+    lighten($comic-gray-light, 5%) 50%,
+    $comic-gray-light 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: $radius-md;
+  border: 2px solid darken($comic-gray-light, 5%);
+
+  &.skeleton-text {
+    height: 16px;
+    margin-bottom: 8px;
+
+    &:last-child {
+      width: 60%;
+    }
+  }
+
+  &.skeleton-title {
+    height: 28px;
+    width: 40%;
+    margin-bottom: 16px;
+  }
+
+  &.skeleton-button {
+    height: 44px;
+    width: 120px;
+  }
+
+  &.skeleton-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+  }
+}
+
+// EMPTY STATES
+// ============================================
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: $comic-gray;
+
+  svg {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: $font-weight-bold;
+    color: $comic-dark;
+    margin: 0 0 12px 0;
+    text-transform: uppercase;
+  }
+
+  p {
+    font-size: 15px;
+    margin: 0 0 24px 0;
+    font-weight: $font-weight-semibold;
+  }
+}

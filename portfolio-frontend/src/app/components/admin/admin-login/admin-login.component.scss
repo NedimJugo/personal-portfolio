@@ -1,4 +1,5 @@
-@import '../../../shared/admin-comic-variables.scss';
+@use "sass:color";
+@use '../../../shared/admin-comic-variables' as *;
 
 .login-container {
   min-height: 100vh;
@@ -145,7 +146,7 @@
   &.alert-error {
     background-color: $error-light;
     border-color: $error-color;
-    color: darken($error-color, 15%);
+    color: color.adjust($error-color, $lightness: -15%);
 
     svg {
       color: $error-color;
@@ -183,7 +184,7 @@
     }
 
     &::placeholder {
-      color: lighten($comic-gray, 10%);
+      color: color.adjust($comic-gray, $lightness: 10%);
     }
   }
 }
@@ -311,7 +312,7 @@
     }
 
     &:hover {
-      color: darken($comic-blue, 10%);
+      color: color.adjust($comic-blue, $lightness: -10%);
       background: $comic-blue-soft;
 
       &::before {

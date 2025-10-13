@@ -28,6 +28,10 @@ export const routes: Routes = [
         path: 'overview',
         loadComponent: () => import('./components/admin/admin-overview/admin-overview.component').then(m => m.AdminOverviewComponent)
       },
+      {
+        path: 'education',
+        loadComponent: () => import('./components/admin/CRUDs/education/education-CRUD.component').then(m => m.EducationCrudComponent)
+      },
       // {
       //   path: 'users',
       //   loadComponent: () => import('./components/admin/users/admin-users.component').then(m => m.AdminUsersComponent)

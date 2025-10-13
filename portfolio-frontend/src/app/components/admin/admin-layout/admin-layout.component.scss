@@ -1,5 +1,5 @@
 @use "sass:color";
-@import '../../../shared/admin-comic-variables.scss';
+@use '../../../shared/admin-comic-variables' as *;
 
 .admin-layout {
   display: flex;
@@ -143,7 +143,7 @@
   }
 
   &.active {
-    background: linear-gradient(135deg, $comic-blue 0%, darken($comic-blue, 5%) 100%);
+    background: linear-gradient(135deg, $comic-blue 0%, color.adjust($comic-blue, $lightness: -10%) 100%);
     color: $comic-white;
     border-color: $comic-black;
     box-shadow: $shadow-comic;
@@ -172,7 +172,7 @@
     &:hover {
       background: $error-light;
       border-color: $comic-red;
-      color: darken($comic-red, 10%);
+      color: color.adjust($comic-red, $lightness: -10%);
     }
   }
 }
@@ -318,7 +318,7 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, $comic-purple 0%, darken($comic-purple, 15%) 100%);
+  background: linear-gradient(135deg, $comic-purple 0%, color.adjust($comic-purple, $lightness: -10%) 100%);
   color: $comic-white;
   display: flex;
   align-items: center;

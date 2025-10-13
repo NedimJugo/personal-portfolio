@@ -1,62 +1,64 @@
+@use "sass:color";
+
 // Comic-Inspired Admin Theme Variables
 // Softer, more balanced version of the homepage palette
 
 // Primary Comic Colors (slightly desaturated for admin use)
-$comic-yellow: #FFD93D;
-$comic-yellow-soft: #FFF4C4;
-$comic-red: #FF6B6B;
-$comic-red-soft: #FFB3B3;
-$comic-blue: #4ECDC4;
-$comic-blue-soft: #A8E6E3;
-$comic-purple: #A78BFA;
-$comic-purple-soft: #D4C5F9;
+$comic-yellow: #FFD93D !default;
+$comic-yellow-soft: #FFF4C4 !default;
+$comic-red: #FF6B6B !default;
+$comic-red-soft: #FFB3B3 !default;
+$comic-blue: #4ECDC4 !default;
+$comic-blue-soft: #A8E6E3 !default;
+$comic-purple: #A78BFA !default;
+$comic-purple-soft: #D4C5F9 !default;
 
 // Neutral Palette
-$comic-dark: #2D3748;
-$comic-black: #1A202C;
-$comic-white: #FFFFFF;
-$comic-cream: #FFF8E7;
-$comic-gray: #718096;
-$comic-gray-light: #E2E8F0;
-$comic-gray-lighter: #F7FAFC;
+$comic-dark: #2D3748 !default;
+$comic-black: #1A202C !default;
+$comic-white: #FFFFFF !default;
+$comic-cream: #FFF8E7 !default;
+$comic-gray: #718096 !default;
+$comic-gray-light: #E2E8F0 !default;
+$comic-gray-lighter: #F7FAFC !default;
 
 // Semantic Colors
-$success-color: #48BB78;
-$success-light: #C6F6D5;
-$warning-color: #ED8936;
-$warning-light: #FEEBC8;
-$error-color: #F56565;
-$error-light: #FED7D7;
-$info-color: #4299E1;
-$info-light: #BEE3F8;
+$success-color: #48BB78 !default;
+$success-light: #C6F6D5 !default;
+$warning-color: #ED8936 !default;
+$warning-light: #FEEBC8 !default;
+$error-color: #F56565 !default;
+$error-light: #FED7D7 !default;
+$info-color: #4299E1 !default;
+$info-light: #BEE3F8 !default;
 
 // Typography
-$font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-$font-weight-normal: 500;
-$font-weight-semibold: 600;
-$font-weight-bold: 700;
-$font-weight-black: 800;
+$font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif !default;
+$font-weight-normal: 500 !default;
+$font-weight-semibold: 600 !default;
+$font-weight-bold: 700 !default;
+$font-weight-black: 800 !default;
 
 // Spacing
-$spacing-xs: 4px;
-$spacing-sm: 8px;
-$spacing-md: 16px;
-$spacing-lg: 24px;
-$spacing-xl: 32px;
-$spacing-2xl: 48px;
+$spacing-xs: 4px !default;
+$spacing-sm: 8px !default;
+$spacing-md: 16px !default;
+$spacing-lg: 24px !default;
+$spacing-xl: 32px !default;
+$spacing-2xl: 48px !default;
 
 // Border Radius
-$radius-sm: 6px;
-$radius-md: 8px;
-$radius-lg: 12px;
-$radius-xl: 16px;
+$radius-sm: 6px !default;
+$radius-md: 8px !default;
+$radius-lg: 12px !default;
+$radius-xl: 16px !default;
 
 // Shadows
-$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-$shadow-md: 0 2px 8px rgba(0, 0, 0, 0.1);
-$shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.12);
-$shadow-comic: 4px 4px 0 rgba(26, 32, 44, 0.15);
-$shadow-comic-hover: 6px 6px 0 rgba(26, 32, 44, 0.2);
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08) !default;
+$shadow-md: 0 2px 8px rgba(0, 0, 0, 0.1) !default;
+$shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.12) !default;
+$shadow-comic: 4px 4px 0 rgba(26, 32, 44, 0.15) !default;
+$shadow-comic-hover: 6px 6px 0 rgba(26, 32, 44, 0.2) !default;
 
 // Comic Mixins
 @mixin comic-border-subtle {
@@ -101,7 +103,7 @@ $shadow-comic-hover: 6px 6px 0 rgba(26, 32, 44, 0.2);
 }
 
 @mixin comic-button-primary {
-  background: linear-gradient(135deg, $comic-blue 0%, darken($comic-blue, 10%) 100%);
+  background: linear-gradient(135deg, $comic-blue 0%, color.adjust($comic-blue, $lightness: -10%) 100%);
   color: $comic-white;
   border: 2px solid $comic-black;
   box-shadow: $shadow-comic;
@@ -137,8 +139,8 @@ $shadow-comic-hover: 6px 6px 0 rgba(26, 32, 44, 0.2);
 }
 
 @mixin comic-badge($color) {
-  background: lighten($color, 35%);
-  color: darken($color, 20%);
+  background: color.adjust($color, $lightness: 35%);
+  color: color.adjust($color, $lightness: -20%);
   border: 2px solid $color;
   font-size: 12px;
   font-weight: $font-weight-bold;
@@ -163,7 +165,7 @@ $shadow-comic-hover: 6px 6px 0 rgba(26, 32, 44, 0.2);
   }
   
   &:hover:not(:focus) {
-    border-color: darken($comic-gray-light, 10%);
+    border-color: color.adjust($comic-gray-light, $lightness: -10%);
   }
 }
 
