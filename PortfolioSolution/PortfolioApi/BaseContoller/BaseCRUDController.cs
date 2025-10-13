@@ -30,6 +30,7 @@ namespace Portfolio.WebAPI.BaseContoller
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
+        [ProducesResponseType(409)]
         public virtual async Task<ActionResult<T>> Create(
             [FromBody] TInsert request,
             CancellationToken cancellationToken = default)

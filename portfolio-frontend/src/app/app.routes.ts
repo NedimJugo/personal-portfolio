@@ -32,6 +32,11 @@ export const routes: Routes = [
         path: 'education',
         loadComponent: () => import('./components/admin/CRUDs/education/education-CRUD.component').then(m => m.EducationCrudComponent)
       },
+      {
+        path: 'tech',
+        loadComponent: () => import('./components/admin/CRUDs/tech/tech-CRUD.component').then(m => m.TechCrudComponent)
+      },
+
       // {
       //   path: 'users',
       //   loadComponent: () => import('./components/admin/users/admin-users.component').then(m => m.AdminUsersComponent)
