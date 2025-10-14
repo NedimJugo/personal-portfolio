@@ -22,10 +22,12 @@ export class AdminLayoutComponent implements OnInit {
     { icon: 'folder', label: 'Projects', route: '/admin/dashboard/projects', active: false },
     { icon: 'file-text', label: 'Blog Posts', route: '/admin/dashboard/blog', active: false },
     { icon: 'cpu', label: 'Technologies', route: '/admin/dashboard/tech', active: false },
+    { icon: 'tag', label: 'Tags', route: '/admin/dashboard/tag', active: false },
     { icon: 'graduation-cap', label: 'Education', route: '/admin/dashboard/education', active: false },
     { icon: 'mail', label: 'Messages', route: '/admin/dashboard/messages', active: false },
     { icon: 'bar-chart', label: 'Analytics', route: '/admin/dashboard/analytics', active: false },
     { icon: 'settings', label: 'Settings', route: '/admin/dashboard/settings', active: false }
+
   ];
 
   constructor(

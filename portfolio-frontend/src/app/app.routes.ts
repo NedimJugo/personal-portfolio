@@ -36,6 +36,10 @@ export const routes: Routes = [
         path: 'tech',
         loadComponent: () => import('./components/admin/CRUDs/tech/tech-CRUD.component').then(m => m.TechCrudComponent)
       },
+      {
+        path: 'tag',
+        loadComponent: () => import('./components/admin/CRUDs/tag/tag-CRUD.component').then(m => m.TagCrudComponent)
+      },
 
       // {
       //   path: 'users',
