@@ -1,0 +1,636 @@
+<div class="certificate-crud-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h1>Certificate Management</h1>
+            <p>Manage your professional certifications and credentials</p>
+        </div>
+        <button class="btn btn-primary" (click)="openCreateModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Add Certificate
+        </button>
+    </div>
+
+    <!-- Search & Filters Card -->
+    <div class="card">
+        <div class="search-filters" [formGroup]="searchForm">
+            <div class="form-group">
+                <input type="text" placeholder="Search by certificate name..." formControlName="name"
+                    class="search-input">
+            </div>
+
+            <div class="filter-group">
+                <input type="text" placeholder="Filter by organization..." formControlName="issuingOrganization"
+                    class="filter-input">
+
+                <select formControlName="certificateType" class="filter-select">
+                    <option value="">All Types</option>
+                    <option value="Professional">Professional</option>
+                    <option value="Academic">Academic</option>
+                    <option value="Technical">Technical</option>
+                    <option value="Vendor">Vendor</option>
+                    <option value="Online">Online Course</option>
+                </select>
+
+                <select formControlName="isActive" class="filter-select">
+                    <option value="">All Status</option>
+                    <option [value]="true">Active</option>
+                    <option [value]="false">Inactive</option>
+                </select>
+
+                <select formControlName="isPublished" class="filter-select">
+                    <option value="">All Visibility</option>
+                    <option [value]="true">Published</option>
+                    <option [value]="false">Draft</option>
+                </select>
+
+                <select formControlName="sortBy" class="filter-select">
+                    <option value="displayOrder">Display Order</option>
+                    <option value="issueDate">Issue Date</option>
+                    <option value="name">Name</option>
+                    <option value="issuingOrganization">Organization</option>
+                </select>
+
+                <button class="btn btn-outline btn-sm" (click)="toggleSortOrder()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        @if (searchForm.get('desc')?.value) {
+                        <path d="m3 16 4 4 4-4M7 20V4M21 8l-4-4-4 4m4-4v16" />
+                        } @else {
+                        <path d="m3 8 4-4 4 4M7 4v16M21 16l-4 4-4-4m4 4V4" />
+                        }
+                    </svg>
+                    {{ searchForm.get('desc')?.value ? 'Desc' : 'Asc' }}
+                </button>
+
+                @if (hasActiveFilters()) {
+                <button class="btn btn-outline btn-sm" (click)="clearFilters()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                    Clear
+                </button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    @if (isLoading) {
+    <div class="card">
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading certificates...</p>
+        </div>
+    </div>
+    }
+
+    <!-- Empty State -->
+    @if (!isLoading && certificates.length === 0) {
+    <div class="card">
+        <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
+                <path d="M14 2v6h6" />
+                <path d="M9 15h6" />
+                <path d="M9 18h6" />
+            </svg>
+            <h3>No Certificates Found</h3>
+            <p>Start by adding your first professional certification</p>
+            <button class="btn btn-primary" (click)="openCreateModal()">
+                Add Certificate
+            </button>
+        </div>
+    </div>
+    }
+
+    <!-- Certificate Grid -->
+    @if (!isLoading && certificates.length > 0) {
+    <div class="certificate-grid">
+        @for (certificate of certificates; track certificate.id) {
+        <div class="certificate-card">
+            <!-- Logo -->
+            @if (certificate.logoUrl) {
+            <div class="certificate-logo">
+                <img [src]="certificate.logoUrl" [alt]="certificate.issuingOrganization + ' logo'">
+            </div>
+            } @else {
+            <div class="certificate-logo certificate-logo-placeholder">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
+                    <path d="M14 2v6h6" />
+                </svg>
+            </div>
+            }
+
+            <!-- Content -->
+            <div class="certificate-content">
+                <div class="certificate-header">
+                    <div>
+                        <h3>{{ certificate.name }}</h3>
+                        <p class="organization">{{ certificate.issuingOrganization }}</p>
+                    </div>
+                    <div class="badge-group">
+                        @if (certificate.isActive) {
+                        <span class="badge badge-success">Active</span>
+                        }
+                        @if (certificate.isPublished) {
+                        <span class="badge badge-info">Published</span>
+                        }
+                        @if (hasExpired(certificate)) {
+                        <span class="badge badge-warning">Expired</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="certificate-meta">
+                    <span class="meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                        Issued: {{ formatDate(certificate.issueDate) }}
+                    </span>
+
+                    @if (certificate.expirationDate) {
+                    <span class="meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                        Expires: {{ formatDate(certificate.expirationDate) }}
+                    </span>
+                    }
+
+                    <span class="badge badge-outline">{{ certificate.certificateType }}</span>
+                </div>
+
+                @if (certificate.credentialId) {
+                <p class="credential-id">
+                    <strong>ID:</strong> {{ certificate.credentialId }}
+                </p>
+                }
+
+                @if (certificate.description) {
+                <p class="description">{{ certificate.description }}</p>
+                }
+
+                @if (certificate.skills) {
+                <div class="skills-list">
+                    <strong>Skills:</strong> {{ certificate.skills }}
+                </div>
+                }
+
+                @if (certificate.credentialUrl) {
+                <a [href]="certificate.credentialUrl" target="_blank" class="credential-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                        <polyline points="15 3 21 3 21 9" />
+                        <line x1="10" y1="14" x2="21" y2="3" />
+                    </svg>
+                    View Credential
+                </a>
+                }
+            </div>
+
+            <!-- Actions -->
+            <div class="certificate-actions">
+                <button class="btn btn-outline btn-sm" (click)="openEditModal(certificate)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                    Edit
+                </button>
+                <button class="btn btn-danger btn-sm" (click)="confirmDelete(certificate)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    </svg>
+                    Delete
+                </button>
+            </div>
+        </div>
+        }
+    </div>
+
+    <!-- Pagination -->
+    @if (totalCount && totalCount > (searchParams.pageSize || 20)) {
+    <div class="pagination">
+        <button class="btn btn-secondary btn-sm" [disabled]="currentPage === 0" (click)="goToPage(currentPage - 1)">
+            Previous
+        </button>
+
+        @for (page of getPageNumbers(); track page) {
+        <button class="btn btn-sm" [class.btn-primary]="page === currentPage"
+            [class.btn-secondary]="page !== currentPage" (click)="goToPage(page)">
+            {{ page + 1 }}
+        </button>
+        }
+
+        <button class="btn btn-secondary btn-sm" [disabled]="currentPage >= getTotalPages() - 1"
+            (click)="goToPage(currentPage + 1)">
+            Next
+        </button>
+    </div>
+    }
+    }
+
+    <!-- Create/Edit Modal -->
+    @if (showModal) {
+    <div class="modal-overlay" (click)="closeModal()">
+        <div class="modal modal-lg" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>{{ isEditMode ? 'Edit Certificate' : 'Add Certificate' }}</h2>
+                <button class="close-btn" (click)="closeModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <form [formGroup]="certificateForm" (ngSubmit)="submitForm()">
+                <div class="modal-body">
+                    @if (formError) {
+                    <div class="alert alert-error">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                        {{ formError }}
+                    </div>
+                    }
+
+                    <div class="form-group">
+                        <label>Certificate Name <span class="required">*</span></label>
+                        <input type="text" formControlName="name" [class.error]="isFieldInvalid('name')"
+                            placeholder="e.g., AWS Certified Solutions Architect">
+                        @if (isFieldInvalid('name')) {
+                        <span class="error-text">Certificate name is required</span>
+                        }
+                    </div>
+
+                    <div class="form-group">
+                        <label>Issuing Organization <span class="required">*</span></label>
+                        <input type="text" formControlName="issuingOrganization"
+                            [class.error]="isFieldInvalid('issuingOrganization')"
+                            placeholder="e.g., Amazon Web Services">
+                        @if (isFieldInvalid('issuingOrganization')) {
+                        <span class="error-text">Issuing organization is required</span>
+                        }
+                    </div>
+
+                    <div class="form-group">
+                        <label>Certificate Type <span class="required">*</span></label>
+                        <select formControlName="certificateType" [class.error]="isFieldInvalid('certificateType')">
+                            <option value="">Select type...</option>
+                            <option value="Professional">Professional</option>
+                            <option value="Academic">Academic</option>
+                            <option value="Technical">Technical</option>
+                            <option value="Vendor">Vendor</option>
+                            <option value="Online">Online Course</option>
+                        </select>
+                        @if (isFieldInvalid('certificateType')) {
+                        <span class="error-text">Certificate type is required</span>
+                        }
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Issue Date <span class="required">*</span></label>
+                            <input type="date" formControlName="issueDate" [class.error]="isFieldInvalid('issueDate')">
+                            @if (isFieldInvalid('issueDate')) {
+                            <span class="error-text">Issue date is required</span>
+                            }
+                        </div>
+
+                        <div class="form-group">
+                            <label>Expiration Date</label>
+                            <input type="date" formControlName="expirationDate">
+                            <span class="helper-text">Leave empty if no expiration</span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Credential ID</label>
+                            <input type="text" formControlName="credentialId" placeholder="e.g., ABC-123-XYZ">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Credential URL</label>
+                            <input type="text" formControlName="credentialUrl"
+                                placeholder="https://verify.example.com/...">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea formControlName="description" rows="3"
+                            placeholder="Add details about the certification..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Skills</label>
+                        <input type="text" formControlName="skills"
+                            placeholder="e.g., Cloud Architecture, AWS, DevOps">
+                        <span class="helper-text">Comma-separated list of skills</span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" formControlName="isActive">
+                                <span>Active</span>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" formControlName="isPublished">
+                                <span>Published</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Display Order <span class="required">*</span></label>
+                        <input type="number" formControlName="displayOrder" min="0"
+                            [class.error]="isFieldInvalid('displayOrder')">
+                        <span class="helper-text">Lower numbers appear first</span>
+                        @if (isFieldInvalid('displayOrder')) {
+                        <span class="error-text">Display order is required</span>
+                        }
+                    </div>
+
+                    <div class="form-group">
+                        <label>Organization Logo</label>
+                        @if (certificateForm.get('logoMediaId')?.value) {
+                        <div class="media-preview-container">
+                            @if (getSelectedMediaPreview('logo'); as preview) {
+                            <div class="media-preview">
+                                <img [src]="preview.fileUrl" [alt]="preview.altText || preview.fileName">
+                                <div class="media-preview-info">
+                                    <p class="media-filename">{{ preview.originalFileName }}</p>
+                                    <p class="media-size">{{ (preview.fileSize / 1024).toFixed(0) }} KB</p>
+                                </div>
+                            </div>
+                            }
+                            <div class="media-preview-actions">
+                                <button type="button" class="btn btn-outline btn-sm" (click)="openMediaSelector('logo')">
+                                    Change Logo
+                                </button>
+                                <button type="button" class="btn btn-outline btn-sm" (click)="clearMediaSelection('logo')">
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                        } @else {
+                        <button type="button" class="btn btn-outline" (click)="openMediaSelector('logo')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                <circle cx="8.5" cy="8.5" r="1.5" />
+                                <polyline points="21 15 16 10 5 21" />
+                            </svg>
+                            Choose Logo Image
+                        </button>
+                        }
+                        <span class="helper-text">Select an image to use as the organization logo</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Certificate Image</label>
+                        @if (certificateForm.get('certificateMediaId')?.value) {
+                        <div class="media-preview-container">
+                            @if (getSelectedMediaPreview('certificate'); as preview) {
+                            <div class="media-preview">
+                                <img [src]="preview.fileUrl" [alt]="preview.altText || preview.fileName">
+                                <div class="media-preview-info">
+                                    <p class="media-filename">{{ preview.originalFileName }}</p>
+                                    <p class="media-size">{{ (preview.fileSize / 1024).toFixed(0) }} KB</p>
+                                </div>
+                            </div>
+                            }
+                            <div class="media-preview-actions">
+                                <button type="button" class="btn btn-outline btn-sm" (click)="openMediaSelector('certificate')">
+                                    Change Image
+                                </button>
+                                <button type="button" class="btn btn-outline btn-sm" (click)="clearMediaSelection('certificate')">
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                        } @else {
+                        <button type="button" class="btn btn-outline" (click)="openMediaSelector('certificate')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                <circle cx="8.5" cy="8.5" r="1.5" />
+                                <polyline points="21 15 16 10 5 21" />
+                            </svg>
+                            Choose Certificate Image
+                        </button>
+                        }
+                        <span class="helper-text">Optional: Upload a photo of the certificate</span>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" (click)="closeModal()" [disabled]="isSaving">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" [disabled]="isSaving || certificateForm.invalid">
+                        @if (isSaving) {
+                        <span class="spinner-sm"></span>
+                        Saving...
+                        } @else {
+                        {{ isEditMode ? 'Update' : 'Create' }}
+                        }
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    }
+
+    <!-- Delete Confirmation Modal -->
+    @if (showDeleteModal) {
+    <div class="modal-overlay" (click)="cancelDelete()">
+        <div class="modal modal-sm" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Confirm Deletion</h2>
+                <button class="close-btn" (click)="cancelDelete()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    Are you sure you want to delete this certificate?
+                </div>
+                @if (certificateToDelete) {
+                <p><strong>{{ certificateToDelete.name }}</strong> from <strong>{{ certificateToDelete.issuingOrganization }}</strong></p>
+                <p class="text-muted">This action cannot be undone.</p>
+                }
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline" (click)="cancelDelete()" [disabled]="isDeleting">
+                    Cancel
+                </button>
+                <button class="btn btn-danger" (click)="executeDelete()" [disabled]="isDeleting">
+                    @if (isDeleting) {
+                    <span class="spinner-sm"></span>
+                    Deleting...
+                    } @else {
+                    Delete
+                    }
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+
+    <!-- Media Selector Modal -->
+    @if (showMediaSelectorModal) {
+    <div class="modal-overlay" (click)="closeMediaSelector()">
+        <div class="modal modal-lg" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Select {{ currentMediaFieldType === 'logo' ? 'Logo' : 'Certificate' }} Image</h2>
+                <button class="close-btn" (click)="closeMediaSelector()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Search Bar -->
+                <div class="media-search-bar">
+                    <div class="search-input-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        <input type="text" [(ngModel)]="mediaSearchQuery" (ngModelChange)="filterMedia()"
+                            placeholder="Search media by name or alt text..." class="search-input">
+                        @if (mediaSearchQuery) {
+                        <button type="button" class="clear-btn" (click)="mediaSearchQuery = ''; filterMedia()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                        </button>
+                        }
+                    </div>
+                </div>
+
+                <!-- Search Results Info -->
+                <div class="media-search-results">
+                    <div class="media-count">
+                        @if (mediaSearchQuery) {
+                        Showing {{ filteredMediaList.length }} results for "<span class="search-query">{{
+                            mediaSearchQuery }}</span>"
+                        } @else {
+                        {{ filteredMediaList.length }} media files
+                        }
+                    </div>
+                    <div class="search-hint">Click to select an image</div>
+                </div>
+
+                @if (isLoadingMedia) {
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Loading media files...</p>
+                </div>
+                } @else if (filteredMediaList.length === 0) {
+                <div class="empty-state">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                        <circle cx="8.5" cy="8.5" r="1.5" />
+                        <polyline points="21 15 16 10 5 21" />
+                    </svg>
+                    @if (mediaSearchQuery) {
+                    <p>No media files found for "{{ mediaSearchQuery }}"</p>
+                    <button class="btn btn-outline btn-sm" (click)="mediaSearchQuery = ''; filterMedia()">
+                        Clear search
+                    </button>
+                    } @else {
+                    <p>No media files found</p>
+                    <p class="text-muted">Upload some images to get started</p>
+                    }
+                </div>
+                } @else {
+                <div class="media-grid">
+                    @for (media of filteredMediaList; track media.id) {
+                    <div class="media-item" [class.selected]="selectedMediaId === media.id"
+                        (click)="selectMedia(media.id)">
+                        <div class="media-thumbnail">
+                            <img [src]="media.fileUrl" [alt]="media.altText || media.fileName">
+                            @if (selectedMediaId === media.id) {
+                            <div class="selected-indicator">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                            </div>
+                            }
+                        </div>
+                        <div class="media-info">
+                            <p class="media-name">{{ media.originalFileName }}</p>
+                            <p class="media-meta">{{ (media.fileSize / 1024).toFixed(0) }} KB • {{ media.fileType }}</p>
+                        </div>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" (click)="closeMediaSelector()">
+                    Cancel
+                </button>
+                <button type="button" class="btn btn-primary" [disabled]="!selectedMediaId"
+                    (click)="confirmMediaSelection()">
+                    Select Image
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+</div>

@@ -25,6 +25,7 @@ export class AdminLayoutComponent implements OnInit {
     { icon: 'tag', label: 'Tags', route: '/admin/dashboard/tag', active: false },
     { icon: 'share-2', label: 'Social Links', route: '/admin/dashboard/social-link', active: false },
     { icon: 'graduation-cap', label: 'Education', route: '/admin/dashboard/education', active: false },
+    { icon: 'award', label: 'Certificates', route: '/admin/dashboard/certificate', active: false },
     { icon: 'mail', label: 'Messages', route: '/admin/dashboard/messages', active: false },
     { icon: 'bar-chart', label: 'Analytics', route: '/admin/dashboard/analytics', active: false },
     { icon: 'settings', label: 'Settings', route: '/admin/dashboard/settings', active: false }
@@ -34,9 +35,21 @@ export class AdminLayoutComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
+    const overviewItem = this.menuItems.find(item => item.icon === 'grid');
+    const settingsItem = this.menuItems.find(item => item.icon === 'settings');
+
+    const otherItems = this.menuItems.filter(
+      item => item.icon !== 'grid' && item.icon !== 'settings'
+    ).sort((a, b) => a.label.localeCompare(b.label));
+
+    this.menuItems = [
+      ...(overviewItem ? [overviewItem] : []),
+      ...otherItems,
+      ...(settingsItem ? [settingsItem] : [])
+    ];
     this.loadCurrentUser();
   }
 

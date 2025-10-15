@@ -44,7 +44,10 @@ export const routes: Routes = [
         path: 'social-link',
         loadComponent: () => import('./components/admin/CRUDs/social-link/social-link-CRUD.component').then(m => m.SocialLinkCrudComponent)
       },
-
+      {
+        path: 'certificate',
+        loadComponent: () => import('./components/admin/CRUDs/certificate/certificate-CRUD.component').then(m => m.CertificateCrudComponent)
+      },
       // {
       //   path: 'users',
       //   loadComponent: () => import('./components/admin/users/admin-users.component').then(m => m.AdminUsersComponent)
