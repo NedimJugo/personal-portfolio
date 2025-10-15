@@ -40,6 +40,10 @@ export const routes: Routes = [
         path: 'tag',
         loadComponent: () => import('./components/admin/CRUDs/tag/tag-CRUD.component').then(m => m.TagCrudComponent)
       },
+      {
+        path: 'social-link',
+        loadComponent: () => import('./components/admin/CRUDs/social-link/social-link-CRUD.component').then(m => m.SocialLinkCrudComponent)
+      },
 
       // {
       //   path: 'users',
