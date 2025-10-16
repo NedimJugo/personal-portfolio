@@ -20,13 +20,14 @@ export class AdminLayoutComponent implements OnInit {
     { icon: 'grid', label: 'Overview', route: '/admin/dashboard/overview', active: true },
     { icon: 'users', label: 'Users', route: '/admin/dashboard/users', active: false },
     { icon: 'folder', label: 'Projects', route: '/admin/dashboard/projects', active: false },
-    { icon: 'file-text', label: 'Blog Posts', route: '/admin/dashboard/blog', active: false },
+    { icon: 'file-text', label: 'Blog Posts', route: '/admin/dashboard/blog-post', active: false },
     { icon: 'cpu', label: 'Technologies', route: '/admin/dashboard/tech', active: false },
     { icon: 'tag', label: 'Tags', route: '/admin/dashboard/tag', active: false },
     { icon: 'share-2', label: 'Social Links', route: '/admin/dashboard/social-link', active: false },
     { icon: 'graduation-cap', label: 'Education', route: '/admin/dashboard/education', active: false },
     { icon: 'award', label: 'Certificates', route: '/admin/dashboard/certificate', active: false },
     { icon: 'mail', label: 'Messages', route: '/admin/dashboard/messages', active: false },
+    { icon: 'image', label: 'Media', route: '/admin/dashboard/media', active: false},
     { icon: 'bar-chart', label: 'Analytics', route: '/admin/dashboard/analytics', active: false },
     { icon: 'settings', label: 'Settings', route: '/admin/dashboard/settings', active: false }
 

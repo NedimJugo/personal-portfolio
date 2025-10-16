@@ -16,6 +16,8 @@ using Portfolio.Services.Mapping; // Add this using statement
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+builder.Services.Configure<AzureStorageSettings>(
+    builder.Configuration.GetSection("AzureStorageSettings"));
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(ApplicationUserProfile).Assembly, typeof(BlogPostProfile).Assembly,
     typeof(ContactMessageProfile).Assembly, typeof(EmailTemplateProfile).Assembly, typeof(ExperienceProfile).Assembly, typeof(MediaProfile).Assembly,
@@ -27,7 +29,7 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(ApplicationUserP
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient<IGeolocationService, GeolocationService>();
 
-
+builder.Services.AddScoped<IAzureBlobStorageService, AzureBlobStorageService>();
 builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
 builder.Services.AddScoped<IBlogPostService, BlogPostService>();
 builder.Services.AddScoped<IContactMessageService, ContactMessageService>();
@@ -93,6 +95,8 @@ builder.Services.AddSwaggerGen(c =>
             new string[] {}
         }
     });
+
+
 });
 
 // Update this DbContext configuration to suppress the warning

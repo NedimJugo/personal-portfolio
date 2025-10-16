@@ -10,6 +10,7 @@ import { FooterComponent } from "../footer/footer.component";
 import { BlogPostWithParsedData } from "../../models/blog-post/blog-post-with-parsed-data.model"
 import { VisitorTrackingService } from "../../services/visitor-tracking.service"
 import { BlogPostLikeService } from "../../services/blog-post-like.service"
+import { MediaService } from "../../services/media.service"
 
 
 
@@ -36,6 +37,7 @@ export class BlogComponent implements OnInit {
   constructor(private blogService: BlogPostService,
     private visitorTrackingService: VisitorTrackingService,
     private blogPostLikeService: BlogPostLikeService,
+    private mediaService: MediaService, 
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -51,38 +53,70 @@ export class BlogComponent implements OnInit {
   }
 
   private loadBlogPosts(): void {
-    this.blogPosts$ = this.blogService
-      .get({
-        status: BlogPostStatus.Published,
-        pageSize: 50,
-      })
-      .pipe(
-        map((result) => this.parseBlogPosts(result.items || [])),
-        switchMap((posts) => this.loadLikeStatusForPosts(posts)),
-        catchError(() => of([])),
-      )
+  this.blogPosts$ = this.blogService
+    .get({
+      status: BlogPostStatus.Published,
+      pageSize: 50,
+    })
+    .pipe(
+      map((result) => this.parseBlogPosts(result.items || [])),
+      switchMap((posts) => this.resolveMediaUrls(posts)),
+      switchMap((posts) => this.loadLikeStatusForPosts(posts)),
+      catchError(() => of([])),
+    )
+}
+
+  private resolveMediaUrls(posts: BlogPostWithParsedData[]): Observable<BlogPostWithParsedData[]> {
+  const postsWithMediaIds = posts.filter(post => 
+    post.featuredImage && 
+    !post.featuredImage.startsWith('http')
+  )
+
+  if (postsWithMediaIds.length === 0) {
+    return of(posts)
   }
 
+  const mediaRequests = postsWithMediaIds.map(post =>
+    this.mediaService.generateSasUrl(post.featuredImage!, 24).pipe(
+      map(response => ({ postId: post.id, url: response.sasUrl })),
+      catchError(() => of({ postId: post.id, url: this.defaultBlogImage }))
+    )
+  )
+
+  return forkJoin(mediaRequests).pipe(
+    map(mediaUrls => {
+      const urlMap = new Map(mediaUrls.map(m => [m.postId, m.url]))
+      return posts.map(post => ({
+        ...post,
+        resolvedImageUrl: urlMap.get(post.id) || post.featuredImage || this.defaultBlogImage
+      }))
+    })
+  )
+}
   private loadFeaturedPost(): void {
-    this.featuredPost$ = this.blogService
-      .get({
-        status: BlogPostStatus.Published,
-        pageSize: 1,
-        sortBy: "viewCount",
-        desc: true,
-      })
-      .pipe(
-        map((result) => {
-          const posts = this.parseBlogPosts(result.items || [])
-          return posts.length > 0 ? posts[0] : null
-        }),
-        switchMap((post) => {
-          if (!post) return of(null)
-          return this.loadLikeStatusForPost(post)
-        }),
-        catchError(() => of(null)),
-      )
-  }
+  this.featuredPost$ = this.blogService
+    .get({
+      status: BlogPostStatus.Published,
+      pageSize: 1,
+      sortBy: "viewCount",
+      desc: true,
+    })
+    .pipe(
+      map((result) => {
+        const posts = this.parseBlogPosts(result.items || [])
+        return posts.length > 0 ? posts[0] : null
+      }),
+      switchMap((post) => {
+        if (!post) return of(null)
+        return this.resolveMediaUrls([post]).pipe(map(posts => posts[0]))
+      }),
+      switchMap((post) => {
+        if (!post) return of(null)
+        return this.loadLikeStatusForPost(post)
+      }),
+      catchError(() => of(null)),
+    )
+}
 
   private loadCategories(): void {
     this.categories$ = this.blogPosts$.pipe(
@@ -190,8 +224,19 @@ export class BlogComponent implements OnInit {
   }
 
   getImageUrl(post: BlogPostWithParsedData): string {
-    return post.featuredImage || `${this.defaultBlogImage}?query=${encodeURIComponent(post.title)}`
+  // Use resolved URL if available
+  if ((post as any).resolvedImageUrl) {
+    return (post as any).resolvedImageUrl
   }
+  
+  // If it's already a full URL
+  if (post.featuredImage?.startsWith('http')) {
+    return post.featuredImage
+  }
+  
+  // Fallback
+  return this.defaultBlogImage
+}
 
   formatDate(dateString: string): string {
     const date = new Date(dateString)

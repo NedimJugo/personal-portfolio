@@ -27,6 +27,7 @@ import { VisitorTrackingService } from "../services/visitor-tracking.service"
 import { BlogPostLikeService } from "../services/blog-post-like.service"
 import { BlogPostLikeStatus } from "../models/blog-post-like/blog-post-like-status.model"
 import { BlogPostWithLikeStatus } from "../models/blog-post/blog-post-with-like-status.model"
+import { BlogPostStatus } from "../models/enums/blog-post-status.enum"
 
 @Component({
   selector: "app-home",
@@ -80,7 +81,7 @@ export class HomeComponent implements OnInit {
     this.featuredProjects$ = this.loadProjectsWithImages()
     
     // Load latest blog posts with like status
-    this.latestBlogPosts$ = this.blogService.get({ pageSize: 3 }).pipe(
+    this.latestBlogPosts$ = this.blogService.get({ pageSize: 3, status: BlogPostStatus.Published  }).pipe(
       map((result) => result.items || []),
       switchMap((posts) => this.loadLikeStatusForPosts(posts)),
       catchError(() => of([])),

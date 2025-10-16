@@ -48,6 +48,10 @@ export const routes: Routes = [
         path: 'certificate',
         loadComponent: () => import('./components/admin/CRUDs/certificate/certificate-CRUD.component').then(m => m.CertificateCrudComponent)
       },
+      {
+        path: 'media',
+        loadComponent: () => import('./components/admin/CRUDs/media/media-CRUD.component').then(m => m.MediaCrudComponent)
+      },
       // {
       //   path: 'users',
       //   loadComponent: () => import('./components/admin/users/admin-users.component').then(m => m.AdminUsersComponent)
@@ -56,10 +60,10 @@ export const routes: Routes = [
       //   path: 'projects',
       //   loadComponent: () => import('./components/admin/projects/admin-projects.component').then(m => m.AdminProjectsComponent)
       // },
-      // {
-      //   path: 'blog',
-      //   loadComponent: () => import('./components/admin/blog/admin-blog.component').then(m => m.AdminBlogComponent)
-      // },
+      {
+        path: 'blog-post',
+        loadComponent: () => import('./components/admin/CRUDs/blog/blog-post-CRUD.component').then(m => m.BlogPostCrudComponent)
+      },
       // {
       //   path: 'messages',
       //   loadComponent: () => import('./components/admin/messages/admin-messages.component').then(m => m.AdminMessagesComponent)

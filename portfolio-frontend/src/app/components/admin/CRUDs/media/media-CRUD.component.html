@@ -1,0 +1,694 @@
+<div class="media-crud-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h1>Media Library</h1>
+            <p>Manage your images, videos, and documents</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-outline" (click)="openBulkUploadModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+                Bulk Upload
+            </button>
+            <button class="btn btn-primary" (click)="openUploadModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+                Upload Media
+            </button>
+        </div>
+    </div>
+
+    <!-- Search & Filters Card -->
+    <div class="card">
+        <div class="search-filters" [formGroup]="searchForm">
+            <div class="filter-row">
+                <div class="form-group search-group">
+                    <input type="text" placeholder="Search by filename..." formControlName="fileName"
+                        class="search-input">
+                </div>
+
+                <div class="filter-group">
+                    <select formControlName="fileType" class="filter-select">
+                        <option value="">All Types</option>
+                        <option value="image">Images</option>
+                        <option value="video">Videos</option>
+                        <option value="audio">Audio</option>
+                        <option value="document">Documents</option>
+                        <option value="other">Other</option>
+                    </select>
+
+                    <select formControlName="sortBy" class="filter-select">
+                        <option value="uploadedAt">Upload Date</option>
+                        <option value="fileName">File Name</option>
+                        <option value="fileSize">File Size</option>
+                        <option value="fileType">File Type</option>
+                    </select>
+
+                    <button class="btn btn-outline btn-sm" (click)="toggleSortOrder()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            @if (searchForm.get('desc')?.value) {
+                            <path d="m3 16 4 4 4-4M7 20V4M21 8l-4-4-4 4m4-4v16" />
+                            } @else {
+                            <path d="m3 8 4-4 4 4M7 4v16M21 16l-4 4-4-4m4 4V4" />
+                            }
+                        </svg>
+                        {{ searchForm.get('desc')?.value ? 'Desc' : 'Asc' }}
+                    </button>
+
+                    <button class="btn btn-outline btn-sm" (click)="toggleViewMode()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            @if (viewMode === 'grid') {
+                            <rect x="3" y="3" width="7" height="7" />
+                            <rect x="14" y="3" width="7" height="7" />
+                            <rect x="14" y="14" width="7" height="7" />
+                            <rect x="3" y="14" width="7" height="7" />
+                            } @else {
+                            <line x1="8" y1="6" x2="21" y2="6" />
+                            <line x1="8" y1="12" x2="21" y2="12" />
+                            <line x1="8" y1="18" x2="21" y2="18" />
+                            <line x1="3" y1="6" x2="3.01" y2="6" />
+                            <line x1="3" y1="12" x2="3.01" y2="12" />
+                            <line x1="3" y1="18" x2="3.01" y2="18" />
+                            }
+                        </svg>
+                    </button>
+
+                    @if (hasActiveFilters()) {
+                    <button class="btn btn-outline btn-sm" (click)="clearFilters()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                        Clear
+                    </button>
+                    }
+                </div>
+            </div>
+
+            <!-- Bulk Actions Bar -->
+            @if (bulkActionMode) {
+            <div class="bulk-actions-bar">
+                <div class="bulk-info">
+                    <span class="selected-count">{{ selectedMediaIds.size }} selected</span>
+                    <button class="btn-link" (click)="selectAll()">Select All</button>
+                    <button class="btn-link" (click)="deselectAll()">Deselect All</button>
+                </div>
+                <div class="bulk-buttons">
+                    <button class="btn btn-danger btn-sm" (click)="deleteBulk()" [disabled]="selectedMediaIds.size === 0">
+                        Delete Selected
+                    </button>
+                    <button class="btn btn-outline btn-sm" (click)="toggleBulkMode()">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+            } @else {
+            <div class="toolbar">
+                <button class="btn btn-outline btn-sm" (click)="toggleBulkMode()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <polyline points="9 11 12 14 22 4" />
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                    </svg>
+                    Bulk Select
+                </button>
+            </div>
+            }
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    @if (isLoading) {
+    <div class="card">
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading media files...</p>
+        </div>
+    </div>
+    }
+
+    <!-- Empty State -->
+    @if (!isLoading && mediaList.length === 0) {
+    <div class="card">
+        <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
+            </svg>
+            <h3>No Media Files Found</h3>
+            <p>Start by uploading your first media file</p>
+            <button class="btn btn-primary" (click)="openUploadModal()">
+                Upload Media
+            </button>
+        </div>
+    </div>
+    }
+
+    <!-- Media Grid View -->
+    @if (!isLoading && mediaList.length > 0 && viewMode === 'grid') {
+    <div class="media-grid">
+        @for (media of mediaList; track media.id) {
+        <div class="media-card" [class.selected]="selectedMediaIds.has(media.id)">
+            <!-- Selection Checkbox (Bulk Mode) -->
+            @if (bulkActionMode) {
+            <div class="selection-checkbox">
+                <input type="checkbox" [checked]="selectedMediaIds.has(media.id)"
+                    (change)="toggleMediaSelection(media.id)">
+            </div>
+            }
+
+            <!-- Media Preview -->
+            <div class="media-preview">
+                @if (media.fileType === 'image') {
+                <img [src]="media.fileUrl" [alt]="media.altText || media.fileName" loading="lazy">
+                } @else {
+                <div class="file-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        @switch (getFileTypeIcon(media.fileType)) {
+                        @case ('video') {
+                        <polygon points="23 7 16 12 23 17 23 7" />
+                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                        }
+                        @case ('music') {
+                        <path d="M9 18V5l12-2v13" />
+                        <circle cx="6" cy="18" r="3" />
+                        <circle cx="18" cy="16" r="3" />
+                        }
+                        @case ('file-text') {
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                        }
+                        @default {
+                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
+                        <polyline points="13 2 13 9 20 9" />
+                        }
+                        }
+                    </svg>
+                    <span class="file-extension">{{ media.mimeType.split('/')[1]?.toUpperCase() }}</span>
+                </div>
+                }
+            </div>
+
+            <!-- Media Info -->
+            <div class="media-info">
+                <h4 class="media-filename" [title]="media.originalFileName">{{ media.originalFileName }}</h4>
+                <div class="media-meta">
+                    <span class="badge badge-outline">{{ media.fileType }}</span>
+                    <span class="meta-text">{{ formatFileSize(media.fileSize) }}</span>
+                </div>
+                @if (media.altText) {
+                <p class="media-alt-text">{{ media.altText }}</p>
+                }
+                <p class="media-date">Uploaded {{ formatDate(media.uploadedAt) }}</p>
+            </div>
+
+            <!-- Actions -->
+            <div class="media-actions">
+                <button class="btn btn-outline btn-sm" (click)="openEditModal(media)" title="Edit details">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                </button>
+                <button class="btn btn-outline btn-sm" (click)="downloadMedia(media)" title="Download">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                </button>
+                <button class="btn btn-danger btn-sm" (click)="confirmDelete(media)" title="Delete">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        }
+    </div>
+    }
+
+    <!-- Media List View -->
+    @if (!isLoading && mediaList.length > 0 && viewMode === 'list') {
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    @if (bulkActionMode) {
+                    <th style="width: 50px;">
+                        <input type="checkbox" (change)="$event.target.checked ? selectAll() : deselectAll()">
+                    </th>
+                    }
+                    <th style="width: 80px;">Preview</th>
+                    <th>File Name</th>
+                    <th>Type</th>
+                    <th>Size</th>
+                    <th>Uploaded</th>
+                    <th style="width: 200px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (media of mediaList; track media.id) {
+                <tr [class.selected]="selectedMediaIds.has(media.id)">
+                    @if (bulkActionMode) {
+                    <td>
+                        <input type="checkbox" [checked]="selectedMediaIds.has(media.id)"
+                            (change)="toggleMediaSelection(media.id)">
+                    </td>
+                    }
+                    <td>
+                        <div class="list-preview">
+                            @if (media.fileType === 'image') {
+                            <img [src]="media.fileUrl" [alt]="media.altText || media.fileName">
+                            } @else {
+                            <div class="list-file-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
+                                    <polyline points="13 2 13 9 20 9" />
+                                </svg>
+                            </div>
+                            }
+                        </div>
+                    </td>
+                    <td>
+                        <div class="list-filename">
+                            <strong>{{ media.originalFileName }}</strong>
+                            @if (media.altText) {
+                            <span class="alt-text">{{ media.altText }}</span>
+                            }
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge badge-outline">{{ media.fileType }}</span>
+                    </td>
+                    <td>{{ formatFileSize(media.fileSize) }}</td>
+                    <td>{{ formatDate(media.uploadedAt) }}</td>
+                    <td>
+                        <div class="list-actions">
+                            <button class="btn btn-outline btn-sm" (click)="openEditModal(media)">
+                                Edit
+                            </button>
+                            <button class="btn btn-outline btn-sm" (click)="downloadMedia(media)">
+                                Download
+                            </button>
+                            <button class="btn btn-danger btn-sm" (click)="confirmDelete(media)">
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+
+    <!-- Pagination -->
+    @if (totalCount && totalCount > (searchParams.pageSize || 24)) {
+    <div class="pagination">
+        <button class="btn btn-secondary btn-sm" [disabled]="currentPage === 0" (click)="goToPage(currentPage - 1)">
+            Previous
+        </button>
+
+        @for (page of getPageNumbers(); track page) {
+        <button class="btn btn-sm" [class.btn-primary]="page === currentPage"
+            [class.btn-secondary]="page !== currentPage" (click)="goToPage(page)">
+            {{ page + 1 }}
+        </button>
+        }
+
+        <button class="btn btn-secondary btn-sm" [disabled]="currentPage >= getTotalPages() - 1"
+            (click)="goToPage(currentPage + 1)">
+            Next
+        </button>
+    </div>
+    }
+
+    <!-- Upload Modal -->
+    @if (showUploadModal) {
+    <div class="modal-overlay" (click)="closeUploadModal()">
+        <div class="modal" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Upload Media</h2>
+                <button class="close-btn" (click)="closeUploadModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <form [formGroup]="mediaForm" (ngSubmit)="uploadFile()">
+                <div class="modal-body">
+                    @if (formError) {
+                    <div class="alert alert-error">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                        {{ formError }}
+                    </div>
+                    }
+
+                    <!-- File Input -->
+                    <div class="form-group">
+                        <label>Select File <span class="required">*</span></label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="fileInput" (change)="onFileSelected($event)"
+                                accept="image/*,video/*,audio/*,.pdf,.doc,.docx">
+                            <label for="fileInput" class="file-input-label">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <polyline points="17 8 12 3 7 8" />
+                                    <line x1="12" y1="3" x2="12" y2="15" />
+                                </svg>
+                                <span>{{ selectedFile ? selectedFile.name : 'Choose a file or drag here' }}</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- File Preview -->
+                    @if (filePreviewUrl) {
+                    <div class="file-preview">
+                        <img [src]="filePreviewUrl" alt="Preview">
+                    </div>
+                    }
+
+                    <div class="form-group">
+                        <label>File Name <span class="required">*</span></label>
+                        <input type="text" formControlName="fileName" [class.error]="isFieldInvalid('fileName')">
+                        @if (isFieldInvalid('fileName')) {
+                        <span class="error-text">File name is required</span>
+                        }
+                    </div>
+
+                    <div class="form-group">
+                        <label>Alt Text</label>
+                        <input type="text" formControlName="altText"
+                            placeholder="Descriptive text for accessibility">
+                        <span class="helper-text">Used for accessibility and SEO</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Caption</label>
+                        <textarea formControlName="caption" rows="3"
+                            placeholder="Optional caption for this media..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Folder</label>
+                        <input type="text" formControlName="folder" placeholder="e.g., projects, blog, logos">
+                        <span class="helper-text">Organize files into folders</span>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" (click)="closeUploadModal()"
+                        [disabled]="isUploading">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" [disabled]="isUploading || !selectedFile">
+                        @if (isUploading) {
+                        <span class="spinner-sm"></span>
+                        Uploading...
+                        } @else {
+                        Upload
+                        }
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    }
+
+    <!-- Bulk Upload Modal -->
+    @if (showBulkUploadModal) {
+    <div class="modal-overlay" (click)="closeBulkUploadModal()">
+        <div class="modal modal-lg" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Bulk Upload Media</h2>
+                <button class="close-btn" (click)="closeBulkUploadModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <form [formGroup]="mediaForm" (ngSubmit)="uploadMultipleFiles()">
+                <div class="modal-body">
+                    @if (formError) {
+                    <div class="alert alert-error">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                        {{ formError }}
+                    </div>
+                    }
+
+                    <!-- Multiple Files Input -->
+                    <div class="form-group">
+                        <label>Select Multiple Files</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="multiFileInput" (change)="onMultipleFilesSelected($event)" multiple
+                                accept="image/*,video/*,audio/*,.pdf,.doc,.docx">
+                            <label for="multiFileInput" class="file-input-label">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <polyline points="17 8 12 3 7 8" />
+                                    <line x1="12" y1="3" x2="12" y2="15" />
+                                </svg>
+                                <span>{{ selectedFiles.length > 0 ? selectedFiles.length + ' files selected' : 'Choose
+                                    files or drag here' }}</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Selected Files Preview -->
+                    @if (selectedFiles.length > 0) {
+                    <div class="selected-files-list">
+                        <h4>Selected Files ({{ selectedFiles.length }})</h4>
+                        <div class="files-grid">
+                            @for (file of selectedFiles; track $index) {
+                            <div class="file-item">
+                                @if (filePreviewUrls[$index]) {
+                                <img [src]="filePreviewUrls[$index]" [alt]="file.name">
+                                } @else {
+                                <div class="file-placeholder">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
+                                        <polyline points="13 2 13 9 20 9" />
+                                    </svg>
+                                </div>
+                                }
+                                <p class="file-name">{{ file.name }}</p>
+                                <p class="file-size">{{ formatFileSize(file.size) }}</p>
+                                <button type="button" class="remove-file-btn" (click)="removeSelectedFile($index)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18" />
+                                        <line x1="6" y1="6" x2="18" y2="18" />
+                                    </svg>
+                                </button>
+                            </div>
+                            }
+                        </div>
+                    </div>
+                    }
+
+                    <div class="form-group">
+                        <label>Folder (Optional)</label>
+                        <input type="text" formControlName="folder" placeholder="e.g., projects, blog, logos">
+                        <span class="helper-text">All files will be uploaded to this folder</span>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" (click)="closeBulkUploadModal()"
+                        [disabled]="isUploading">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" [disabled]="isUploading || selectedFiles.length === 0">
+                        @if (isUploading) {
+                        <span class="spinner-sm"></span>
+                        Uploading...
+                        } @else {
+                        Upload {{ selectedFiles.length }} Files
+                        }
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    }
+
+    <!-- Edit Modal -->
+    @if (showModal) {
+    <div class="modal-overlay" (click)="closeModal()">
+        <div class="modal" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Edit Media Details</h2>
+                <button class="close-btn" (click)="closeModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <form [formGroup]="mediaForm" (ngSubmit)="submitForm()">
+                <div class="modal-body">
+                    @if (formError) {
+                    <div class="alert alert-error">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                        {{ formError }}
+                    </div>
+                    }
+
+                    @if (filePreviewUrl) {
+                    <div class="file-preview">
+                        <img [src]="filePreviewUrl" alt="Current file">
+                    </div>
+                    }
+
+                    <div class="form-group">
+                        <label>File Name <span class="required">*</span></label>
+                        <input type="text" formControlName="fileName" [class.error]="isFieldInvalid('fileName')">
+                        @if (isFieldInvalid('fileName')) {
+                        <span class="error-text">File name is required</span>
+                        }
+                    </div>
+
+                    <div class="form-group">
+                        <label>Original File Name <span class="required">*</span></label>
+                        <input type="text" formControlName="originalFileName"
+                            [class.error]="isFieldInvalid('originalFileName')">
+                        @if (isFieldInvalid('originalFileName')) {
+                        <span class="error-text">Original file name is required</span>
+                        }
+                    </div>
+
+                    <div class="form-group">
+                        <label>Alt Text</label>
+                        <input type="text" formControlName="altText"
+                            placeholder="Descriptive text for accessibility">
+                        <span class="helper-text">Used for accessibility and SEO</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Caption</label>
+                        <textarea formControlName="caption" rows="3"
+                            placeholder="Optional caption for this media..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Folder</label>
+                        <input type="text" formControlName="folder" placeholder="e.g., projects, blog, logos">
+                        <span class="helper-text">Organize files into folders</span>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" (click)="closeModal()" [disabled]="isSaving">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" [disabled]="isSaving || mediaForm.invalid">
+                        @if (isSaving) {
+                        <span class="spinner-sm"></span>
+                        Saving...
+                        } @else {
+                        Update
+                        }
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    }
+
+    <!-- Delete Confirmation Modal -->
+    @if (showDeleteModal) {
+    <div class="modal-overlay" (click)="cancelDelete()">
+        <div class="modal modal-sm" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Confirm Deletion</h2>
+                <button class="close-btn" (click)="cancelDelete()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    Are you sure you want to delete this media file?
+                </div>
+                @if (mediaToDelete) {
+                <p><strong>{{ mediaToDelete.originalFileName }}</strong></p>
+                <p class="text-muted">This action cannot be undone. The file will be permanently deleted.</p>
+                }
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline" (click)="cancelDelete()" [disabled]="isDeleting">
+                    Cancel
+                </button>
+                <button class="btn btn-danger" (click)="executeDelete()" [disabled]="isDeleting">
+                    @if (isDeleting) {
+                    <span class="spinner-sm"></span>
+                    Deleting...
+                    } @else {
+                    Delete
+                    }
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+</div>

@@ -1,5 +1,5 @@
 export enum BlogPostStatus {
-  Draft = 'Draft',
-  Published = 'Published',
-  Archived = 'Archived'
+  Draft = 0,
+  Published = 1,
+  Archived = 2
 }
