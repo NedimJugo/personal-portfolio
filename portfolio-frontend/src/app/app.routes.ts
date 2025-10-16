@@ -52,6 +52,10 @@ export const routes: Routes = [
         path: 'media',
         loadComponent: () => import('./components/admin/CRUDs/media/media-CRUD.component').then(m => m.MediaCrudComponent)
       },
+      {
+        path: 'skill',
+        loadComponent: () => import('./components/admin/CRUDs/skill/skill-CRUD.component').then(m => m.SkillCrudComponent)
+      },
       // {
       //   path: 'users',
       //   loadComponent: () => import('./components/admin/users/admin-users.component').then(m => m.AdminUsersComponent)

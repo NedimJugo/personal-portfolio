@@ -15,9 +15,13 @@ export class AdminLayoutComponent implements OnInit {
   currentUser: UserInfo | null = null;
   sidebarCollapsed = false;
   mobileMenuOpen = false;
+  contentExpanded = true;
 
-  menuItems = [
-    { icon: 'grid', label: 'Overview', route: '/admin/dashboard/overview', active: true },
+  standaloneItems = [
+    { icon: 'grid', label: 'Overview', route: '/admin/dashboard/overview', active: true }
+  ];
+
+  contentItems = [
     { icon: 'users', label: 'Users', route: '/admin/dashboard/users', active: false },
     { icon: 'folder', label: 'Projects', route: '/admin/dashboard/projects', active: false },
     { icon: 'file-text', label: 'Blog Posts', route: '/admin/dashboard/blog-post', active: false },
@@ -26,11 +30,14 @@ export class AdminLayoutComponent implements OnInit {
     { icon: 'share-2', label: 'Social Links', route: '/admin/dashboard/social-link', active: false },
     { icon: 'graduation-cap', label: 'Education', route: '/admin/dashboard/education', active: false },
     { icon: 'award', label: 'Certificates', route: '/admin/dashboard/certificate', active: false },
+    { icon: 'zap', label: 'Skills', route: '/admin/dashboard/skill', active: false },
     { icon: 'mail', label: 'Messages', route: '/admin/dashboard/messages', active: false },
-    { icon: 'image', label: 'Media', route: '/admin/dashboard/media', active: false},
+    { icon: 'image', label: 'Media', route: '/admin/dashboard/media', active: false }
+  ];
+
+  bottomItems = [
     { icon: 'bar-chart', label: 'Analytics', route: '/admin/dashboard/analytics', active: false },
     { icon: 'settings', label: 'Settings', route: '/admin/dashboard/settings', active: false }
-
   ];
 
   constructor(
@@ -38,20 +45,14 @@ export class AdminLayoutComponent implements OnInit {
     private router: Router
   ) { }
 
+  
+
   ngOnInit(): void {
-    const overviewItem = this.menuItems.find(item => item.icon === 'grid');
-    const settingsItem = this.menuItems.find(item => item.icon === 'settings');
-
-    const otherItems = this.menuItems.filter(
-      item => item.icon !== 'grid' && item.icon !== 'settings'
-    ).sort((a, b) => a.label.localeCompare(b.label));
-
-    this.menuItems = [
-      ...(overviewItem ? [overviewItem] : []),
-      ...otherItems,
-      ...(settingsItem ? [settingsItem] : [])
-    ];
     this.loadCurrentUser();
+  }
+
+  toggleContentSection(): void {
+    this.contentExpanded = !this.contentExpanded;
   }
 
   loadCurrentUser(): void {
