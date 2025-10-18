@@ -56,10 +56,10 @@ export const routes: Routes = [
         path: 'skill',
         loadComponent: () => import('./components/admin/CRUDs/skill/skill-CRUD.component').then(m => m.SkillCrudComponent)
       },
-      // {
-      //   path: 'users',
-      //   loadComponent: () => import('./components/admin/users/admin-users.component').then(m => m.AdminUsersComponent)
-      // },
+      {
+        path: 'user',
+        loadComponent: () => import('./components/admin/CRUDs/application-user/application-user-CRUD.component').then(m => m.ApplicationUserCrudComponent)
+      },
       // {
       //   path: 'projects',
       //   loadComponent: () => import('./components/admin/projects/admin-projects.component').then(m => m.AdminProjectsComponent)
