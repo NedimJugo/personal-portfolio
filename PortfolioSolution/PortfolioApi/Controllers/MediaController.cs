@@ -489,7 +489,98 @@ namespace Portfolio.WebAPI.Controllers
                 _ => "application/octet-stream"
             };
         }
+        /// <summary>
+        /// Regenerates all media URLs to remove expired SAS tokens.
+        /// Use this after changing from SAS tokens to public container access.
+        /// </summary>
+        [HttpPost("fix-urls")]
+        [AllowAnonymous]  // Remove this after running once
+        public async Task<IActionResult> FixMediaUrls(CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                _logger.LogInformation("Starting media URL fix...");
 
+                // Get all Azure media records
+                var allMedia = await _mediaService.GetAsync(new MediaSearchObject
+                {
+                    Page = 0,
+                    PageSize = 10000,
+                    RetrieveAll = true,
+                    StorageProvider = "Azure"
+                }, cancellationToken);
+
+                int updated = 0;
+                int errors = 0;
+
+                foreach (var media in allMedia.Items)
+                {
+                    try
+                    {
+                        // Check if URL has SAS token (contains query parameters)
+                        if (media.FileUrl.Contains("?"))
+                        {
+                            // Generate new public URL without SAS token
+                            var newUrl = $"https://nedimjportfolioblob.blob.core.windows.net/potrfolioimagecontainer/{media.FileName}";
+
+                            _logger.LogInformation(
+                                "Updating media {Id}: {OldUrl} -> {NewUrl}",
+                                media.Id,
+                                media.FileUrl,
+                                newUrl);
+
+                            // Update directly in database
+                            var entity = await _mediaService.GetByIdAsync(media.Id, cancellationToken);
+                            if (entity != null)
+                            {
+                                // Create update request with new URL
+                                var updateRequest = new MediaUpdateRequest
+                                {
+                                    FileName = media.FileName,
+                                    OriginalFileName = media.OriginalFileName,
+                                    FileUrl = newUrl,  // New URL without SAS
+                                    StorageProvider = media.StorageProvider,
+                                    FileType = media.FileType,
+                                    FileSize = media.FileSize,
+                                    MimeType = media.MimeType,
+                                    Width = media.Width,
+                                    Height = media.Height,
+                                    AltText = media.AltText,
+                                    Caption = media.Caption,
+                                    Folder = media.Folder
+                                };
+
+                                await _mediaService.UpdateAsync(media.Id, updateRequest, cancellationToken);
+                                updated++;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Error updating media {Id}", media.Id);
+                        errors++;
+                    }
+                }
+
+                _logger.LogInformation(
+                    "Media URL fix completed: {Updated} updated, {Errors} errors",
+                    updated,
+                    errors);
+
+                return Ok(new
+                {
+                    success = true,
+                    updated = updated,
+                    errors = errors,
+                    total = allMedia.TotalCount
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fixing media URLs");
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
         #endregion
     }
 }

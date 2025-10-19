@@ -60,6 +60,10 @@ export const routes: Routes = [
         path: 'user',
         loadComponent: () => import('./components/admin/CRUDs/application-user/application-user-CRUD.component').then(m => m.ApplicationUserCrudComponent)
       },
+      {
+        path: 'testimonial',
+        loadComponent: () => import('./components/admin/CRUDs/testimonial/testimonial-CRUD.component').then(m => m.TestimonialCrudComponent)
+      },
       // {
       //   path: 'projects',
       //   loadComponent: () => import('./components/admin/projects/admin-projects.component').then(m => m.AdminProjectsComponent)

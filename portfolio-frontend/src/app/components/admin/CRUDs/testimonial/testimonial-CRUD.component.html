@@ -1,0 +1,565 @@
+<div class="testimonial-crud-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h1>Testimonial Management</h1>
+            <p>Manage client testimonials and reviews</p>
+        </div>
+        <button class="btn btn-primary" (click)="openCreateModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Add Testimonial
+        </button>
+    </div>
+
+    <!-- Search & Filters Card -->
+    <div class="card">
+        <div class="search-filters" [formGroup]="searchForm">
+            <div class="form-group">
+                <input type="text" placeholder="Search by client name..." formControlName="clientName"
+                    class="search-input">
+            </div>
+
+            <div class="filter-group">
+                <select formControlName="isApproved" class="filter-select">
+                    <option value="">All Status</option>
+                    <option [value]="true">Approved</option>
+                    <option [value]="false">Pending</option>
+                </select>
+
+                <select formControlName="isFeatured" class="filter-select">
+                    <option value="">All Featured</option>
+                    <option [value]="true">Featured</option>
+                    <option [value]="false">Not Featured</option>
+                </select>
+
+                <select formControlName="sortBy" class="filter-select">
+                    <option value="displayOrder">Display Order</option>
+                    <option value="createdAt">Date Created</option>
+                    <option value="clientName">Client Name</option>
+                    <option value="rating">Rating</option>
+                </select>
+
+                <button class="btn btn-outline btn-sm" (click)="toggleSortOrder()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        @if (searchForm.get('desc')?.value) {
+                        <path d="m3 16 4 4 4-4M7 20V4M21 8l-4-4-4 4m4-4v16" />
+                        } @else {
+                        <path d="m3 8 4-4 4 4M7 4v16M21 16l-4 4-4-4m4 4V4" />
+                        }
+                    </svg>
+                    {{ searchForm.get('desc')?.value ? 'Desc' : 'Asc' }}
+                </button>
+
+                @if (hasActiveFilters()) {
+                <button class="btn btn-outline btn-sm" (click)="clearFilters()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                    Clear
+                </button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    @if (isLoading) {
+    <div class="card">
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading testimonials...</p>
+        </div>
+    </div>
+    }
+
+    <!-- Empty State -->
+    @if (!isLoading && testimonials.length === 0) {
+    <div class="card">
+        <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            <h3>No Testimonials Found</h3>
+            <p>Start by adding your first client testimonial</p>
+            <button class="btn btn-primary" (click)="openCreateModal()">
+                Add Testimonial
+            </button>
+        </div>
+    </div>
+    }
+
+    <!-- Testimonials Grid -->
+    @if (!isLoading && testimonials.length > 0) {
+    <div class="testimonials-grid">
+        @for (testimonial of testimonials; track testimonial.id) {
+        <div class="testimonial-card">
+            <!-- Header -->
+            <div class="testimonial-header">
+                <div class="client-info">
+                    @if (testimonial.clientAvatar) {
+                    <div class="client-avatar">
+                        <img [src]="testimonial.clientAvatar" [alt]="testimonial.clientName">
+                    </div>
+                    } @else {
+                    <div class="client-avatar client-avatar-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                    </div>
+                    }
+                    <div class="client-details">
+                        <h3>{{ testimonial.clientName }}</h3>
+                        <p class="client-title">{{ testimonial.clientTitle }}</p>
+                        <p class="client-company">{{ testimonial.clientCompany }}</p>
+                    </div>
+                </div>
+
+                <div class="testimonial-badges">
+                    @if (testimonial.isApproved) {
+                    <span class="badge badge-success">Approved</span>
+                    } @else {
+                    <span class="badge badge-warning">Pending</span>
+                    }
+                    @if (testimonial.isFeatured) {
+                    <span class="badge badge-primary">Featured</span>
+                    }
+                </div>
+            </div>
+
+            <!-- Rating -->
+            <div class="testimonial-rating">
+                @for (filled of getRatingStars(testimonial.rating); track $index) {
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                    [attr.fill]="filled ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
+                    <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+                }
+                <span class="rating-text">{{ testimonial.rating }}/5</span>
+            </div>
+
+            <!-- Content -->
+            <div class="testimonial-content">
+                <p>{{ testimonial.content }}</p>
+            </div>
+
+            <!-- Meta Info -->
+            <div class="testimonial-meta">
+                @if (testimonial.projectId) {
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                    </svg>
+                    {{ getProjectName(testimonial.projectId) }}
+                </span>
+                }
+                <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>
+                    {{ formatDate(testimonial.createdAt) }}
+                </span>
+            </div>
+
+            <!-- Actions -->
+            <div class="testimonial-actions">
+                <button class="btn btn-outline btn-sm" (click)="openEditModal(testimonial)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                    Edit
+                </button>
+                <button class="btn btn-danger btn-sm" (click)="confirmDelete(testimonial)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    </svg>
+                    Delete
+                </button>
+            </div>
+        </div>
+        }
+    </div>
+
+    <!-- Pagination -->
+    @if (totalCount && totalCount > (searchParams.pageSize || 20)) {
+    <div class="pagination">
+        <button class="btn btn-secondary btn-sm" [disabled]="currentPage === 0" (click)="goToPage(currentPage - 1)">
+            Previous
+        </button>
+
+        @for (page of getPageNumbers(); track page) {
+        <button class="btn btn-sm" [class.btn-primary]="page === currentPage"
+            [class.btn-secondary]="page !== currentPage" (click)="goToPage(page)">
+            {{ page + 1 }}
+        </button>
+        }
+
+        <button class="btn btn-secondary btn-sm" [disabled]="currentPage >= getTotalPages() - 1"
+            (click)="goToPage(currentPage + 1)">
+            Next
+        </button>
+    </div>
+    }
+    }
+
+    <!-- Create/Edit Modal -->
+    @if (showModal) {
+    <div class="modal-overlay" (click)="closeModal()">
+        <div class="modal" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>{{ isEditMode ? 'Edit Testimonial' : 'Add Testimonial' }}</h2>
+                <button class="close-btn" (click)="closeModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <form [formGroup]="testimonialForm" (ngSubmit)="submitForm()">
+                <div class="modal-body">
+                    @if (formError) {
+                    <div class="alert alert-error">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                        {{ formError }}
+                    </div>
+                    }
+
+                    <div class="form-group">
+                        <label>Client Name <span class="required">*</span></label>
+                        <input type="text" formControlName="clientName" [class.error]="isFieldInvalid('clientName')"
+                            placeholder="e.g., John Smith">
+                        @if (isFieldInvalid('clientName')) {
+                        <span class="error-text">Client name is required</span>
+                        }
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Client Title <span class="required">*</span></label>
+                            <input type="text" formControlName="clientTitle"
+                                [class.error]="isFieldInvalid('clientTitle')" placeholder="e.g., CEO">
+                            @if (isFieldInvalid('clientTitle')) {
+                            <span class="error-text">Client title is required</span>
+                            }
+                        </div>
+
+                        <div class="form-group">
+                            <label>Company <span class="required">*</span></label>
+                            <input type="text" formControlName="clientCompany"
+                                [class.error]="isFieldInvalid('clientCompany')" placeholder="e.g., Tech Corp">
+                            @if (isFieldInvalid('clientCompany')) {
+                            <span class="error-text">Company is required</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Client Avatar</label>
+                        @if (testimonialForm.get('clientAvatar')?.value) {
+                        <div class="media-preview-container">
+                            @if (getSelectedMediaPreview(); as preview) {
+                            <div class="media-preview">
+                                <img [src]="preview.fileUrl" [alt]="preview.altText || preview.fileName">
+                                <div class="media-preview-info">
+                                    <p class="media-filename">{{ preview.originalFileName }}</p>
+                                    <p class="media-size">{{ (preview.fileSize / 1024).toFixed(0) }} KB</p>
+                                </div>
+                            </div>
+                            } @else {
+                            <div class="media-preview">
+                                <img [src]="testimonialForm.get('clientAvatar')?.value" alt="Client avatar">
+                                <div class="media-preview-info">
+                                    <p class="media-filename">Custom URL</p>
+                                </div>
+                            </div>
+                            }
+                            <div class="media-preview-actions">
+                                <button type="button" class="btn btn-outline btn-sm" (click)="openMediaSelector()">
+                                    Change Image
+                                </button>
+                                <button type="button" class="btn btn-outline btn-sm" (click)="clearMediaSelection()">
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                        } @else {
+                        <button type="button" class="btn btn-outline" (click)="openMediaSelector()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                <circle cx="8.5" cy="8.5" r="1.5" />
+                                <polyline points="21 15 16 10 5 21" />
+                            </svg>
+                            Choose Avatar Image
+                        </button>
+                        }
+                        <span class="helper-text">Select an image from media library</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Testimonial Content <span class="required">*</span></label>
+                        <textarea formControlName="content" rows="5" [class.error]="isFieldInvalid('content')"
+                            placeholder="Enter the testimonial text..."></textarea>
+                        @if (isFieldInvalid('content')) {
+                        <span class="error-text">Content is required (minimum 10 characters)</span>
+                        }
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Rating <span class="required">*</span></label>
+                            <select formControlName="rating" [class.error]="isFieldInvalid('rating')">
+                                <option value="1">1 Star</option>
+                                <option value="2">2 Stars</option>
+                                <option value="3">3 Stars</option>
+                                <option value="4">4 Stars</option>
+                                <option value="5">5 Stars</option>
+                            </select>
+                            @if (isFieldInvalid('rating')) {
+                            <span class="error-text">Rating is required</span>
+                            }
+                        </div>
+
+                        <div class="form-group">
+                            <label>Display Order <span class="required">*</span></label>
+                            <input type="number" formControlName="displayOrder" min="0"
+                                [class.error]="isFieldInvalid('displayOrder')">
+                            <span class="helper-text">Lower numbers appear first</span>
+                            @if (isFieldInvalid('displayOrder')) {
+                            <span class="error-text">Display order is required</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Associated Project</label>
+                        <select formControlName="projectId">
+                            <option value="">No project</option>
+                            @for (project of projects; track project.id) {
+                            <option [value]="project.id">{{ project.title }}</option>
+                            }
+                        </select>
+                        <span class="helper-text">Optional: Link to a specific project</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" formControlName="isApproved">
+                            <span>Approved for display</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" formControlName="isFeatured">
+                            <span>Featured testimonial</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" (click)="closeModal()" [disabled]="isSaving">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" [disabled]="isSaving || testimonialForm.invalid">
+                        @if (isSaving) {
+                        <span class="spinner-sm"></span>
+                        Saving...
+                        } @else {
+                        {{ isEditMode ? 'Update' : 'Create' }}
+                        }
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    }
+
+    <!-- Delete Confirmation Modal -->
+    @if (showDeleteModal) {
+    <div class="modal-overlay" (click)="cancelDelete()">
+        <div class="modal modal-sm" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Confirm Deletion</h2>
+                <button class="close-btn" (click)="cancelDelete()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    Are you sure you want to delete this testimonial?
+                </div>
+                @if (testimonialToDelete) {
+                <p><strong>{{ testimonialToDelete.clientName }}</strong> from <strong>{{
+                        testimonialToDelete.clientCompany }}</strong></p>
+                <p class="text-muted">This action cannot be undone.</p>
+                }
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline" (click)="cancelDelete()" [disabled]="isDeleting">
+                    Cancel
+                </button>
+                <button class="btn btn-danger" (click)="executeDelete()" [disabled]="isDeleting">
+                    @if (isDeleting) {
+                    <span class="spinner-sm"></span>
+                    Deleting...
+                    } @else {
+                    Delete
+                    }
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+
+    <!-- Media Selector Modal -->
+@if (showMediaSelectorModal) {
+<div class="modal-overlay" (click)="closeMediaSelector()">
+    <div class="modal modal-lg" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>Select Avatar Image</h2>
+            <button class="close-btn" (click)="closeMediaSelector()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <!-- Search Bar -->
+            <div class="media-search-bar">
+                <div class="search-input-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                    <input type="text" [(ngModel)]="mediaSearchQuery" (ngModelChange)="filterMedia()"
+                        placeholder="Search media by name or alt text..." class="search-input">
+                    @if (mediaSearchQuery) {
+                    <button type="button" class="clear-btn" (click)="mediaSearchQuery = ''; filterMedia()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                    </button>
+                    }
+                </div>
+            </div>
+
+            <!-- Search Results Info -->
+            <div class="media-search-results">
+                <div class="media-count">
+                    @if (mediaSearchQuery) {
+                    Showing {{ filteredMediaList.length }} results for "<span class="search-query">{{
+                        mediaSearchQuery }}</span>"
+                    } @else {
+                    {{ filteredMediaList.length }} media files
+                    }
+                </div>
+                <div class="search-hint">Click to select an image</div>
+            </div>
+
+            @if (isLoadingMedia) {
+            <div class="loading-state">
+                <div class="spinner"></div>
+                <p>Loading media files...</p>
+            </div>
+            } @else if (filteredMediaList.length === 0) {
+            <div class="empty-state">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <polyline points="21 15 16 10 5 21" />
+                </svg>
+                @if (mediaSearchQuery) {
+                <p>No media files found for "{{ mediaSearchQuery }}"</p>
+                <button class="btn btn-outline btn-sm" (click)="mediaSearchQuery = ''; filterMedia()">
+                    Clear search
+                </button>
+                } @else {
+                <p>No media files found</p>
+                <p class="text-muted">Upload some images to get started</p>
+                }
+            </div>
+            } @else {
+            <div class="media-grid">
+                @for (media of filteredMediaList; track media.id) {
+                <div class="media-item" [class.selected]="selectedMediaId === media.id"
+                    (click)="selectMedia(media.id)">
+                    <div class="media-thumbnail">
+                        <img [src]="media.fileUrl" [alt]="media.altText || media.fileName">
+                        @if (selectedMediaId === media.id) {
+                        <div class="selected-indicator">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                        </div>
+                        }
+                    </div>
+                    <div class="media-info">
+                        <p class="media-name">{{ media.originalFileName }}</p>
+                        <p class="media-meta">{{ (media.fileSize / 1024).toFixed(0) }} KB • {{ media.fileType }}</p>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline" (click)="closeMediaSelector()">
+                Cancel
+            </button>
+            <button type="button" class="btn btn-primary" [disabled]="!selectedMediaId"
+                (click)="confirmMediaSelection()">
+                Select Image
+            </button>
+        </div>
+    </div>
+</div>
+}
+</div>

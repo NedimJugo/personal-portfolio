@@ -15,6 +15,9 @@ using Portfolio.Models.Configuration;
 using Portfolio.Services.Mapping; // Add this using statement
 
 var builder = WebApplication.CreateBuilder(args);
+
+Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}");
+Console.WriteLine($"Connection String: {builder.Configuration.GetConnectionString("DefaultConnection")}");
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 builder.Services.Configure<AzureStorageSettings>(
     builder.Configuration.GetSection("AzureStorageSettings"));
