@@ -72,6 +72,26 @@ export const routes: Routes = [
         path: 'blog-post',
         loadComponent: () => import('./components/admin/CRUDs/blog/blog-post-CRUD.component').then(m => m.BlogPostCrudComponent)
       },
+      {
+        path: 'subscriber',
+        loadComponent: () => import('./components/admin/subscriber/overview/subscriber-overview.component').then(m => m.SubscribersOverviewComponent)
+      },
+      {
+        path: 'subscriber-list',
+        loadComponent: () => import('./components/admin/subscriber/list/subscriber-list.component').then(m => m.SubscribersListComponent)
+      },
+      {
+        path: 'subscriber-analytics',
+        loadComponent: () => import('./components/admin/subscriber/analytics/subscriber-analytics.component').then(m => m.SubscribersAnalyticsComponent)
+      },
+      {
+        path: 'subscriber-details',
+        loadComponent: () => import('./components/admin/subscriber/details/subscriber-details.component').then(m => m.SubscriberDetailsComponent)
+      },
+      {
+        path: 'subscriber-export-import',
+        loadComponent: () => import('./components/admin/subscriber/export-import/subscriber-export-import.component').then(m => m.SubscribersExportImportComponent)
+      },
       // {
       //   path: 'messages',
       //   loadComponent: () => import('./components/admin/messages/admin-messages.component').then(m => m.AdminMessagesComponent)

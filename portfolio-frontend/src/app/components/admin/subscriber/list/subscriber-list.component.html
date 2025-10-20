@@ -1,0 +1,196 @@
+<div class="subscribers-list-container">
+  <!-- Page Header -->
+  <div class="page-header">
+  <div>
+    <h1>Subscribers</h1>
+    <p>Manage your email subscribers</p>
+  </div>
+  <button class="btn btn-secondary" (click)="goBackToOverview()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2">
+      <path d="M19 12H5M12 19l-7-7 7-7"/>
+    </svg>
+    Back to Overview
+  </button>
+</div>
+
+  <!-- Search & Filters Card -->
+  <div class="card">
+    <div class="search-filters" [formGroup]="searchForm">
+      <div class="form-group">
+        <input type="text" placeholder="Search by email..." formControlName="email" class="search-input">
+      </div>
+
+      <div class="filter-group">
+        <select formControlName="isActive" class="filter-select">
+          <option value="">All Status</option>
+          <option [value]="true">Active</option>
+          <option [value]="false">Inactive</option>
+        </select>
+
+        <select formControlName="sortBy" class="filter-select">
+          <option value="subscribedAt">Join Date</option>
+          <option value="email">Email</option>
+          <option value="name">Name</option>
+        </select>
+
+        <button class="btn btn-outline btn-sm" (click)="toggleSortOrder()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            @if (searchForm.get('desc')?.value) {
+            <path d="m3 16 4 4 4-4M7 20V4M21 8l-4-4-4 4m4-4v16" />
+            } @else {
+            <path d="m3 8 4-4 4 4M7 4v16M21 16l-4 4-4-4m4 4V4" />
+            }
+          </svg>
+          {{ searchForm.get('desc')?.value ? 'Desc' : 'Asc' }}
+        </button>
+
+        @if (hasActiveFilters()) {
+        <button class="btn btn-outline btn-sm" (click)="clearFilters()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+          Clear
+        </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading) {
+  <div class="card">
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading subscribers...</p>
+    </div>
+  </div>
+  }
+
+  <!-- Empty State -->
+  @if (!isLoading && subscribers.length === 0) {
+  <div class="card">
+    <div class="empty-state">
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+      <h3>No Subscribers Found</h3>
+      <p>No subscribers match your current filters</p>
+    </div>
+  </div>
+  }
+
+  <!-- Subscribers Table -->
+  @if (!isLoading && subscribers.length > 0) {
+  <div class="table-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Name</th>
+          <th>Join Date</th>
+          <th>Status</th>
+          <th>Source</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (subscriber of subscribers; track subscriber.id) {
+        <tr>
+          <td class="email-cell">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            {{ subscriber.email }}
+          </td>
+          <td>{{ subscriber.name || '—' }}</td>
+          <td>{{ formatDate(subscriber.subscribedAt) }}</td>
+          <td>
+            @if (subscriber.isActive) {
+            <span class="badge badge-success">Active</span>
+            } @else {
+            <span class="badge badge-danger">Inactive</span>
+            }
+          </td>
+          <td>
+            <span class="source-tag">{{ subscriber.source || 'Direct' }}</span>
+          </td>
+          <td class="actions-cell">
+  <button class="btn btn-outline btn-sm" (click)="openDetails(subscriber)" title="View Details">
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+      <circle cx="12" cy="12" r="3"/>
+    </svg>
+  </button>
+  <button class="btn btn-outline btn-sm" (click)="resendConfirmation(subscriber)"
+    [disabled]="actionInProgress[subscriber.id] || !subscriber.isActive" title="Resend Confirmation">
+    @if (actionInProgress[subscriber.id]) {
+    <span class="spinner-sm"></span>
+    } @else {
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2">
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+      <polyline points="22,6 12,13 2,6" />
+    </svg>
+    }
+  </button>
+  <button class="btn btn-danger btn-sm" (click)="deactivateSubscriber(subscriber)"
+    [disabled]="actionInProgress[subscriber.id] || !subscriber.isActive" title="Deactivate">
+    @if (actionInProgress[subscriber.id]) {
+    <span class="spinner-sm"></span>
+    } @else {
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10" />
+      <line x1="15" y1="9" x2="9" y2="15" />
+      <line x1="9" y1="9" x2="15" y2="15" />
+    </svg>
+    }
+  </button>
+</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  @if (totalCount && totalCount > (searchParams.pageSize || 20)) {
+  <div class="pagination">
+    <button class="btn btn-secondary btn-sm" [disabled]="currentPage === 0" (click)="goToPage(currentPage - 1)">
+      Previous
+    </button>
+
+    @for (page of getPageNumbers(); track page) {
+    <button class="btn btn-sm" [class.btn-primary]="page === currentPage"
+      [class.btn-secondary]="page !== currentPage" (click)="goToPage(page)">
+      {{ page + 1 }}
+    </button>
+    }
+
+    <button class="btn btn-secondary btn-sm" [disabled]="currentPage >= getTotalPages() - 1"
+      (click)="goToPage(currentPage + 1)">
+      Next
+    </button>
+  </div>
+  }
+  }
+
+  <!-- Subscriber Details Panel -->
+@if (showDetailsPanel && selectedSubscriberId) {
+  <app-subscriber-details 
+    [subscriberId]="selectedSubscriberId" 
+    (close)="closeDetails()">
+  </app-subscriber-details>
+}
+</div>

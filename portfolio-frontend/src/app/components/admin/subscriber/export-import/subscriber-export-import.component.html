@@ -1,0 +1,211 @@
+<div class="export-import-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-text">
+            <h1>Export / Import Subscribers</h1>
+            <p>Manage subscriber data in bulk</p>
+        </div>
+        <button class="btn btn-secondary" (click)="goBackToOverview()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back to Overview
+        </button>
+    </div>
+
+    <!-- Export Section -->
+    <div class="card">
+        <div class="card-header">
+            <div class="header-content">
+                <div class="header-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                </div>
+                <div>
+                    <h2>Export Subscribers</h2>
+                    <p class="header-description">Download all subscribers as a CSV file</p>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="action-section">
+                <p class="section-info">
+                    Export your subscriber list to a CSV file. This file can be opened in Excel, Google Sheets,
+                    or any spreadsheet application.
+                </p>
+                <button class="btn btn-primary" (click)="exportSubscribers()" [disabled]="isExporting">
+                    @if (isExporting) {
+                    <span class="spinner-sm"></span>
+                    Exporting...
+                    } @else {
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Export Subscribers
+                    }
+                </button>
+            </div>
+
+            @if (exportSuccess) {
+            <div class="alert alert-success">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12" />
+                </svg>
+                Subscribers exported successfully! Check your downloads folder.
+            </div>
+            }
+
+            @if (exportError) {
+            <div class="alert alert-error">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                {{ exportError }}
+            </div>
+            }
+        </div>
+    </div>
+
+    <!-- Import Section -->
+    <div class="card">
+        <div class="card-header">
+            <div class="header-content">
+                <div class="header-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                </div>
+                <div>
+                    <h2>Import Subscribers</h2>
+                    <p class="header-description">Upload a CSV file to add subscribers in bulk</p>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="action-section">
+                <div class="import-instructions">
+                    <h4>CSV Format Requirements:</h4>
+                    <ul>
+                        <li>First column: <strong>Email</strong> (required)</li>
+                        <li>Second column: <strong>Name</strong> (optional)</li>
+                        <li>Third column: <strong>IsActive</strong> (Yes/No, default: Yes)</li>
+                        <li>Fourth column: <strong>Source</strong> (optional, default: Import)</li>
+                    </ul>
+                    <p class="tip">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="16" x2="12" y2="12" />
+                            <line x1="12" y1="8" x2="12.01" y2="8" />
+                        </svg>
+                        <strong>Tip:</strong> Export your current subscribers first to see the correct format.
+                    </p>
+                </div>
+
+                <input type="file" id="fileInput" accept=".csv" (change)="onFileSelected($event)"
+                    style="display: none;">
+
+                <button class="btn btn-primary" (click)="triggerFileInput()"
+                    [disabled]="importProgress.status === 'processing'">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                    Choose CSV File
+                </button>
+            </div>
+
+            <!-- Import Progress -->
+            @if (importProgress.status === 'processing') {
+            <div class="progress-section">
+                <div class="progress-header">
+                    <h4>Importing Subscribers...</h4>
+                    <span class="progress-text">{{ importProgress.processed }} / {{ importProgress.total }}</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
+                </div>
+            </div>
+            }
+
+            <!-- Import Success -->
+            @if (importProgress.status === 'success') {
+            <div class="alert alert-success">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12" />
+                </svg>
+                <div>
+                    <strong>Import completed!</strong>
+                    <p>Successfully imported {{ importProgress.successCount }} subscriber(s).
+                        @if (importProgress.errorCount > 0) {
+                        {{ importProgress.errorCount }} error(s) occurred.
+                        }
+                    </p>
+                </div>
+            </div>
+
+            @if (importProgress.errorCount > 0 && importProgress.errors.length > 0) {
+            <div class="error-details">
+                <h4>Import Errors:</h4>
+                <ul class="error-list">
+                    @for (error of importProgress.errors.slice(0, 10); track error) {
+                    <li>{{ error }}</li>
+                    }
+                    @if (importProgress.errors.length > 10) {
+                    <li class="more-errors">... and {{ importProgress.errors.length - 10 }} more error(s)</li>
+                    }
+                </ul>
+            </div>
+            }
+
+            <button class="btn btn-outline" (click)="resetImport()">
+                Import Another File
+            </button>
+            }
+
+            <!-- Import Error -->
+            @if (importProgress.status === 'error') {
+            <div class="alert alert-error">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <div>
+                    <strong>Import failed!</strong>
+                    @if (importProgress.errors.length > 0) {
+                    <ul class="error-list">
+                        @for (error of importProgress.errors.slice(0, 5); track error) {
+                        <li>{{ error }}</li>
+                        }
+                    </ul>
+                    }
+                </div>
+            </div>
+
+            <button class="btn btn-outline" (click)="resetImport()">
+                Try Again
+            </button>
+            }
+        </div>
+    </div>
+</div>

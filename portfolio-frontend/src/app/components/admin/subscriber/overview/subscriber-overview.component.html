@@ -1,0 +1,228 @@
+<div class="subscribers-overview-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1>Subscribers Overview</h1>
+      <p>Quick insights into your subscriber base</p>
+    </div>
+  </div>
+
+  <!-- Navigation Buttons -->
+<div class="navigation-buttons">
+  <button class="nav-btn" routerLink="/admin/dashboard/subscriber-list">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>
+    </svg>
+    Subscriber List
+  </button>
+
+  
+  <button class="nav-btn" routerLink="/admin/dashboard//subscriber-analytics">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M3 3v18h18"/>
+      <path d="m19 9-5 5-4-4-3 3"/>
+    </svg>
+    Analytics
+  </button>
+  
+  <button class="nav-btn" routerLink="/admin/dashboard/subscriber-export-import">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+    Export/Import
+  </button>
+</div>
+
+  <!-- Loading State -->
+  @if (isLoading) {
+  <div class="card">
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading subscriber summary...</p>
+    </div>
+  </div>
+  }
+
+  <!-- Error State -->
+  @if (!isLoading && error) {
+  <div class="card">
+    <div class="alert alert-error">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+      </svg>
+      {{ error }}
+    </div>
+    <div class="error-actions">
+      <button class="btn btn-primary" (click)="retryLoad()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <polyline points="23 4 23 10 17 10" />
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+        </svg>
+        Retry
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- Summary Stats -->
+  @if (!isLoading && !error) {
+  <div class="stats-grid">
+    <!-- Total Subscribers -->
+    <div class="stat-card">
+      <div class="stat-icon" style="background-color: rgba(78, 205, 196, 0.15); color: #4ECDC4;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <h3>Total Subscribers</h3>
+        <div class="stat-value">
+          <span>{{ summary.totalSubscribers }}</span>
+        </div>
+        <p class="stat-meta">
+          {{ summary.activeSubscribers }} active • {{ summary.inactiveSubscribers }} inactive
+        </p>
+      </div>
+    </div>
+
+    <!-- New This Week -->
+    <div class="stat-card">
+      <div class="stat-icon" style="background-color: rgba(255, 215, 61, 0.15); color: #FFD93D;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <line x1="19" y1="8" x2="19" y2="14" />
+          <line x1="22" y1="11" x2="16" y2="11" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <h3>New This Week</h3>
+        <div class="stat-value">
+          <span>{{ summary.newThisWeek }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- New This Month -->
+    <div class="stat-card">
+      <div class="stat-icon" style="background-color: rgba(72, 187, 120, 0.15); color: #48BB78;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+          <line x1="16" y1="2" x2="16" y2="6" />
+          <line x1="8" y1="2" x2="8" y2="6" />
+          <line x1="3" y1="10" x2="21" y2="10" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <h3>New This Month</h3>
+        <div class="stat-value">
+          <span>{{ summary.newThisMonth }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Growth Percentage -->
+    <div class="stat-card">
+      <div class="stat-icon" [style.background-color]="summary.growthPercentage >= 0 ? 'rgba(72, 187, 120, 0.15)' : 'rgba(245, 101, 101, 0.15)'"
+        [style.color]="summary.growthPercentage >= 0 ? '#48BB78' : '#F56565'">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          @if (summary.growthPercentage >= 0) {
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+          <polyline points="17 6 23 6 23 12" />
+          } @else {
+          <polyline points="23 18 13.5 8.5 8.5 13.5 1 6" />
+          <polyline points="17 18 23 18 23 12" />
+          }
+        </svg>
+      </div>
+      <div class="stat-content">
+        <h3>Growth Rate</h3>
+        <div class="stat-value">
+          <span [class.positive]="summary.growthPercentage >= 0" [class.negative]="summary.growthPercentage < 0">
+            {{ summary.growthPercentage >= 0 ? '+' : '' }}{{ summary.growthPercentage.toFixed(1) }}%
+          </span>
+        </div>
+        <p class="stat-meta">vs previous month</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly Trend Chart -->
+  <div class="card chart-card">
+    <div class="card-header">
+      <h2>Weekly Subscriber Trend</h2>
+    </div>
+    <div class="chart-container">
+      @if (summary.weeklyTrend.length > 0) {
+      <div class="mini-chart">
+        @for (day of summary.weeklyTrend; track day.day) {
+        <div class="chart-bar">
+          <div class="bar-fill" 
+            [style.height.%]="(day.count / getMaxTrendValue()) * 100"
+            [title]="day.day + ': ' + day.count + ' subscribers'">
+          </div>
+          <span class="bar-label">{{ day.day }}</span>
+          <span class="bar-count">{{ day.count }}</span>
+        </div>
+        }
+      </div>
+      } @else {
+      <div class="empty-state">
+        <p>No trend data available</p>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Top Sources -->
+  <div class="card sources-card">
+    <div class="card-header">
+      <h2>Top Subscription Sources</h2>
+    </div>
+    <div class="sources-list">
+      @if (summary.topSources.length > 0) {
+        @for (source of summary.topSources; track source.source) {
+        <div class="source-item">
+          <div class="source-info">
+            <div class="source-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                <line x1="12" y1="22.08" x2="12" y2="12" />
+              </svg>
+            </div>
+            <span class="source-name">{{ source.source }}</span>
+          </div>
+          <div class="source-stats">
+            <span class="source-count">{{ source.count }}</span>
+            <div class="source-bar">
+              <div class="source-bar-fill" 
+                [style.width.%]="(source.count / summary.totalSubscribers) * 100">
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+      } @else {
+      <div class="empty-state">
+        <p>No source data available</p>
+      </div>
+      }
+    </div>
+  </div>
+  }
+</div>

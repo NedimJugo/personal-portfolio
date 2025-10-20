@@ -37,6 +37,7 @@ export class AdminLayoutComponent implements OnInit {
   ];
 
   bottomItems = [
+    { icon: 'subscriber', label: 'Subscribers', route: '/admin/dashboard/subscriber', active: false },
     { icon: 'bar-chart', label: 'Analytics', route: '/admin/dashboard/analytics', active: false },
     { icon: 'settings', label: 'Settings', route: '/admin/dashboard/settings', active: false }
   ];

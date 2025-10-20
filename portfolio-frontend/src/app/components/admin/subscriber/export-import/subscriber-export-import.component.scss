@@ -1,0 +1,432 @@
+@use 'sass:color';
+@use '../../../../shared/admin-comic-variables' as *;
+
+.export-import-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+.card {
+  background: $comic-white;
+  border-radius: $radius-lg;
+  border: 2px solid $comic-gray-light;
+  box-shadow: $shadow-md;
+  margin-bottom: 32px;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: $comic-blue;
+    box-shadow: $shadow-lg;
+  }
+}
+
+.card-header {
+  padding: 24px 28px;
+  border-bottom: 2px solid $comic-gray-light;
+  background: linear-gradient(135deg, $comic-blue-soft 0%, $comic-purple-soft 100%);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.header-icon {
+  width: 56px;
+  height: 56px;
+  background: $comic-white;
+  border-radius: $radius-lg;
+  border: 2px solid $comic-blue;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $comic-blue;
+  flex-shrink: 0;
+}
+
+.header-content h2 {
+  margin: 0 0 4px 0;
+  font-size: 22px;
+  font-weight: $font-weight-black;
+  color: $comic-black;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+}
+
+.header-description {
+  font-size: 14px;
+  color: $comic-gray;
+  margin: 0;
+  font-weight: $font-weight-semibold;
+}
+
+.card-body {
+  padding: 28px;
+}
+
+.action-section {
+  margin-bottom: 24px;
+}
+
+.section-info {
+  font-size: 15px;
+  color: $comic-dark;
+  line-height: 1.6;
+  margin: 0 0 20px 0;
+  font-weight: $font-weight-normal;
+}
+
+.btn {
+  padding: 14px 28px;
+  border-radius: $radius-md;
+  font-size: 15px;
+  font-weight: $font-weight-bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, $comic-blue 0%, color.adjust($comic-blue, $lightness: -10%) 100%);
+  color: $comic-white;
+  border-color: $comic-black;
+  box-shadow: $shadow-comic;
+
+  &:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: $shadow-comic-hover;
+  }
+
+  &:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 rgba(26, 32, 44, 0.15);
+  }
+}
+
+.btn-outline {
+  background: transparent;
+  color: $comic-dark;
+  border-color: $comic-gray-light;
+
+  &:hover:not(:disabled) {
+    background: $comic-gray-lighter;
+    border-color: $comic-blue;
+    color: $comic-blue;
+  }
+}
+
+.spinner-sm {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.alert {
+  padding: 16px 20px;
+  border-radius: $radius-md;
+  border: 2px solid;
+  margin-top: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: $font-weight-semibold;
+  animation: slideDown 0.3s ease-out;
+
+  svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  &.alert-success {
+    background: $success-light;
+    border-color: $success-color;
+    color: color.adjust($success-color, $lightness: -20%);
+  }
+
+  &.alert-error {
+    background: $error-light;
+    border-color: $error-color;
+    color: color.adjust($error-color, $lightness: -20%);
+  }
+
+  strong {
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  p {
+    margin: 0;
+    font-weight: $font-weight-normal;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.import-instructions {
+  background: $comic-gray-lighter;
+  border-radius: $radius-md;
+  border: 2px solid $comic-gray-light;
+  padding: 20px;
+  margin-bottom: 20px;
+
+  h4 {
+    font-size: 15px;
+    font-weight: $font-weight-bold;
+    color: $comic-black;
+    margin: 0 0 12px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 16px 0;
+
+    li {
+      font-size: 14px;
+      color: $comic-dark;
+      padding: 6px 0;
+      padding-left: 24px;
+      position: relative;
+      font-weight: $font-weight-normal;
+
+      &::before {
+        content: '→';
+        position: absolute;
+        left: 0;
+        color: $comic-blue;
+        font-weight: $font-weight-bold;
+      }
+
+      strong {
+        color: $comic-black;
+        font-weight: $font-weight-bold;
+      }
+    }
+  }
+
+  .tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: $comic-dark;
+    background: $comic-white;
+    padding: 12px;
+    border-radius: $radius-md;
+    border: 2px solid $info-color;
+    margin: 0;
+
+    svg {
+      color: $info-color;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    strong {
+      color: $info-color;
+      font-weight: $font-weight-bold;
+    }
+  }
+}
+
+.progress-section {
+  background: $comic-gray-lighter;
+  border-radius: $radius-md;
+  border: 2px solid $comic-blue;
+  padding: 20px;
+  margin-top: 20px;
+  animation: slideDown 0.3s ease-out;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+
+  h4 {
+    font-size: 15px;
+    font-weight: $font-weight-bold;
+    color: $comic-black;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .progress-text {
+    font-size: 14px;
+    font-weight: $font-weight-black;
+    color: $comic-blue;
+  }
+}
+
+.progress-bar {
+  height: 24px;
+  background: $comic-white;
+  border-radius: 12px;
+  border: 2px solid $comic-gray-light;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, $comic-blue 0%, $comic-purple 100%);
+  border-radius: 10px;
+  transition: width 0.3s ease;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+@keyframes shimmer {
+  0%, 100% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+}
+
+.error-details {
+  background: $error-light;
+  border-radius: $radius-md;
+  border: 2px solid $error-color;
+  padding: 16px;
+  margin-top: 16px;
+
+  h4 {
+    font-size: 14px;
+    font-weight: $font-weight-bold;
+    color: color.adjust($error-color, $lightness: -20%);
+    margin: 0 0 12px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.error-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    font-size: 13px;
+    color: color.adjust($error-color, $lightness: -20%);
+    padding: 6px 0;
+    padding-left: 20px;
+    position: relative;
+    font-weight: $font-weight-normal;
+    border-bottom: 1px solid color.adjust($error-color, $lightness: 25%);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &::before {
+      content: '✕';
+      position: absolute;
+      left: 0;
+      font-weight: $font-weight-bold;
+    }
+
+    &.more-errors {
+      font-style: italic;
+      color: color.adjust($error-color, $lightness: -10%);
+
+      &::before {
+        content: '…';
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .export-import-container {
+    padding: 15px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .card-header {
+    padding: 20px;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .header-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .import-instructions ul li {
+    font-size: 13px;
+  }
+
+  .progress-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
