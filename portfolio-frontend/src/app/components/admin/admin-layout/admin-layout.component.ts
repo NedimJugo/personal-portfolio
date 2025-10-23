@@ -36,6 +36,7 @@ export class AdminLayoutComponent implements OnInit {
   ];
 
   bottomItems = [
+    { icon: 'layout', label: 'Email Templates', route: '/admin/dashboard/email-template', active: false },
     { icon: 'mail', label: 'Messages', route: '/admin/dashboard/message', active: false },
     { icon: 'subscriber', label: 'Subscribers', route: '/admin/dashboard/subscriber', active: false },
     { icon: 'bar-chart', label: 'Analytics', route: '/admin/dashboard/analytics', active: false },

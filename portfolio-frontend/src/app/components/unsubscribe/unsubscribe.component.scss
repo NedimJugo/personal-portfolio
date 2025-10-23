@@ -1,0 +1,157 @@
+@use 'sass:color';
+@use '../../shared/admin-comic-variables.scss' as *;
+
+.unsubscribe-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, $comic-blue-soft 0%, $comic-purple-soft 100%);
+}
+
+.unsubscribe-card {
+  max-width: 600px;
+  width: 100%;
+  background: $comic-white;
+  border-radius: $radius-lg;
+  border: 3px solid $comic-black;
+  box-shadow: 8px 8px 0 $comic-black;
+  padding: 60px 40px;
+  text-align: center;
+}
+
+.state-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+
+  h2 {
+    font-size: 32px;
+    font-weight: $font-weight-black;
+    color: $comic-black;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+  }
+
+  p {
+    font-size: 16px;
+    color: $comic-dark;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .sub-text {
+    font-size: 14px;
+    color: $comic-gray;
+    margin-top: -10px;
+  }
+}
+
+.loading-state {
+  .spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid $comic-gray-light;
+    border-top-color: $comic-blue;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.icon-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid;
+
+  &.success {
+    background: color.adjust($success-color, $lightness: 45%);
+    border-color: $success-color;
+    color: $success-color;
+  }
+
+  &.error {
+    background: color.adjust($error-color, $lightness: 45%);
+    border-color: $error-color;
+    color: $error-color;
+  }
+
+  svg {
+    stroke-width: 3;
+  }
+}
+
+.btn {
+  display: inline-block;
+  padding: 14px 32px;
+  font-size: 16px;
+  font-weight: $font-weight-bold;
+  text-decoration: none;
+  border-radius: $radius-md;
+  border: 3px solid $comic-black;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 20px;
+
+  &.btn-primary {
+    background: $comic-blue;
+    color: $comic-black;
+    box-shadow: 4px 4px 0 $comic-black;
+
+    &:hover {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0 $comic-black;
+    }
+  }
+
+  &.btn-outline {
+    background: transparent;
+    color: $comic-black;
+    box-shadow: 4px 4px 0 $comic-black;
+
+    &:hover {
+      background: $comic-gray-lighter;
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0 $comic-black;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .unsubscribe-card {
+    padding: 40px 20px;
+  }
+
+  .state-content {
+    h2 {
+      font-size: 24px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+  }
+
+  .icon-circle {
+    width: 80px;
+    height: 80px;
+
+    svg {
+      width: 36px;
+      height: 36px;
+    }
+  }
+}

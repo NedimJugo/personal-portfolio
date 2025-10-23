@@ -61,6 +61,7 @@ builder.Services.AddScoped<IEducationService, EducationService>();
 builder.Services.AddScoped<IContactMessageReplyService, ContactMessageReplyService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IEmailSyncService, EmailSyncService>();
+builder.Services.AddScoped<IUnsubscribeTokenService, UnsubscribeTokenService>();
 
 builder.Services.AddHostedService<EmailSyncBackgroundService>();
 // Add services to the container.

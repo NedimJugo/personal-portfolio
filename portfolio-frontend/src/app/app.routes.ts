@@ -6,6 +6,7 @@ import { BlogComponent } from './components/blog/blog.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { AboutComponent } from './components/about/about.component';
 import { authGuard } from './guards/auth.guard';
+import { UnsubscribeComponent } from './components/unsubscribe/unsubscribe.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -13,6 +14,10 @@ export const routes: Routes = [
     path: 'admin/login',
     loadComponent: () => import('./components/admin/admin-login/admin-login.component').then(m => m.AdminLoginComponent)
 
+  },
+   {
+    path: 'unsubscribe',
+    component: UnsubscribeComponent
   },
   {
     path: 'admin/dashboard',
@@ -96,6 +101,10 @@ export const routes: Routes = [
         path: 'message',
         loadComponent: () => import('./components/admin/contact-message/contact-message.component').then(m => m.ContactMessagesComponent)
       },
+      {
+  path: 'email-template',
+  loadComponent: () => import('./components/admin/email-template/email-template-manager.component').then(m => m.EmailTemplateManagerComponent)
+}
       // {
       //   path: 'analytics',
       //   loadComponent: () => import('./components/admin/analytics/admin-analytics.component').then(m => m.AdminAnalyticsComponent)

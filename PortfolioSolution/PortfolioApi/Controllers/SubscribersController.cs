@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Portfolio.Models.Requests.InsertRequests;
 using Portfolio.Models.Requests.UpdateRequests;
 using Portfolio.Models.Responses;
@@ -10,6 +11,7 @@ namespace Portfolio.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class SubscribersController
         : BaseCRUDController<SubscriberResponse, SubscriberSearchObject, SubscriberInsertRequest, SubscriberUpdateRequest, Guid>
     {

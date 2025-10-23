@@ -198,5 +198,27 @@ namespace Portfolio.Services.Services
 
             return await SendEmailAsync(reply.ReplyToEmail, reply.Subject ?? "Reply to your message", emailBody, cancellationToken);
         }
+
+        public string AddUnsubscribeLink(string htmlContent, string email, string unsubscribeToken)
+        {
+            // Point to frontend route (no /api)
+            var unsubscribeUrl = $"{_configuration["AppUrl"]}/unsubscribe?token={unsubscribeToken}";
+
+            var unsubscribeHtml = $@"
+        <hr style='margin: 30px 0; border: 1px solid #ddd;'>
+        <div style='text-align: center; padding: 20px; font-family: Arial, sans-serif;'>
+            <p style='font-size: 12px; color: #666; margin: 10px 0;'>
+                You're receiving this email because you subscribed to our newsletter.
+            </p>
+            <p style='font-size: 12px; color: #666; margin: 10px 0;'>
+                <a href='{unsubscribeUrl}' style='color: #4ECDC4; text-decoration: none;'>
+                    Unsubscribe from these emails
+                </a>
+            </p>
+        </div>
+    ";
+
+            return htmlContent + unsubscribeHtml;
+        }
     }
 }

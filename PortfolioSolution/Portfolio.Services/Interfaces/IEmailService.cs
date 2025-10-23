@@ -14,5 +14,6 @@ namespace Portfolio.Services.Interfaces
         Task<bool> SendReplyEmailAsync(ContactMessageReply reply, CancellationToken cancellationToken = default);
         Task<List<ReceivedEmailResponse>> FetchNewEmailsAsync(CancellationToken cancellationToken = default);
         Task<bool> MarkEmailAsReadAsync(string messageId, CancellationToken cancellationToken = default);
+        string AddUnsubscribeLink(string htmlContent, string email, string unsubscribeToken);
     }
 }
