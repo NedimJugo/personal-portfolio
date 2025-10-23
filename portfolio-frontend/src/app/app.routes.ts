@@ -92,10 +92,10 @@ export const routes: Routes = [
         path: 'subscriber-export-import',
         loadComponent: () => import('./components/admin/subscriber/export-import/subscriber-export-import.component').then(m => m.SubscribersExportImportComponent)
       },
-      // {
-      //   path: 'messages',
-      //   loadComponent: () => import('./components/admin/messages/admin-messages.component').then(m => m.AdminMessagesComponent)
-      // },
+      {
+        path: 'message',
+        loadComponent: () => import('./components/admin/contact-message/contact-message.component').then(m => m.ContactMessagesComponent)
+      },
       // {
       //   path: 'analytics',
       //   loadComponent: () => import('./components/admin/analytics/admin-analytics.component').then(m => m.AdminAnalyticsComponent)

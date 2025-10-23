@@ -31,12 +31,12 @@ export class AdminLayoutComponent implements OnInit {
     { icon: 'graduation-cap', label: 'Education', route: '/admin/dashboard/education', active: false },
     { icon: 'award', label: 'Certificates', route: '/admin/dashboard/certificate', active: false },
     { icon: 'zap', label: 'Skills', route: '/admin/dashboard/skill', active: false },
-    { icon: 'mail', label: 'Messages', route: '/admin/dashboard/messages', active: false },
     { icon: 'image', label: 'Media', route: '/admin/dashboard/media', active: false },
     { icon: 'message-square', label: 'Testimonials', route: '/admin/dashboard/testimonial', active: false }
   ];
 
   bottomItems = [
+    { icon: 'mail', label: 'Messages', route: '/admin/dashboard/message', active: false },
     { icon: 'subscriber', label: 'Subscribers', route: '/admin/dashboard/subscriber', active: false },
     { icon: 'bar-chart', label: 'Analytics', route: '/admin/dashboard/analytics', active: false },
     { icon: 'settings', label: 'Settings', route: '/admin/dashboard/settings', active: false }

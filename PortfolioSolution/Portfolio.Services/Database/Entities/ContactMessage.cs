@@ -41,6 +41,7 @@ namespace Portfolio.Services.Database.Entities
 
         // Navigation properties
         public virtual ApplicationUser? HandledBy { get; set; }
+        public virtual ICollection<ContactMessageReply> Replies { get; set; } = new List<ContactMessageReply>();
     }
 
 }

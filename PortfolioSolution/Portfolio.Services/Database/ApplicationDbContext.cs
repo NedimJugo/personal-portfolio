@@ -46,6 +46,7 @@ namespace Portfolio.Services.Database
         public DbSet<BlogPostLike> BlogPostLikes { get; set; }
         public DbSet<Education> Educations { get; set; }
         public DbSet<Certificate> Certificates { get; set; }
+        public DbSet<ContactMessageReply> ContactMessageReplies { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

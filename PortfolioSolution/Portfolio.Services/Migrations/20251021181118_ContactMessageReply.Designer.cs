@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Portfolio.Services.Database;
 
@@ -11,9 +12,11 @@ using Portfolio.Services.Database;
 namespace Portfolio.Services.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251021181118_ContactMessageReply")]
+    partial class ContactMessageReply
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -631,9 +634,6 @@ namespace Portfolio.Services.Migrations
                     b.Property<string>("ErrorMessage")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("ExternalMessageId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -1341,35 +1341,35 @@ namespace Portfolio.Services.Migrations
                         {
                             Key = "site_title",
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 10, 23, 16, 34, 12, 499, DateTimeKind.Unspecified).AddTicks(8208), new TimeSpan(0, 0, 0, 0, 0)),
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 10, 21, 18, 11, 17, 737, DateTimeKind.Unspecified).AddTicks(856), new TimeSpan(0, 0, 0, 0, 0)),
                             Value = "My Portfolio"
                         },
                         new
                         {
                             Key = "site_description",
                             Id = new Guid("00000000-0000-0000-0000-000000000002"),
-                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 10, 23, 16, 34, 12, 499, DateTimeKind.Unspecified).AddTicks(9445), new TimeSpan(0, 0, 0, 0, 0)),
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 10, 21, 18, 11, 17, 737, DateTimeKind.Unspecified).AddTicks(1560), new TimeSpan(0, 0, 0, 0, 0)),
                             Value = "Full Stack Developer Portfolio"
                         },
                         new
                         {
                             Key = "contact_email",
                             Id = new Guid("00000000-0000-0000-0000-000000000003"),
-                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 10, 23, 16, 34, 12, 499, DateTimeKind.Unspecified).AddTicks(9452), new TimeSpan(0, 0, 0, 0, 0)),
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 10, 21, 18, 11, 17, 737, DateTimeKind.Unspecified).AddTicks(1569), new TimeSpan(0, 0, 0, 0, 0)),
                             Value = "contact@portfolio.com"
                         },
                         new
                         {
                             Key = "github_url",
                             Id = new Guid("00000000-0000-0000-0000-000000000004"),
-                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 10, 23, 16, 34, 12, 499, DateTimeKind.Unspecified).AddTicks(9455), new TimeSpan(0, 0, 0, 0, 0)),
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 10, 21, 18, 11, 17, 737, DateTimeKind.Unspecified).AddTicks(1572), new TimeSpan(0, 0, 0, 0, 0)),
                             Value = "https://github.com/yourusername"
                         },
                         new
                         {
                             Key = "linkedin_url",
                             Id = new Guid("00000000-0000-0000-0000-000000000005"),
-                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 10, 23, 16, 34, 12, 499, DateTimeKind.Unspecified).AddTicks(9458), new TimeSpan(0, 0, 0, 0, 0)),
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 10, 21, 18, 11, 17, 737, DateTimeKind.Unspecified).AddTicks(1574), new TimeSpan(0, 0, 0, 0, 0)),
                             Value = "https://linkedin.com/in/yourusername"
                         });
                 });
