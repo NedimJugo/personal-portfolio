@@ -10,12 +10,12 @@ import { UnsubscribeComponent } from './components/unsubscribe/unsubscribe.compo
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-   {
+  {
     path: 'admin/login',
     loadComponent: () => import('./components/admin/admin-login/admin-login.component').then(m => m.AdminLoginComponent)
 
   },
-   {
+  {
     path: 'unsubscribe',
     component: UnsubscribeComponent
   },
@@ -62,6 +62,10 @@ export const routes: Routes = [
         loadComponent: () => import('./components/admin/CRUDs/skill/skill-CRUD.component').then(m => m.SkillCrudComponent)
       },
       {
+        path: 'site-content',
+        loadComponent: () => import('./components/admin/CRUDs/site-content/site-content-CRUD.component').then(m => m.SiteContentCrudComponent)
+      },
+      {
         path: 'user',
         loadComponent: () => import('./components/admin/CRUDs/application-user/application-user-CRUD.component').then(m => m.ApplicationUserCrudComponent)
       },
@@ -101,10 +105,11 @@ export const routes: Routes = [
         path: 'message',
         loadComponent: () => import('./components/admin/contact-message/contact-message.component').then(m => m.ContactMessagesComponent)
       },
+      
       {
-  path: 'email-template',
-  loadComponent: () => import('./components/admin/email-template/email-template-manager.component').then(m => m.EmailTemplateManagerComponent)
-}
+        path: 'email-template',
+        loadComponent: () => import('./components/admin/email-template/email-template-manager.component').then(m => m.EmailTemplateManagerComponent)
+      }
       // {
       //   path: 'analytics',
       //   loadComponent: () => import('./components/admin/analytics/admin-analytics.component').then(m => m.AdminAnalyticsComponent)
@@ -115,11 +120,11 @@ export const routes: Routes = [
       // }
     ]
   },
-  { 
-    path: 'home', 
+  {
+    path: 'home',
     loadComponent: () => import('./components/home.component').then(m => m.HomeComponent)
   },
-   { path: 'projects', component: ProjectsComponent },
+  { path: 'projects', component: ProjectsComponent },
   { path: 'projects/:id', component: ProjectDetailsComponent }, // if you have a details page
   { path: 'about', component: AboutComponent },
   { path: 'experience', component: ExperiencesComponent },
@@ -127,5 +132,5 @@ export const routes: Routes = [
   { path: 'contact', component: ContactComponent },
   { path: '**', redirectTo: '' }, // redirect to home for unknown routes
 
- 
+
 ];

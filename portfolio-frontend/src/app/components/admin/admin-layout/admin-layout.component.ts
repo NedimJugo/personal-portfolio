@@ -32,7 +32,9 @@ export class AdminLayoutComponent implements OnInit {
     { icon: 'award', label: 'Certificates', route: '/admin/dashboard/certificate', active: false },
     { icon: 'zap', label: 'Skills', route: '/admin/dashboard/skill', active: false },
     { icon: 'image', label: 'Media', route: '/admin/dashboard/media', active: false },
-    { icon: 'message-square', label: 'Testimonials', route: '/admin/dashboard/testimonial', active: false }
+    { icon: 'message-square', label: 'Testimonials', route: '/admin/dashboard/testimonial', active: false },
+    { icon: 'globe', label: 'Site Content', route: '/admin/dashboard/site-content', active: false }
+
   ];
 
   bottomItems = [

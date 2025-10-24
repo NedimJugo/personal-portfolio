@@ -1,0 +1,591 @@
+<div class="site-content-crud-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h1>Site Content Management</h1>
+            <p>Manage your website's dynamic content sections</p>
+        </div>
+        <button class="btn btn-primary" (click)="openCreateModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Add Content Section
+        </button>
+    </div>
+
+    <!-- Search & Filters Card -->
+    <div class="card">
+        <div class="search-filters" [formGroup]="searchForm">
+            <div class="form-group">
+                <input type="text" placeholder="Search by section name..." formControlName="section"
+                    class="search-input">
+            </div>
+
+            <div class="filter-group">
+                <select formControlName="contentType" class="filter-select">
+                    <option value="">All Types</option>
+                    <option value="text">Text</option>
+                    <option value="html">HTML</option>
+                    <option value="json">JSON</option>
+                </select>
+
+                <select formControlName="isPublished" class="filter-select">
+                    <option value="">All Status</option>
+                    <option [value]="true">Published</option>
+                    <option [value]="false">Draft</option>
+                </select>
+
+                <select formControlName="sortBy" class="filter-select">
+                    <option value="section">Section</option>
+                    <option value="contentType">Type</option>
+                    <option value="updatedAt">Updated</option>
+                </select>
+
+                <button class="btn btn-outline btn-sm" (click)="toggleSortOrder()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        @if (searchForm.get('desc')?.value) {
+                        <path d="m3 16 4 4 4-4M7 20V4M21 8l-4-4-4 4m4-4v16" />
+                        } @else {
+                        <path d="m3 8 4-4 4 4M7 4v16M21 16l-4 4-4-4m4 4V4" />
+                        }
+                    </svg>
+                    {{ searchForm.get('desc')?.value ? 'Desc' : 'Asc' }}
+                </button>
+
+                @if (hasActiveFilters()) {
+                <button class="btn btn-outline btn-sm" (click)="clearFilters()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                    Clear
+                </button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    @if (isLoading) {
+    <div class="card">
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading content sections...</p>
+        </div>
+    </div>
+    }
+
+    <!-- Empty State -->
+    @if (!isLoading && contents.length === 0) {
+    <div class="card">
+        <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+            </svg>
+            <h3>No Content Sections Found</h3>
+            <p>Start by adding your first content section</p>
+            <button class="btn btn-primary" (click)="openCreateModal()">
+                Add Content Section
+            </button>
+        </div>
+    </div>
+    }
+
+    <!-- Content List -->
+    @if (!isLoading && contents.length > 0) {
+    <div class="content-table-container">
+        <table class="content-table">
+            <thead>
+                <tr>
+                    <th>Section</th>
+                    <th>Type</th>
+                    <th>Preview</th>
+                    <th>Status</th>
+                    <th>Last Updated</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (content of contents; track content.id) {
+                <tr>
+                    <td class="section-cell">
+                        <span class="section-icon">{{ getContentTypeIcon(content.contentType) }}</span>
+                        <strong>{{ content.section }}</strong>
+                    </td>
+                    <td>
+                        <span class="badge badge-outline">{{ content.contentType }}</span>
+                    </td>
+                    <td class="preview-cell">
+                        <span class="preview-text">{{ getContentPreview(content.content, content.contentType) }}</span>
+                    </td>
+                    <td>
+                        <button class="status-toggle" [class.published]="content.isPublished"
+                            [class.draft]="!content.isPublished" (click)="togglePublishStatus(content)">
+                            @if (content.isPublished) {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            Published
+                            } @else {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="8" x2="12" y2="12" />
+                            </svg>
+                            Draft
+                            }
+                        </button>
+                    </td>
+                    <td class="date-cell">
+                        {{ formatDate(content.updatedAt) }}
+                    </td>
+                    <td class="actions-cell">
+                        <button class="btn btn-outline btn-sm" (click)="openEditModal(content)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                            Edit
+                        </button>
+                        <button class="btn btn-danger btn-sm" (click)="confirmDelete(content)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6" />
+                                <path
+                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            </svg>
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    @if (totalCount && totalCount > (searchParams.pageSize || 20)) {
+    <div class="pagination">
+        <button class="btn btn-secondary btn-sm" [disabled]="currentPage === 0" (click)="goToPage(currentPage - 1)">
+            Previous
+        </button>
+
+        @for (page of getPageNumbers(); track page) {
+        <button class="btn btn-sm" [class.btn-primary]="page === currentPage"
+            [class.btn-secondary]="page !== currentPage" (click)="goToPage(page)">
+            {{ page + 1 }}
+        </button>
+        }
+
+        <button class="btn btn-secondary btn-sm" [disabled]="currentPage >= getTotalPages() - 1"
+            (click)="goToPage(currentPage + 1)">
+            Next
+        </button>
+    </div>
+    }
+    }
+
+    <!-- Create/Edit Modal -->
+    @if (showModal) {
+    <div class="modal-overlay" (click)="closeModal()">
+        <div class="modal modal-lg" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>{{ isEditMode ? 'Edit Content Section' : 'Add Content Section' }}</h2>
+                <button class="close-btn" (click)="closeModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <form [formGroup]="contentForm" (ngSubmit)="submitForm()">
+                <div class="modal-body">
+                    @if (formError) {
+                    <div class="alert alert-error">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                        {{ formError }}
+                    </div>
+                    }
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Section Name <span class="required">*</span></label>
+                            <input type="text" formControlName="section" [class.error]="isFieldInvalid('section')"
+                                placeholder="e.g., hero, about, services">
+                            @if (isFieldInvalid('section')) {
+                            <span class="error-text">Section name is required (lowercase, numbers, hyphens only)</span>
+                            }
+                            <span class="helper-text">Use lowercase letters, numbers, and hyphens only</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Content Type <span class="required">*</span></label>
+                            <select formControlName="contentType" [class.error]="isFieldInvalid('contentType')">
+                                <option value="text">Plain Text</option>
+                                <option value="html">HTML</option>
+                                <option value="json">JSON</option>
+                            </select>
+                            @if (isFieldInvalid('contentType')) {
+                            <span class="error-text">Content type is required</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="editor-header">
+                            <label>Content <span class="required">*</span></label>
+
+                            <div class="editor-actions">
+                                <button type="button" class="btn btn-outline btn-sm" (click)="openMediaBrowser()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <polyline points="21 15 16 10 5 21" />
+        </svg>
+        Browse Media
+    </button>
+                                @if (contentForm.get('contentType')?.value === 'json') {
+                                <button type="button" class="btn btn-outline btn-sm" (click)="beautifyJson()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="16 18 22 12 16 6" />
+                                        <polyline points="8 6 2 12 8 18" />
+                                    </svg>
+                                    Format JSON
+                                </button>
+                                }
+                                @if (contentForm.get('contentType')?.value === 'html') {
+                                <button type="button" class="btn btn-outline btn-sm" (click)="togglePreview()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                        <circle cx="12" cy="12" r="3" />
+                                    </svg>
+                                    {{ showContentPreview ? 'Hide' : 'Show' }} Preview
+                                </button>
+                                }
+                                @if (hasUnsavedChanges) {
+                                <span class="unsaved-indicator">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <line x1="12" y1="8" x2="12" y2="12" />
+                                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                                    </svg>
+                                    Unsaved changes
+                                </span>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="editor-container"
+                            [class.split-view]="showContentPreview && contentForm.get('contentType')?.value === 'html'">
+                            <!-- Editor Panel -->
+                            <div class="editor-panel">
+                                <!-- HTML Editor -->
+                                @if (contentForm.get('contentType')?.value === 'html') {
+                                <div class="html-editor">
+                                    <div class="editor-toolbar">
+                                        <span class="editor-label">HTML Editor</span>
+                                        <span class="character-count">{{ contentForm.get('content')?.value?.length || 0
+                                            }} characters</span>
+                                    </div>
+                                    <textarea formControlName="content" rows="15"
+                                        [class.error]="isFieldInvalid('content')"
+                                        placeholder="<div>Enter your HTML content here...</div>"
+                                        spellcheck="false"></textarea>
+                                    <span class="helper-text">Full HTML editing capabilities. Use inline styles for best
+                                        results.</span>
+                                </div>
+                                }
+
+                                <!-- JSON Editor -->
+                                @if (contentForm.get('contentType')?.value === 'json') {
+                                <div class="json-editor">
+                                    <div class="editor-toolbar">
+                                        <span class="editor-label">JSON Editor</span>
+                                        <span class="character-count">{{ contentForm.get('content')?.value?.length || 0
+                                            }} characters</span>
+                                    </div>
+                                    <textarea formControlName="content" rows="15"
+                                        [class.error]="isFieldInvalid('content')" placeholder='{"key": "value"}'
+                                        spellcheck="false"></textarea>
+                                    @if (contentForm.get('content')?.hasError('invalidJson')) {
+                                    <span class="error-text">Invalid JSON format - please check your syntax</span>
+                                    }
+                                    <span class="helper-text">Enter valid JSON. Use the "Format JSON" button to
+                                        beautify.</span>
+                                </div>
+                                }
+
+                                <!-- Plain Text Editor -->
+                                @if (contentForm.get('contentType')?.value === 'text') {
+                                <div class="text-editor">
+                                    <div class="editor-toolbar">
+                                        <span class="editor-label">Text Editor</span>
+                                        <span class="character-count">{{ contentForm.get('content')?.value?.length || 0
+                                            }} characters</span>
+                                    </div>
+                                    <textarea formControlName="content" rows="10"
+                                        [class.error]="isFieldInvalid('content')"
+                                        placeholder="Enter your plain text content here..."></textarea>
+                                </div>
+                                }
+                            </div>
+
+                            <!-- Preview Panel (only for HTML) -->
+                            @if (showContentPreview && contentForm.get('contentType')?.value === 'html') {
+                            <div class="preview-panel">
+                                <div class="editor-toolbar">
+                                    <span class="editor-label">Live Preview</span>
+                                    <button type="button" class="btn-icon" (click)="togglePreview()"
+                                        title="Close preview">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="preview-content" [innerHTML]="getHtmlPreview()"></div>
+                            </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" formControlName="isPublished">
+                            <span>Publish this content section</span>
+                        </label>
+                        <span class="helper-text">Only published content will appear on your website</span>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" (click)="closeModal()" [disabled]="isSaving">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" [disabled]="isSaving || contentForm.invalid">
+                        @if (isSaving) {
+                        <span class="spinner-sm"></span>
+                        Saving...
+                        } @else {
+                        {{ isEditMode ? 'Update' : 'Create' }}
+                        }
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    }
+
+    <!-- Delete Confirmation Modal -->
+    @if (showDeleteModal) {
+    <div class="modal-overlay" (click)="cancelDelete()">
+        <div class="modal modal-sm" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Confirm Deletion</h2>
+                <button class="close-btn" (click)="cancelDelete()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    Are you sure you want to delete this content section?
+                </div>
+                @if (contentToDelete) {
+                <p><strong>{{ contentToDelete.section }}</strong> ({{ contentToDelete.contentType }})</p>
+                <p class="text-muted">This action cannot be undone.</p>
+                }
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline" (click)="cancelDelete()" [disabled]="isDeleting">
+                    Cancel
+                </button>
+                <button class="btn btn-danger" (click)="executeDelete()" [disabled]="isDeleting">
+                    @if (isDeleting) {
+                    <span class="spinner-sm"></span>
+                    Deleting...
+                    } @else {
+                    Delete
+                    }
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+
+    <!-- Media Browser Modal -->
+    @if (showMediaBrowser) {
+    <div class="modal-overlay" (click)="closeMediaBrowser()">
+        <div class="modal modal-lg" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Browse Media</h2>
+                <button class="close-btn" (click)="closeMediaBrowser()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Search Bar -->
+                <div class="media-search-bar">
+                    <div class="search-input-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        <input type="text" [(ngModel)]="mediaSearchQuery" (ngModelChange)="filterMediaList()"
+                            placeholder="Search media by name or alt text..." class="search-input">
+                        @if (mediaSearchQuery) {
+                        <button type="button" class="clear-btn" (click)="mediaSearchQuery = ''; filterMediaList()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                        </button>
+                        }
+                    </div>
+                </div>
+
+                <!-- Results Info -->
+                <div class="media-search-results">
+                    <div class="media-count">
+                        @if (mediaSearchQuery) {
+                        Showing {{ filteredMediaList.length }} results for "<span class="search-query">{{
+                            mediaSearchQuery }}</span>"
+                        } @else {
+                        {{ filteredMediaList.length }} media files
+                        }
+                    </div>
+                    <div class="search-hint">Click to select, then insert or copy URL</div>
+                </div>
+
+                <!-- Loading State -->
+                @if (isLoadingMedia) {
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Loading media files...</p>
+                </div>
+                }
+
+                <!-- Empty State -->
+                @if (!isLoadingMedia && filteredMediaList.length === 0) {
+                <div class="empty-state">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                        <circle cx="8.5" cy="8.5" r="1.5" />
+                        <polyline points="21 15 16 10 5 21" />
+                    </svg>
+                    @if (mediaSearchQuery) {
+                    <p>No media files found for "{{ mediaSearchQuery }}"</p>
+                    <button class="btn btn-outline btn-sm" (click)="mediaSearchQuery = ''; filterMediaList()">
+                        Clear search
+                    </button>
+                    } @else {
+                    <p>No media files found</p>
+                    }
+                </div>
+                }
+
+                <!-- Media Grid -->
+                @if (!isLoadingMedia && filteredMediaList.length > 0) {
+                <div class="media-grid">
+                    @for (media of filteredMediaList; track media.id) {
+                    <div class="media-item" [class.selected]="selectedMediaForInsert?.id === media.id"
+                        (click)="selectMediaForInsert(media)">
+                        <div class="media-thumbnail">
+                            <img [src]="media.fileUrl" [alt]="media.altText || media.fileName" loading="lazy">
+                            @if (selectedMediaForInsert?.id === media.id) {
+                            <div class="selected-indicator">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                            </div>
+                            }
+                        </div>
+                        <div class="media-info">
+                            <p class="media-name" [title]="media.originalFileName">{{ media.originalFileName }}</p>
+                            <p class="media-meta">{{ (media.fileSize / 1024).toFixed(0) }} KB</p>
+                            @if (media.width && media.height) {
+                            <p class="media-dimensions">{{ media.width }} × {{ media.height }}</p>
+                            }
+                        </div>
+                        <button type="button" class="copy-url-btn"
+                            (click)="copyMediaUrl(media.fileUrl); $event.stopPropagation()" title="Copy URL">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                            </svg>
+                        </button>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+
+            <div class="modal-footer">
+    @if (selectedMediaUrl) {
+    <div class="selected-url-container">
+        <label>Selected Media URL:</label>
+        <div class="url-display-group">
+            <input type="text" [value]="selectedMediaUrl" readonly class="url-input">
+            <button type="button" class="btn btn-outline btn-sm" 
+                    (click)="copyMediaUrl(selectedMediaUrl)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+                Copy URL
+            </button>
+        </div>
+    </div>
+    }
+    <button type="button" class="btn btn-primary" (click)="closeMediaBrowser()">
+        Close
+    </button>
+</div>
+        </div>
+    </div>
+    }
+</div>
