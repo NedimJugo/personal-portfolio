@@ -77,37 +77,115 @@ namespace Portfolio.Services.Services
         {
             entity.UpdatedAt = DateTimeOffset.UtcNow;
 
+            await Task.CompletedTask;
+        }
+
+        protected override async Task AfterUpdateAsync(Project entity, ProjectUpdateRequest request, CancellationToken cancellationToken = default)
+        {
+            // Handle Tags relationship - REMOVE OLD, THEN ADD NEW
             if (request.TagIds != null)
             {
-                entity.ProjectTags.Clear();
-                foreach (var tagId in request.TagIds)
-                    entity.ProjectTags.Add(new ProjectTag { TagId = tagId, ProjectId = entity.Id });
-            }
+                // Remove existing tags for this project
+                var existingTags = await _context.ProjectTags
+                    .Where(pt => pt.ProjectId == entity.Id)
+                    .ToListAsync(cancellationToken);
 
-            if (request.TechIds != null)
-            {
-                entity.ProjectTechs.Clear();
-                foreach (var techId in request.TechIds)
-                    entity.ProjectTechs.Add(new ProjectTech { TechId = techId, ProjectId = entity.Id });
-            }
-
-            if (request.Images != null)
-            {
-                entity.Images.Clear();
-                foreach (var img in request.Images)
+                if (existingTags.Any())
                 {
-                    entity.Images.Add(new ProjectImage
+                    _context.ProjectTags.RemoveRange(existingTags);
+                }
+
+                // Add new tags
+                if (request.TagIds.Any())
+                {
+                    var newTags = request.TagIds.Select(tagId => new ProjectTag
                     {
-                        MediaId = img.MediaId,
-                        Caption = img.Caption,
-                        Order = img.Order ?? 0,
-                        IsHero = img.IsHero ?? false,
-                        ProjectId = entity.Id
-                    });
+                        ProjectId = entity.Id,
+                        TagId = tagId
+                    }).ToList();
+
+                    await _context.ProjectTags.AddRangeAsync(newTags, cancellationToken);
                 }
             }
 
-            await Task.CompletedTask;
+            // Handle Techs relationship - REMOVE OLD, THEN ADD NEW
+            if (request.TechIds != null)
+            {
+                // Remove existing techs for this project
+                var existingTechs = await _context.ProjectTechs
+                    .Where(pt => pt.ProjectId == entity.Id)
+                    .ToListAsync(cancellationToken);
+
+                if (existingTechs.Any())
+                {
+                    _context.ProjectTechs.RemoveRange(existingTechs);
+                }
+
+                // Add new techs
+                if (request.TechIds.Any())
+                {
+                    var newTechs = request.TechIds.Select(techId => new ProjectTech
+                    {
+                        ProjectId = entity.Id,
+                        TechId = techId
+                    }).ToList();
+
+                    await _context.ProjectTechs.AddRangeAsync(newTechs, cancellationToken);
+                }
+            }
+
+            // Handle Images relationship - REMOVE OLD, THEN ADD NEW
+            if (request.Images != null)
+            {
+                // Remove existing images for this project
+                var existingImages = await _context.ProjectImages
+                    .Where(pi => pi.ProjectId == entity.Id)
+                    .ToListAsync(cancellationToken);
+
+                if (existingImages.Any())
+                {
+                    _context.ProjectImages.RemoveRange(existingImages);
+                }
+
+                // Add new images
+                if (request.Images.Any())
+                {
+                    var newImages = request.Images.Select(img => new ProjectImage
+                    {
+                        ProjectId = entity.Id,
+                        MediaId = img.MediaId,
+                        Caption = img.Caption ?? string.Empty,
+                        Order = img.Order ?? 0,
+                        IsHero = img.IsHero ?? false
+                    }).ToList();
+
+                    await _context.ProjectImages.AddRangeAsync(newImages, cancellationToken);
+                }
+            }
+
+            // Save all changes
+            await _context.SaveChangesAsync(cancellationToken);
+
+            await base.AfterUpdateAsync(entity, request, cancellationToken);
+        }
+
+        protected override async Task<Project?> GetEntityByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await _context.Set<Project>()
+                .Include(p => p.Images)
+                .Include(p => p.ProjectTags)
+                .Include(p => p.ProjectTechs)
+                .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+        }
+        protected override ProjectResponse MapToResponse(Project entity)
+        {
+            var response = base.MapToResponse(entity);
+
+            // Ensure tagIds and techIds are populated
+            response.TagIds = entity.ProjectTags?.Select(pt => pt.TagId).ToList() ?? new List<Guid>();
+            response.TechIds = entity.ProjectTechs?.Select(pt => pt.TechId).ToList() ?? new List<Guid>();
+
+            return response;
         }
     }
 }

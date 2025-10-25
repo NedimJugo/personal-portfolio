@@ -73,10 +73,10 @@ export const routes: Routes = [
         path: 'testimonial',
         loadComponent: () => import('./components/admin/CRUDs/testimonial/testimonial-CRUD.component').then(m => m.TestimonialCrudComponent)
       },
-      // {
-      //   path: 'projects',
-      //   loadComponent: () => import('./components/admin/projects/admin-projects.component').then(m => m.AdminProjectsComponent)
-      // },
+      {
+        path: 'project',
+        loadComponent: () => import('./components/admin/CRUDs/project/project-CRUD.component').then(m => m.ProjectCrudComponent)
+      },
       {
         path: 'blog-post',
         loadComponent: () => import('./components/admin/CRUDs/blog/blog-post-CRUD.component').then(m => m.BlogPostCrudComponent)

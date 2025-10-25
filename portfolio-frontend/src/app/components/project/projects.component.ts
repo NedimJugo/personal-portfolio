@@ -41,7 +41,12 @@ export class ProjectsComponent implements OnInit {
   }
 
   private loadProjectsWithImages(): Observable<ProjectWithImage[]> {
-    return this.projectService.get({ isPublished: true, pageSize: 100 }).pipe(
+    return this.projectService.get({ 
+  isPublished: true, 
+  pageSize: 100,
+  sortBy: 'displayOrder',
+  desc: false
+}).pipe(
       switchMap((result) => {
         const projects = result.items || []
         
@@ -62,47 +67,52 @@ export class ProjectsComponent implements OnInit {
     )
   }
 
-  private loadProjectHeroImage(project: ProjectResponse): Observable<ProjectWithImage> {
-    return this.projectImageService.get({ 
-      projectId: project.id, 
-      isHero: true,
-      pageSize: 1 
-    }).pipe(
-      switchMap((imageResult) => {
-        const projectImage = imageResult.items?.[0]
-        
-        if (!projectImage) {
-          return of({
-            ...project,
-            heroImageUrl: `https://ecochallengeblob.blob.core.windows.net/ecochallenge/istockphoto-2173059563-612x612.jpg?height=300&width=400&query=${encodeURIComponent(project.title)}`,
-            heroImageAlt: project.title
-          } as ProjectWithImage)
-        }
-
-        return this.mediaService.getById(projectImage.mediaId).pipe(
-          map((media) => ({
-            ...project,
-            heroImageUrl: media.fileUrl,
-            heroImageAlt: media.altText || projectImage.caption || project.title
-          } as ProjectWithImage)),
-          catchError(() => {
-            return of({
-              ...project,
-              heroImageUrl: `https://ecochallengeblob.blob.core.windows.net/ecochallenge/istockphoto-2173059563-612x612.jpg?height=300&width=400&query=${encodeURIComponent(project.title)}`,
-              heroImageAlt: project.title
-            } as ProjectWithImage)
-          })
-        )
-      }),
-      catchError(() => {
-        return of({
-          ...project,
-          heroImageUrl: `/placeholder.svg?height=300&width=400&query=${encodeURIComponent(project.title)}`,
-          heroImageAlt: project.title
-        } as ProjectWithImage)
-      })
+ private loadProjectHeroImage(project: ProjectResponse): Observable<ProjectWithImage> {
+  // First try to use featuredMediaId if it exists
+  if (project.featuredMediaId) {
+    return this.mediaService.getById(project.featuredMediaId).pipe(
+      map((media) => ({
+        ...project,
+        heroImageUrl: media.fileUrl,
+        heroImageAlt: media.altText || project.title
+      } as ProjectWithImage)),
+      catchError(() => this.getFallbackImage(project))
     )
   }
+
+  // Otherwise try to find a hero image via projectImages
+  return this.projectImageService.get({ 
+    projectId: project.id, 
+    isHero: true,
+    pageSize: 1 
+  }).pipe(
+    switchMap((imageResult) => {
+      const projectImage = imageResult.items?.[0]
+      
+      if (!projectImage) {
+        return this.getFallbackImage(project)
+      }
+
+      return this.mediaService.getById(projectImage.mediaId).pipe(
+        map((media) => ({
+          ...project,
+          heroImageUrl: media.fileUrl,
+          heroImageAlt: media.altText || projectImage.caption || project.title
+        } as ProjectWithImage)),
+        catchError(() => this.getFallbackImage(project))
+      )
+    }),
+    catchError(() => this.getFallbackImage(project))
+  )
+}
+
+private getFallbackImage(project: ProjectResponse): Observable<ProjectWithImage> {
+  return of({
+    ...project,
+    heroImageUrl: this.defaultProjectImage,
+    heroImageAlt: project.title
+  } as ProjectWithImage)
+}
 
   viewProjectDetails(projectId: string): void {
     this.router.navigate(['/projects', projectId])

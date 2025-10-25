@@ -47,7 +47,7 @@
 }
 
 .card {
-  @include components.comic-card;
+  @include variables.comic-card;
   padding: 24px;
   margin-bottom: 24px;
 }
@@ -62,7 +62,7 @@
   }
 
   .search-input {
-    @include components.comic-input;
+    @include variables.comic-input;
     width: 100%;
   }
 
@@ -72,7 +72,7 @@
     flex-wrap: wrap;
 
     .filter-select {
-      @include components.comic-input;
+      @include variables.comic-input;
       padding: 10px 14px;
       cursor: pointer;
       appearance: none;
@@ -226,11 +226,11 @@
   border: 2px solid;
 
   &.badge-success {
-    @include components.comic-badge(variables.$success-color);
+    @include variables.comic-badge(variables.$success-color);
   }
 
   &.badge-danger {
-    @include components.comic-badge(variables.$error-color);
+    @include variables.comic-badge(variables.$error-color);
   }
 }
 
@@ -270,13 +270,13 @@
 }
 
 .btn-primary {
-  @include components.comic-button-primary;
+  @include variables.comic-button-primary;
   padding: 8px 12px;
   font-size: 13px;
 }
 
 .btn-secondary {
-  @include components.comic-button-secondary;
+  @include variables.comic-button-secondary;
   padding: 8px 12px;
   font-size: 13px;
 }

@@ -72,103 +72,98 @@ export class ProjectDetailsComponent implements OnInit {
   }
 
   private loadProjectDetails(projectId: string): Observable<ProjectDetails | null> {
-    return this.projectService.getById(projectId).pipe(
-      switchMap((project) => {
-        return forkJoin({
-          project: of(project),
-          images: this.loadProjectImages(projectId),
-          tags: this.loadProjectTags(projectId),
-          techs: this.loadProjectTechs(projectId)
-        })
-      }),
-      map(({ project, images, tags, techs }) => ({
+  return this.projectService.getById(projectId).pipe(
+    switchMap((project) => {
+      console.log('Project loaded:', project);
+      console.log('Tag IDs:', project.tagIds);
+      console.log('Tech IDs:', project.techIds);
+      
+      return forkJoin({
+        project: of(project),
+        images: this.loadProjectImages(projectId),
+        tags: this.loadProjectTags(project.tagIds || []),
+        techs: this.loadProjectTechs(project.techIds || [])
+      })
+    }),
+    map(({ project, images, tags, techs }) => {
+      console.log('Final project details:', { project, images, tags, techs });
+      return {
         ...project,
         images,
         tags,
         techs
-      } as ProjectDetails)),
-      catchError((error) => {
-        console.error('Error loading project details:', error)
-        return of(null)
-      })
-    )
-  }
+      } as ProjectDetails
+    }),
+    catchError((error) => {
+      console.error('Error loading project details:', error)
+      return of(null)
+    })
+  )
+}
 
   private loadProjectImages(projectId: string): Observable<ProjectImage[]> {
-    return this.projectImageService.get({ projectId, pageSize: 100 }).pipe(
-      switchMap((result) => {
-        const projectImages = result.items || []
-        
-        if (projectImages.length === 0) {
-          return of([])
-        }
+  return this.projectImageService.get({ projectId, pageSize: 100 }).pipe(
+    switchMap((result) => {
+      const projectImages = result.items || []
+      
+      if (projectImages.length === 0) {
+        return of([])
+      }
 
-        const imageObservables = projectImages.map(projectImage =>
-          this.mediaService.getById(projectImage.mediaId).pipe(
-            map(media => ({
-              url: media.fileUrl,
-              alt: media.altText || projectImage.caption || 'Project image',
-              caption: projectImage.caption,
-              order: projectImage.order
-            } as ProjectImage)),
-            catchError(() => of(null))
-          )
+      const imageObservables = projectImages.map(projectImage =>
+        this.mediaService.getById(projectImage.mediaId).pipe(
+          map(media => ({
+            url: media.fileUrl,
+            alt: media.altText || projectImage.caption || 'Project image',
+            caption: projectImage.caption,
+            order: projectImage.order
+          } as ProjectImage)),
+          catchError(() => of(null))
         )
+      )
 
-        return forkJoin(imageObservables).pipe(
-          map(images => images.filter((img): img is ProjectImage => img !== null)
-            .sort((a, b) => a.order - b.order))
-        )
-      }),
-      catchError(() => of([]))
-    )
+      return forkJoin(imageObservables).pipe(
+        map(images => images.filter((img): img is ProjectImage => img !== null)
+          .sort((a, b) => a.order - b.order))
+      )
+    }),
+    catchError(() => of([]))
+  )
+}
+
+  private loadProjectTags(tagIds: string[]): Observable<TagResponse[]> {
+  if (!tagIds || tagIds.length === 0) {
+    return of([])
   }
 
-  private loadProjectTags(projectId: string): Observable<TagResponse[]> {
-    return this.projectTagService.get({ projectId, pageSize: 100 }).pipe(
-      switchMap((result) => {
-        const projectTags = result.items || []
-        
-        if (projectTags.length === 0) {
-          return of([])
-        }
-
-        const tagObservables = projectTags.map(pt =>
-          this.tagService.getById(pt.tagId).pipe(
-            catchError(() => of(null))
-          )
-        )
-
-        return forkJoin(tagObservables).pipe(
-          map(tags => tags.filter((tag): tag is TagResponse => tag !== null))
-        )
-      }),
-      catchError(() => of([]))
+  const tagObservables = tagIds.map(tagId =>
+    this.tagService.getById(tagId).pipe(
+      catchError(() => of(null))
     )
+  )
+
+  return forkJoin(tagObservables).pipe(
+    map(tags => tags.filter((tag): tag is TagResponse => tag !== null)),
+    catchError(() => of([]))
+  )
+}
+
+private loadProjectTechs(techIds: string[]): Observable<TechResponse[]> {
+  if (!techIds || techIds.length === 0) {
+    return of([])
   }
 
-  private loadProjectTechs(projectId: string): Observable<TechResponse[]> {
-    return this.projectTechService.get({ projectId, pageSize: 100 }).pipe(
-      switchMap((result) => {
-        const projectTechs = result.items || []
-        
-        if (projectTechs.length === 0) {
-          return of([])
-        }
-
-        const techObservables = projectTechs.map(pt =>
-          this.techService.getById(pt.techId).pipe(
-            catchError(() => of(null))
-          )
-        )
-
-        return forkJoin(techObservables).pipe(
-          map(techs => techs.filter((tech): tech is TechResponse => tech !== null))
-        )
-      }),
-      catchError(() => of([]))
+  const techObservables = techIds.map(techId =>
+    this.techService.getById(techId).pipe(
+      catchError(() => of(null))
     )
-  }
+  )
+
+  return forkJoin(techObservables).pipe(
+    map(techs => techs.filter((tech): tech is TechResponse => tech !== null)),
+    catchError(() => of([]))
+  )
+}
 
   goBack(event?: Event) {
     if (event) {

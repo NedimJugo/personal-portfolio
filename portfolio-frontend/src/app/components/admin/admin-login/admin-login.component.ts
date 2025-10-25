@@ -24,8 +24,6 @@ export class AdminLoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Simply check if logged in and redirect - don't verify token here
-    // Let the auth guard handle token verification
     if (this.authService.isLoggedIn()) {
       this.router.navigate(['/admin/dashboard']);
       return;
@@ -76,8 +74,7 @@ export class AdminLoginComponent implements OnInit {
       },
       error: (error) => {
         this.isLoading = false;
-        
-        // Enhanced error handling
+
         if (error instanceof Error) {
           this.errorMessage = error.message;
         } else if (typeof error === 'string') {
@@ -89,8 +86,7 @@ export class AdminLoginComponent implements OnInit {
         }
         
         console.error('Login error:', error);
-        
-        // Clear form on error for security
+
         this.loginForm.get('password')?.reset();
       }
     });

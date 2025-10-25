@@ -1,5 +1,5 @@
 @use 'sass:color';
-@import '../../../shared/admin-comic-variables.scss';
+@use '../../../shared/admin-comic-variables.scss' as variables;
 
 .contact-messages-container {
   max-width: 1400px;
@@ -16,13 +16,13 @@
 }
 
 .stat-card {
-  background: $comic-white;
-  border-radius: $radius-lg;
+  background: variables.$comic-white;
+  border-radius: variables.$radius-lg;
   padding: 26px;
   display: flex;
   gap: 18px;
-  border: 2px solid $comic-gray-light;
-  box-shadow: $shadow-md;
+  border: 2px solid variables.$comic-gray-light;
+  box-shadow: variables.$shadow-md;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -41,7 +41,7 @@
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: $shadow-lg;
+    box-shadow: variables.$shadow-lg;
     border-color: var(--accent-color);
 
     &::before {
@@ -57,7 +57,7 @@
 .stat-icon {
   width: 64px;
   height: 64px;
-  border-radius: $radius-lg;
+  border-radius: variables.$radius-lg;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -74,8 +74,8 @@
 
   h3 {
     font-size: 13px;
-    font-weight: $font-weight-bold;
-    color: $comic-gray;
+    font-weight: variables.$font-weight-bold;
+    color: variables.$comic-gray;
     margin: 0 0 10px 0;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -83,8 +83,8 @@
 
   .stat-value {
     font-size: 36px;
-    font-weight: $font-weight-black;
-    color: $comic-black;
+    font-weight: variables.$font-weight-black;
+    color: variables.$comic-black;
     line-height: 1;
     letter-spacing: -1px;
   }
@@ -101,8 +101,8 @@
 
   h1 {
     font-size: 32px;
-    font-weight: $font-weight-black;
-    color: $comic-black;
+    font-weight: variables.$font-weight-black;
+    color: variables.$comic-black;
     margin: 0 0 8px 0;
     text-transform: uppercase;
     letter-spacing: -1px;
@@ -116,16 +116,16 @@
       left: 0;
       width: 60%;
       height: 6px;
-      background: $comic-yellow;
+      background: variables.$comic-yellow;
       border-radius: 3px;
     }
   }
 
   p {
     font-size: 16px;
-    color: $comic-gray;
+    color: variables.$comic-gray;
     margin: 0;
-    font-weight: $font-weight-semibold;
+    font-weight: variables.$font-weight-semibold;
   }
 }
 
@@ -144,14 +144,14 @@
   .search-input {
     width: 100%;
     padding: 12px 16px;
-    border: 2px solid $comic-gray-light;
-    border-radius: $radius-md;
+    border: 2px solid variables.$comic-gray-light;
+    border-radius: variables.$radius-md;
     font-size: 15px;
     transition: all 0.2s;
 
     &:focus {
       outline: none;
-      border-color: $comic-blue;
+      border-color: variables.$comic-blue;
       box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.15);
     }
   }
@@ -163,8 +163,8 @@
 
     .filter-select {
       padding: 10px 14px;
-      border: 2px solid $comic-gray-light;
-      border-radius: $radius-md;
+      border: 2px solid variables.$comic-gray-light;
+      border-radius: variables.$radius-md;
       font-size: 14px;
       background: white;
       cursor: pointer;
@@ -172,7 +172,7 @@
 
       &:focus {
         outline: none;
-        border-color: $comic-blue;
+        border-color: variables.$comic-blue;
       }
     }
   }
@@ -180,10 +180,10 @@
 
 // Card
 .card {
-  background: $comic-white;
-  border-radius: $radius-lg;
-  border: 2px solid $comic-gray-light;
-  box-shadow: $shadow-md;
+  background: variables.$comic-white;
+  border-radius: variables.$radius-lg;
+  border: 2px solid variables.$comic-gray-light;
+  box-shadow: variables.$shadow-md;
   padding: 24px;
   margin-bottom: 24px;
 }
@@ -197,10 +197,10 @@
 }
 
 .message-item {
-  background: $comic-white;
-  border-radius: $radius-lg;
-  border: 2px solid $comic-gray-light;
-  box-shadow: $shadow-md;
+  background: variables.$comic-white;
+  border-radius: variables.$radius-lg;
+  border: 2px solid variables.$comic-gray-light;
+  box-shadow: variables.$shadow-md;
   padding: 24px;
   display: flex;
   gap: 16px;
@@ -210,16 +210,16 @@
 
   &:hover {
     transform: translateX(4px);
-    box-shadow: $shadow-lg;
-    border-color: $comic-blue;
+    box-shadow: variables.$shadow-lg;
+    border-color: variables.$comic-blue;
   }
 
   &.unread {
-    background: color.adjust($comic-blue, $lightness: 45%);
-    border-color: $comic-blue;
+    background: color.adjust(variables.$comic-blue, $lightness: 45%);
+    border-color: variables.$comic-blue;
 
     .message-indicator {
-      background: $comic-blue;
+      background: variables.$comic-blue;
     }
   }
 }
@@ -232,7 +232,7 @@
   transition: all 0.2s;
 
   &.indicator-new {
-    background: $comic-blue;
+    background: variables.$comic-blue;
     box-shadow: 0 0 8px rgba(78, 205, 196, 0.5);
   }
 }
@@ -253,15 +253,15 @@
 .message-sender {
   h3 {
     font-size: 18px;
-    font-weight: $font-weight-bold;
-    color: $comic-black;
+    font-weight: variables.$font-weight-bold;
+    color: variables.$comic-black;
     margin: 0 0 4px 0;
   }
 
   .message-email {
     font-size: 14px;
-    color: $comic-gray;
-    font-weight: $font-weight-semibold;
+    color: variables.$comic-gray;
+    font-weight: variables.$font-weight-semibold;
   }
 }
 
@@ -274,8 +274,8 @@
 
 .message-time {
   font-size: 13px;
-  color: $comic-gray;
-  font-weight: $font-weight-bold;
+  color: variables.$comic-gray;
+  font-weight: variables.$font-weight-bold;
   white-space: nowrap;
 }
 
@@ -288,21 +288,23 @@
 
   strong {
     font-size: 16px;
-    color: $comic-dark;
-    font-weight: $font-weight-bold;
+    color: variables.$comic-dark;
+    font-weight: variables.$font-weight-bold;
   }
 }
 
 .message-preview {
   font-size: 14px;
-  color: $comic-dark;
+  color: variables.$comic-dark;
   line-height: 1.6;
   margin: 8px 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2; // ✅ standard property for compatibility
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
 
 .message-details {
   display: flex;
@@ -316,8 +318,8 @@
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: $comic-gray;
-  font-weight: $font-weight-semibold;
+  color: variables.$comic-gray;
+  font-weight: variables.$font-weight-semibold;
 
   svg {
     flex-shrink: 0;
@@ -334,9 +336,9 @@
 // Buttons
 .btn {
   padding: 12px 24px;
-  border-radius: $radius-md;
+  border-radius: variables.$radius-md;
   font-size: 15px;
-  font-weight: $font-weight-bold;
+  font-weight: variables.$font-weight-bold;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   cursor: pointer;
@@ -354,47 +356,47 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, $comic-blue 0%, color.adjust($comic-blue, $lightness: -10%) 100%);
-  color: $comic-white;
-  border-color: $comic-black;
-  box-shadow: $shadow-comic;
+  background: linear-gradient(135deg, variables.$comic-blue 0%, color.adjust(variables.$comic-blue, $lightness: -10%) 100%);
+  color: variables.$comic-white;
+  border-color: variables.$comic-black;
+  box-shadow: variables.$shadow-comic;
 
   &:hover:not(:disabled) {
     transform: translate(-2px, -2px);
-    box-shadow: $shadow-comic-hover;
+    box-shadow: variables.$shadow-comic-hover;
   }
 }
 
 .btn-secondary {
-  background: $comic-white;
-  color: $comic-dark;
-  border-color: $comic-gray-light;
+  background: variables.$comic-white;
+  color: variables.$comic-dark;
+  border-color: variables.$comic-gray-light;
 
   &:hover:not(:disabled) {
-    background: $comic-gray-lighter;
-    border-color: $comic-blue;
+    background: variables.$comic-gray-lighter;
+    border-color: variables.$comic-blue;
   }
 }
 
 .btn-outline {
   background: transparent;
-  color: $comic-dark;
-  border-color: $comic-gray-light;
+  color: variables.$comic-dark;
+  border-color: variables.$comic-gray-light;
 
   &:hover:not(:disabled) {
-    background: $comic-gray-lighter;
-    border-color: $comic-blue;
+    background: variables.$comic-gray-lighter;
+    border-color: variables.$comic-blue;
   }
 }
 
 .btn-danger {
-  background: $error-color;
-  color: $comic-white;
-  border-color: color.adjust($error-color, $lightness: -10%);
-  box-shadow: $shadow-comic;
+  background: variables.$error-color;
+  color: variables.$comic-white;
+  border-color: color.adjust(variables.$error-color, $lightness: -10%);
+  box-shadow: variables.$shadow-comic;
 
   &:hover:not(:disabled) {
-    background: color.adjust($error-color, $lightness: -5%);
+    background: color.adjust(variables.$error-color, $lightness: -5%);
     transform: translate(-2px, -2px);
   }
 }
@@ -410,7 +412,7 @@
   align-items: center;
   gap: 6px;
   font-size: 11px;
-  font-weight: $font-weight-bold;
+  font-weight: variables.$font-weight-bold;
   padding: 4px 10px;
   border-radius: 12px;
   text-transform: uppercase;
@@ -419,39 +421,39 @@
 }
 
 .badge-primary {
-  background: color.adjust($comic-blue, $lightness: 35%);
-  color: color.adjust($comic-blue, $lightness: -20%);
-  border-color: $comic-blue;
+  background: color.adjust(variables.$comic-blue, $lightness: 35%);
+  color: color.adjust(variables.$comic-blue, $lightness: -20%);
+  border-color: variables.$comic-blue;
 }
 
 .badge-success {
-  background: color.adjust($success-color, $lightness: 35%);
-  color: color.adjust($success-color, $lightness: -20%);
-  border-color: $success-color;
+  background: color.adjust(variables.$success-color, $lightness: 35%);
+  color: color.adjust(variables.$success-color, $lightness: -20%);
+  border-color: variables.$success-color;
 }
 
 .badge-warning {
-  background: color.adjust($warning-color, $lightness: 35%);
-  color: color.adjust($warning-color, $lightness: -20%);
-  border-color: $warning-color;
+  background: color.adjust(variables.$warning-color, $lightness: 35%);
+  color: color.adjust(variables.$warning-color, $lightness: -20%);
+  border-color: variables.$warning-color;
 }
 
 .badge-danger {
-  background: color.adjust($error-color, $lightness: 35%);
-  color: color.adjust($error-color, $lightness: -20%);
-  border-color: $error-color;
+  background: color.adjust(variables.$error-color, $lightness: 35%);
+  color: color.adjust(variables.$error-color, $lightness: -20%);
+  border-color: variables.$error-color;
 }
 
 .badge-info {
-  background: color.adjust($info-color, $lightness: 35%);
-  color: color.adjust($info-color, $lightness: -20%);
-  border-color: $info-color;
+  background: color.adjust(variables.$info-color, $lightness: 35%);
+  color: color.adjust(variables.$info-color, $lightness: -20%);
+  border-color: variables.$info-color;
 }
 
 .badge-outline {
   background: transparent;
-  color: $comic-dark;
-  border-color: $comic-gray-light;
+  color: variables.$comic-dark;
+  border-color: variables.$comic-gray-light;
 }
 
 // Loading & Empty States
@@ -467,36 +469,39 @@
   .spinner {
     width: 48px;
     height: 48px;
-    border: 4px solid $comic-gray-light;
-    border-top-color: $comic-blue;
+    border: 4px solid variables.$comic-gray-light;
+    border-top-color: variables.$comic-blue;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     margin-bottom: 20px;
   }
 
   svg {
-    color: $comic-gray-light;
+    color: variables.$comic-gray-light;
     margin-bottom: 20px;
   }
 
-  h3, h4 {
+  h3,
+  h4 {
     font-size: 20px;
-    font-weight: $font-weight-bold;
-    color: $comic-dark;
+    font-weight: variables.$font-weight-bold;
+    color: variables.$comic-dark;
     margin: 0 0 12px 0;
     text-transform: uppercase;
   }
 
   p {
     font-size: 15px;
-    color: $comic-gray;
+    color: variables.$comic-gray;
     margin: 0;
-    font-weight: $font-weight-semibold;
+    font-weight: variables.$font-weight-semibold;
   }
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 // Pagination
@@ -544,7 +549,7 @@
   margin-bottom: 24px;
   gap: 20px;
   padding-bottom: 20px;
-  border-bottom: 2px solid $comic-gray-light;
+  border-bottom: 2px solid variables.$comic-gray-light;
 }
 
 .sender-info {
@@ -557,29 +562,29 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: linear-gradient(135deg, $comic-blue 0%, $comic-purple 100%);
-  color: $comic-white;
+  background: linear-gradient(135deg, variables.$comic-blue 0%, variables.$comic-purple 100%);
+  color: variables.$comic-white;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 28px;
-  font-weight: $font-weight-black;
-  border: 3px solid $comic-black;
-  box-shadow: $shadow-comic;
+  font-weight: variables.$font-weight-black;
+  border: 3px solid variables.$comic-black;
+  box-shadow: variables.$shadow-comic;
 }
 
 .sender-details {
   h2 {
     font-size: 24px;
-    font-weight: $font-weight-black;
-    color: $comic-black;
+    font-weight: variables.$font-weight-black;
+    color: variables.$comic-black;
     margin: 0 0 6px 0;
   }
 
   .sender-email {
     font-size: 16px;
-    color: $comic-blue;
-    font-weight: $font-weight-semibold;
+    color: variables.$comic-blue;
+    font-weight: variables.$font-weight-semibold;
     text-decoration: none;
 
     &:hover {
@@ -603,29 +608,29 @@
 
   h3 {
     font-size: 20px;
-    font-weight: $font-weight-bold;
-    color: $comic-dark;
+    font-weight: variables.$font-weight-bold;
+    color: variables.$comic-dark;
     margin: 0;
   }
 
   .message-date {
     font-size: 14px;
-    color: $comic-gray;
-    font-weight: $font-weight-semibold;
+    color: variables.$comic-gray;
+    font-weight: variables.$font-weight-semibold;
     white-space: nowrap;
   }
 }
 
 .message-body {
   padding: 24px;
-  background: $comic-gray-lighter;
-  border-radius: $radius-md;
-  border: 2px solid $comic-gray-light;
+  background: variables.$comic-gray-lighter;
+  border-radius: variables.$radius-md;
+  border: 2px solid variables.$comic-gray-light;
   margin-bottom: 24px;
 
   p {
     font-size: 15px;
-    color: $comic-dark;
+    color: variables.$comic-dark;
     line-height: 1.8;
     margin: 0;
     white-space: pre-wrap;
@@ -637,8 +642,8 @@
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 16px;
   padding: 20px;
-  background: $comic-gray-lighter;
-  border-radius: $radius-md;
+  background: variables.$comic-gray-lighter;
+  border-radius: variables.$radius-md;
   margin-bottom: 24px;
 }
 
@@ -647,16 +652,16 @@
   align-items: center;
   gap: 10px;
   font-size: 14px;
-  color: $comic-dark;
-  font-weight: $font-weight-normal;
+  color: variables.$comic-dark;
+  font-weight: variables.$font-weight-normal;
 
   svg {
-    color: $comic-blue;
+    color: variables.$comic-blue;
     flex-shrink: 0;
   }
 
   strong {
-    font-weight: $font-weight-bold;
+    font-weight: variables.$font-weight-bold;
   }
 }
 
@@ -664,9 +669,9 @@
   display: flex;
   gap: 24px;
   padding: 20px;
-  background: $comic-yellow-soft;
-  border-radius: $radius-md;
-  border: 2px solid $comic-yellow;
+  background: variables.$comic-yellow-soft;
+  border-radius: variables.$radius-md;
+  border: 2px solid variables.$comic-yellow;
 }
 
 .control-group {
@@ -676,25 +681,25 @@
 
   label {
     font-size: 14px;
-    font-weight: $font-weight-bold;
-    color: $comic-dark;
+    font-weight: variables.$font-weight-bold;
+    color: variables.$comic-dark;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .control-select {
     padding: 8px 12px;
-    border: 2px solid $comic-gray-light;
-    border-radius: $radius-md;
+    border: 2px solid variables.$comic-gray-light;
+    border-radius: variables.$radius-md;
     font-size: 14px;
-    font-weight: $font-weight-semibold;
-    background: $comic-white;
+    font-weight: variables.$font-weight-semibold;
+    background: variables.$comic-white;
     cursor: pointer;
     transition: all 0.2s;
 
     &:focus {
       outline: none;
-      border-color: $comic-blue;
+      border-color: variables.$comic-blue;
     }
   }
 }
@@ -710,24 +715,24 @@
   align-items: center;
   margin-bottom: 24px;
   padding-bottom: 16px;
-  border-bottom: 2px solid $comic-gray-light;
+  border-bottom: 2px solid variables.$comic-gray-light;
 
   h3 {
     font-size: 20px;
-    font-weight: $font-weight-black;
-    color: $comic-black;
+    font-weight: variables.$font-weight-black;
+    color: variables.$comic-black;
     margin: 0;
     text-transform: uppercase;
   }
 
   .reply-count {
     font-size: 14px;
-    font-weight: $font-weight-bold;
-    color: $comic-gray;
+    font-weight: variables.$font-weight-bold;
+    color: variables.$comic-gray;
     padding: 6px 12px;
-    background: $comic-gray-lighter;
+    background: variables.$comic-gray-lighter;
     border-radius: 16px;
-    border: 2px solid $comic-gray-light;
+    border: 2px solid variables.$comic-gray-light;
   }
 }
 
@@ -739,19 +744,19 @@
 
 .reply-item {
   padding: 20px;
-  background: $comic-gray-lighter;
-  border-radius: $radius-md;
-  border: 2px solid $comic-gray-light;
+  background: variables.$comic-gray-lighter;
+  border-radius: variables.$radius-md;
+  border: 2px solid variables.$comic-gray-light;
   transition: all 0.2s;
 
   &:hover {
-    border-color: $comic-blue;
-    box-shadow: $shadow-md;
+    border-color: variables.$comic-blue;
+    box-shadow: variables.$shadow-md;
   }
 
   &.reply-internal {
-    background: color.adjust($warning-color, $lightness: 42%);
-    border-color: $warning-color;
+    background: color.adjust(variables.$warning-color, $lightness: 42%);
+    border-color: variables.$warning-color;
   }
 }
 
@@ -772,44 +777,44 @@
 
 .reply-date {
   font-size: 13px;
-  color: $comic-gray;
-  font-weight: $font-weight-bold;
+  color: variables.$comic-gray;
+  font-weight: variables.$font-weight-bold;
 }
 
 .delivery-status {
   font-size: 12px;
-  font-weight: $font-weight-bold;
+  font-weight: variables.$font-weight-bold;
   padding: 4px 10px;
   border-radius: 12px;
   text-transform: uppercase;
 
   &.status-sent {
-    background: color.adjust($success-color, $lightness: 40%);
-    color: color.adjust($success-color, $lightness: -20%);
+    background: color.adjust(variables.$success-color, $lightness: 40%);
+    color: color.adjust(variables.$success-color, $lightness: -20%);
   }
 
   &.status-failed {
-    background: color.adjust($error-color, $lightness: 40%);
-    color: color.adjust($error-color, $lightness: -20%);
+    background: color.adjust(variables.$error-color, $lightness: 40%);
+    color: color.adjust(variables.$error-color, $lightness: -20%);
   }
 }
 
 .reply-subject,
 .reply-recipient {
   font-size: 14px;
-  color: $comic-dark;
+  color: variables.$comic-dark;
   margin-bottom: 8px;
-  font-weight: $font-weight-normal;
+  font-weight: variables.$font-weight-normal;
 
   strong {
-    font-weight: $font-weight-bold;
+    font-weight: variables.$font-weight-bold;
   }
 }
 
 .reply-body {
   p {
     font-size: 15px;
-    color: $comic-dark;
+    color: variables.$comic-dark;
     line-height: 1.7;
     margin: 0;
     white-space: pre-wrap;
@@ -823,7 +828,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba($comic-black, 0.7);
+  background: rgba(variables.$comic-black, 0.7);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -834,14 +839,19 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .modal {
-  background: $comic-white;
-  border-radius: $radius-xl;
-  border: 3px solid $comic-black;
+  background: variables.$comic-white;
+  border-radius: variables.$radius-xl;
+  border: 3px solid variables.$comic-black;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   max-width: 600px;
   width: 100%;
@@ -863,6 +873,7 @@
     opacity: 0;
     transform: translateY(-20px) scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -871,17 +882,17 @@
 
 .modal-header {
   padding: 24px 28px;
-  border-bottom: 3px solid $comic-gray-light;
+  border-bottom: 3px solid variables.$comic-gray-light;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(135deg, $comic-blue-soft 0%, $comic-purple-soft 100%);
+  background: linear-gradient(135deg, variables.$comic-blue-soft 0%, variables.$comic-purple-soft 100%);
 
   h2 {
     margin: 0;
     font-size: 22px;
-    font-weight: $font-weight-black;
-    color: $comic-black;
+    font-weight: variables.$font-weight-black;
+    color: variables.$comic-black;
     text-transform: uppercase;
     letter-spacing: -0.5px;
   }
@@ -889,15 +900,15 @@
   .close-btn {
     background: none;
     border: none;
-    color: $comic-dark;
+    color: variables.$comic-dark;
     cursor: pointer;
     padding: 8px;
-    border-radius: $radius-md;
+    border-radius: variables.$radius-md;
     transition: all 0.2s;
 
     &:hover {
-      background: rgba($error-color, 0.1);
-      color: $error-color;
+      background: rgba(variables.$error-color, 0.1);
+      color: variables.$error-color;
       transform: rotate(90deg);
     }
   }
@@ -909,12 +920,12 @@
 
 .modal-footer {
   padding: 20px 28px;
-  border-top: 2px solid $comic-gray-light;
+  border-top: 2px solid variables.$comic-gray-light;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 12px;
-  background: $comic-gray-lighter;
+  background: variables.$comic-gray-lighter;
 }
 
 // Forms
@@ -924,14 +935,14 @@
   label {
     display: block;
     font-size: 14px;
-    font-weight: $font-weight-bold;
-    color: $comic-dark;
+    font-weight: variables.$font-weight-bold;
+    color: variables.$comic-dark;
     margin-bottom: 8px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 
     .required {
-      color: $error-color;
+      color: variables.$error-color;
       margin-left: 4px;
     }
   }
@@ -941,8 +952,8 @@
   select,
   textarea {
     width: 100%;
-    border: 2px solid $comic-gray-light;
-    border-radius: $radius-md;
+    border: 2px solid variables.$comic-gray-light;
+    border-radius: variables.$radius-md;
     padding: 10px 14px;
     font-size: 15px;
     transition: all 0.2s;
@@ -950,13 +961,13 @@
 
     &:focus {
       outline: none;
-      border-color: $comic-blue;
+      border-color: variables.$comic-blue;
       box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.15);
     }
 
     &.error {
-      border-color: $error-color;
-      background: color.adjust($error-color, $lightness: 42%);
+      border-color: variables.$error-color;
+      background: color.adjust(variables.$error-color, $lightness: 42%);
     }
   }
 
@@ -967,16 +978,16 @@
 
   .helper-text {
     font-size: 13px;
-    color: $comic-gray;
+    color: variables.$comic-gray;
     margin-top: 6px;
-    font-weight: $font-weight-normal;
+    font-weight: variables.$font-weight-normal;
     display: block;
   }
 
   .error-text {
     font-size: 13px;
-    color: $error-color;
-    font-weight: $font-weight-semibold;
+    color: variables.$error-color;
+    font-weight: variables.$font-weight-semibold;
     margin-top: 6px;
     display: flex;
     align-items: center;
@@ -993,7 +1004,7 @@
     gap: 10px;
     cursor: pointer;
     text-transform: none;
-    font-weight: $font-weight-semibold;
+    font-weight: variables.$font-weight-semibold;
 
     input[type="checkbox"] {
       width: auto;
@@ -1005,14 +1016,14 @@
 // Alerts
 .alert {
   padding: 16px 20px;
-  border-radius: $radius-md;
+  border-radius: variables.$radius-md;
   border: 2px solid;
   margin-bottom: 20px;
   display: flex;
   align-items: flex-start;
   gap: 12px;
   font-size: 14px;
-  font-weight: $font-weight-semibold;
+  font-weight: variables.$font-weight-semibold;
 
   svg {
     flex-shrink: 0;
@@ -1020,15 +1031,15 @@
   }
 
   &.alert-error {
-    background: color.adjust($error-color, $lightness: 42%);
-    border-color: $error-color;
-    color: color.adjust($error-color, $lightness: -20%);
+    background: color.adjust(variables.$error-color, $lightness: 42%);
+    border-color: variables.$error-color;
+    color: color.adjust(variables.$error-color, $lightness: -20%);
   }
 
   &.alert-warning {
-    background: color.adjust($warning-color, $lightness: 35%);
-    border-color: $warning-color;
-    color: color.adjust($warning-color, $lightness: -20%);
+    background: color.adjust(variables.$warning-color, $lightness: 35%);
+    border-color: variables.$warning-color;
+    color: color.adjust(variables.$warning-color, $lightness: -20%);
   }
 }
 
@@ -1043,7 +1054,7 @@
 }
 
 .text-muted {
-  color: $comic-gray;
+  color: variables.$comic-gray;
   font-size: 14px;
 }
 
@@ -1064,7 +1075,7 @@
 
   .detail-actions {
     width: 100%;
-    
+
     button {
       flex: 1;
     }

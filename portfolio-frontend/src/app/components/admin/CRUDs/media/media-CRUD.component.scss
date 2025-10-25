@@ -137,7 +137,7 @@
       font-size: 14px;
 
       &:hover {
-        color: darken($comic-blue, 10%);
+        color: color.adjust($comic-blue, $lightness: -10%);
       }
     }
   }
@@ -278,8 +278,10 @@
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2; // ← add this line
     -webkit-box-orient: vertical;
   }
+
 
   .media-date {
     font-size: 12px;
@@ -568,7 +570,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 // Pagination
@@ -602,8 +606,13 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .modal {
@@ -644,6 +653,7 @@
     opacity: 0;
     transform: translateY(-20px) scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -1047,7 +1057,7 @@
 
     .bulk-buttons {
       width: 100%;
-      
+
       .btn {
         flex: 1;
       }

@@ -20,7 +20,10 @@ namespace Portfolio.Services.Mapping
                 .ForMember(dest => dest.TechIds, opt => opt.MapFrom(src => src.ProjectTechs.Select(t => t.TechId)))
                 .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images));
 
-            CreateMap<ProjectImage, ProjectImageResponse>();
+            CreateMap<Project, ProjectResponse>()
+    .ForMember(dest => dest.TagIds, opt => opt.MapFrom(src => src.ProjectTags.Select(pt => pt.TagId)))
+    .ForMember(dest => dest.TechIds, opt => opt.MapFrom(src => src.ProjectTechs.Select(pt => pt.TechId)))
+    .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images));
 
             CreateMap<ProjectInsertRequest, Project>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())

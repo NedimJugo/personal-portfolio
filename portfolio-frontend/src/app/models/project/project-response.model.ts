@@ -22,7 +22,7 @@ export interface ProjectResponse {
   updatedById: number;
   createdAt: string;             // ISO date string
   updatedAt: string;             // ISO date string
-
+  
   // Relations
   images: ProjectImageResponse[];
   tagIds: string[];

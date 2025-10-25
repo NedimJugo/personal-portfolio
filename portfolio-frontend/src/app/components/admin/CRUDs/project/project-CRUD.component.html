@@ -1,0 +1,743 @@
+<div class="project-crud-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h1>Project Management</h1>
+            <p>Manage your portfolio projects and showcase your work</p>
+        </div>
+        <button class="btn btn-primary" (click)="openCreateModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Add Project
+        </button>
+    </div>
+
+    <!-- Search & Filters Card -->
+    <div class="card">
+        <div class="search-filters" [formGroup]="searchForm">
+            <div class="form-group">
+                <input type="text" placeholder="Search by title..." formControlName="title" class="search-input">
+            </div>
+
+            <div class="filter-group">
+                <select formControlName="projectType" class="filter-select">
+                    <option value="">All Types</option>
+                    <option value="web">Web</option>
+                    <option value="mobile">Mobile</option>
+                    <option value="desktop">Desktop</option>
+                    <option value="other">Other</option>
+                </select>
+
+                <select formControlName="status" class="filter-select">
+                    <option value="">All Status</option>
+                    <option value="completed">Completed</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="planned">Planned</option>
+                    <option value="archived">Archived</option>
+                </select>
+
+                <select formControlName="isFeatured" class="filter-select">
+                    <option value="">All Featured</option>
+                    <option [value]="true">Featured</option>
+                    <option [value]="false">Not Featured</option>
+                </select>
+
+                <select formControlName="isPublished" class="filter-select">
+                    <option value="">All Published</option>
+                    <option [value]="true">Published</option>
+                    <option [value]="false">Draft</option>
+                </select>
+
+                <select formControlName="sortBy" class="filter-select">
+                    <option value="displayOrder">Display Order</option>
+                    <option value="title">Title</option>
+                    <option value="createdAt">Created Date</option>
+                    <option value="updatedAt">Updated Date</option>
+                </select>
+
+                <button class="btn btn-outline btn-sm" (click)="toggleSortOrder()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        @if (searchForm.get('desc')?.value) {
+                        <path d="m3 16 4 4 4-4M7 20V4M21 8l-4-4-4 4m4-4v16" />
+                        } @else {
+                        <path d="m3 8 4-4 4 4M7 4v16M21 16l-4 4-4-4m4 4V4" />
+                        }
+                    </svg>
+                    {{ searchForm.get('desc')?.value ? 'Desc' : 'Asc' }}
+                </button>
+
+                @if (hasActiveFilters()) {
+                <button class="btn btn-outline btn-sm" (click)="clearFilters()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                    Clear
+                </button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    @if (isLoading) {
+    <div class="card">
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading projects...</p>
+        </div>
+    </div>
+    }
+
+    <!-- Empty State -->
+    @if (!isLoading && projects.length === 0) {
+    <div class="card">
+        <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+            </svg>
+            <h3>No Projects Found</h3>
+            <p>Start by adding your first project</p>
+            <button class="btn btn-primary" (click)="openCreateModal()">
+                Add Project
+            </button>
+        </div>
+    </div>
+    }
+
+    <!-- Projects Grid -->
+    @if (!isLoading && projects.length > 0) {
+    <div class="projects-grid">
+        @for (project of projects; track project.id) {
+        <div class="project-card">
+            <!-- Featured Image -->
+            @if (project.heroImageUrl) {
+            <div class="project-image">
+                <img [src]="project.heroImageUrl" [alt]="project.heroImageAlt || project.title">
+                @if (project.isFeatured) {
+                <div class="featured-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                </div>
+                }
+            </div>
+            } @else {
+            <div class="project-image project-image-placeholder">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                </svg>
+                @if (project.isFeatured) {
+                <div class="featured-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                </div>
+                }
+            </div>
+            }
+
+            <!-- Content -->
+            <div class="project-content">
+                <div class="project-header">
+                    <div>
+                        <h3>{{ project.title }}</h3>
+                        <p class="project-type">{{ project.projectType }}</p>
+                    </div>
+                    <div class="project-badges">
+                        <span class="badge" [ngClass]="getStatusBadgeClass(project.status)">{{ project.status
+                            }}</span>
+                        @if (!project.isPublished) {
+                        <span class="badge badge-outline">Draft</span>
+                        }
+                    </div>
+                </div>
+
+                <p class="project-description">{{ project.shortDescription }}</p>
+
+                <div class="project-meta">
+                    @if (project.startDate) {
+                    <span class="meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                        {{ formatDate(project.startDate) }}
+                        @if (project.endDate) {
+                        - {{ formatDate(project.endDate) }}
+                        }
+                    </span>
+                    }
+
+                    @if (project.viewCount > 0) {
+                    <span class="meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        {{ project.viewCount }} views
+                    </span>
+                    }
+                </div>
+
+                <div class="project-links">
+                    @if (project.repoUrl) {
+                    <a [href]="project.repoUrl" target="_blank" class="link-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path
+                                d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                        </svg>
+                        Repository
+                    </a>
+                    }
+                    @if (project.liveUrl) {
+                    <a [href]="project.liveUrl" target="_blank" class="link-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                            <polyline points="15 3 21 3 21 9" />
+                            <line x1="10" y1="14" x2="21" y2="3" />
+                        </svg>
+                        Live Demo
+                    </a>
+                    }
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="project-actions">
+                <button class="btn btn-outline btn-sm" (click)="openEditModal(project)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                    Edit
+                </button>
+                <button class="btn btn-danger btn-sm" (click)="confirmDelete(project)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    </svg>
+                    Delete
+                </button>
+            </div>
+        </div>
+        }
+    </div>
+
+    <!-- Pagination -->
+    @if (totalCount && totalCount > (searchParams.pageSize || 20)) {
+    <div class="pagination">
+        <button class="btn btn-secondary btn-sm" [disabled]="currentPage === 0" (click)="goToPage(currentPage - 1)">
+            Previous
+        </button>
+
+        @for (page of getPageNumbers(); track page) {
+        <button class="btn btn-sm" [class.btn-primary]="page === currentPage"
+            [class.btn-secondary]="page !== currentPage" (click)="goToPage(page)">
+            {{ page + 1 }}
+        </button>
+        }
+
+        <button class="btn btn-secondary btn-sm" [disabled]="currentPage >= getTotalPages() - 1"
+            (click)="goToPage(currentPage + 1)">
+            Next
+        </button>
+    </div>
+    }
+    }
+
+    <!-- Create/Edit Modal -->
+    @if (showModal) {
+    <div class="modal-overlay" (click)="closeModal()">
+        <div class="modal modal-lg" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>{{ isEditMode ? 'Edit Project' : 'Add Project' }}</h2>
+                <button class="close-btn" (click)="closeModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <form [formGroup]="projectForm" (ngSubmit)="submitForm()">
+                <div class="modal-body">
+                    @if (formError) {
+                    <div class="alert alert-error">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                        {{ formError }}
+                    </div>
+                    }
+
+                    <!-- Title & Slug -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Title <span class="required">*</span></label>
+                            <input type="text" formControlName="title" [class.error]="isFieldInvalid('title')"
+                                placeholder="e.g., E-Commerce Platform">
+                            @if (isFieldInvalid('title')) {
+                            <span class="error-text">Title is required</span>
+                            }
+                        </div>
+
+                        <div class="form-group">
+                            <label>Slug <span class="required">*</span></label>
+                            <input type="text" formControlName="slug" [class.error]="isFieldInvalid('slug')"
+                                placeholder="e.g., e-commerce-platform">
+                            @if (isFieldInvalid('slug')) {
+                            <span class="error-text">Slug is required</span>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Short Description -->
+                    <div class="form-group">
+                        <label>Short Description <span class="required">*</span></label>
+                        <textarea formControlName="shortDescription" rows="2"
+                            [class.error]="isFieldInvalid('shortDescription')"
+                            placeholder="A brief summary of the project..."></textarea>
+                        @if (isFieldInvalid('shortDescription')) {
+                        <span class="error-text">Short description is required</span>
+                        }
+                    </div>
+
+                    <!-- Full Description -->
+                    <div class="form-group">
+                        <label>Full Description <span class="required">*</span></label>
+                        <textarea formControlName="fullDescription" rows="6"
+                            [class.error]="isFieldInvalid('fullDescription')"
+                            placeholder="Detailed description of the project, features, technologies used..."></textarea>
+                        @if (isFieldInvalid('fullDescription')) {
+                        <span class="error-text">Full description is required</span>
+                        }
+                    </div>
+
+                    <!-- Project Type & Status -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Project Type <span class="required">*</span></label>
+                            <select formControlName="projectType" [class.error]="isFieldInvalid('projectType')">
+                                <option value="web">Web</option>
+                                <option value="mobile">Mobile</option>
+                                <option value="desktop">Desktop</option>
+                                <option value="other">Other</option>
+                            </select>
+                            @if (isFieldInvalid('projectType')) {
+                            <span class="error-text">Project type is required</span>
+                            }
+                        </div>
+
+                        <div class="form-group">
+                            <label>Status <span class="required">*</span></label>
+                            <select formControlName="status" [class.error]="isFieldInvalid('status')">
+                                <option value="completed">Completed</option>
+                                <option value="in-progress">In Progress</option>
+                                <option value="planned">Planned</option>
+                                <option value="archived">Archived</option>
+                            </select>
+                            @if (isFieldInvalid('status')) {
+                            <span class="error-text">Status is required</span>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- URLs -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Repository URL</label>
+                            <input type="text" formControlName="repoUrl" placeholder="https://github.com/username/repo">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Live URL</label>
+                            <input type="text" formControlName="liveUrl" placeholder="https://example.com">
+                        </div>
+                    </div>
+
+                    <!-- Dates -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <input type="date" formControlName="startDate">
+                        </div>
+
+                        <div class="form-group">
+                            <label>End Date</label>
+                            <input type="date" formControlName="endDate">
+                            <span class="helper-text">Leave empty if ongoing</span>
+                        </div>
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="form-group">
+                        <label>Tags</label>
+                        <div class="chip-select-container">
+                            <div class="selected-chips" [class.has-items]="getSelectedTags().length > 0">
+                                @for (tag of getSelectedTags(); track tag.id) {
+                                <span class="chip">
+                                    {{ tag.name }}
+                                    <button type="button" class="remove-chip" (click)="removeTag(tag.id)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                        </svg>
+                                    </button>
+                                </span>
+                                }
+                            </div>
+
+                            <div class="chip-dropdown">
+                                <button type="button" class="dropdown-trigger" [class.active]="showTagDropdown"
+                                    (click)="toggleTagDropdown()">
+                                    <span>{{ getSelectedTags().length > 0 ? 'Add more tags...' : 'Select tags...'
+                                        }}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2"
+                                        [class.rotated]="showTagDropdown">
+                                        <polyline points="6 9 12 15 18 9" />
+                                    </svg>
+                                </button>
+
+                                @if (showTagDropdown) {
+                                <div class="dropdown-menu" (click)="$event.stopPropagation()">
+                                    <div class="dropdown-search">
+                                        <input type="text" [(ngModel)]="tagSearchQuery" placeholder="Search tags..."
+                                            (click)="$event.stopPropagation()">
+                                    </div>
+                                    @if (getFilteredTags().length === 0) {
+                                    <div class="dropdown-empty">No tags found</div>
+                                    } @else {
+                                    @for (tag of getFilteredTags(); track tag.id) {
+                                    <div class="dropdown-item" [class.selected]="isTagSelected(tag.id)"
+                                        [class.disabled]="isTagSelected(tag.id)" (click)="toggleTag(tag.id)">
+                                        {{ tag.name }}
+                                    </div>
+                                    }
+                                    }
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Technologies -->
+                    <div class="form-group">
+                        <label>Technologies</label>
+                        <div class="chip-select-container">
+                            <div class="selected-chips" [class.has-items]="getSelectedTechs().length > 0">
+                                @for (tech of getSelectedTechs(); track tech.id) {
+                                <span class="chip">
+                                    {{ tech.name }}
+                                    <button type="button" class="remove-chip" (click)="removeTech(tech.id)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                        </svg>
+                                    </button>
+                                </span>
+                                }
+                            </div>
+
+                            <div class="chip-dropdown">
+                                <button type="button" class="dropdown-trigger" [class.active]="showTechDropdown"
+                                    (click)="toggleTechDropdown()">
+                                    <span>{{ getSelectedTechs().length > 0 ? 'Add more technologies...' : 'Select
+                                        technologies...' }}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2"
+                                        [class.rotated]="showTechDropdown">
+                                        <polyline points="6 9 12 15 18 9" />
+                                    </svg>
+                                </button>
+
+                                @if (showTechDropdown) {
+                                <div class="dropdown-menu" (click)="$event.stopPropagation()">
+                                    <div class="dropdown-search">
+                                        <input type="text" [(ngModel)]="techSearchQuery"
+                                            placeholder="Search technologies..." (click)="$event.stopPropagation()">
+                                    </div>
+                                    @if (getFilteredTechs().length === 0) {
+                                    <div class="dropdown-empty">No technologies found</div>
+                                    } @else {
+                                    @for (tech of getFilteredTechs(); track tech.id) {
+                                    <div class="dropdown-item" [class.selected]="isTechSelected(tech.id)"
+                                        [class.disabled]="isTechSelected(tech.id)" (click)="toggleTech(tech.id)">
+                                        {{ tech.name }}
+                                    </div>
+                                    }
+                                    }
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Featured Image -->
+                    <div class="form-group">
+                        <label>Featured Image</label>
+                        @if (projectForm.get('featuredMediaId')?.value) {
+                        <div class="media-preview-container">
+                            @if (getSelectedMediaPreview(); as preview) {
+                            <div class="media-preview">
+                                <img [src]="preview.fileUrl" [alt]="preview.altText || preview.fileName">
+                                <div class="media-preview-info">
+                                    <p class="media-filename">{{ preview.originalFileName }}</p>
+                                    <p class="media-size">{{ (preview.fileSize / 1024).toFixed(0) }} KB</p>
+                                </div>
+                            </div>
+                            }
+                            <div class="media-preview-actions">
+                                <button type="button" class="btn btn-outline btn-sm" (click)="openMediaSelector()">
+                                    Change Image
+                                </button>
+                                <button type="button" class="btn btn-outline btn-sm" (click)="clearMediaSelection()">
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                        } @else {
+                        <button type="button" class="btn btn-outline" (click)="openMediaSelector()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                <circle cx="8.5" cy="8.5" r="1.5" />
+                                <polyline points="21 15 16 10 5 21" />
+                            </svg>
+                            Choose Featured Image
+                        </button>
+                        }
+                    </div>
+
+                    <!-- Display Order -->
+                    <div class="form-group">
+                        <label>Display Order <span class="required">*</span></label>
+                        <input type="number" formControlName="displayOrder" min="0"
+                            [class.error]="isFieldInvalid('displayOrder')">
+                        <span class="helper-text">Lower numbers appear first</span>
+                        @if (isFieldInvalid('displayOrder')) {
+                        <span class="error-text">Display order is required</span>
+                        }
+                    </div>
+
+                    <!-- Checkboxes -->
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" formControlName="isFeatured">
+                            <span>Featured Project</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" formControlName="isPublished">
+                            <span>Published</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" (click)="closeModal()" [disabled]="isSaving">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" [disabled]="isSaving || projectForm.invalid">
+                        @if (isSaving) {
+                        <span class="spinner-sm"></span>
+                        Saving...
+                        } @else {
+                        {{ isEditMode ? 'Update' : 'Create' }}
+                        }
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    }
+
+    <!-- Delete Confirmation Modal -->
+    @if (showDeleteModal) {
+    <div class="modal-overlay" (click)="cancelDelete()">
+        <div class="modal modal-sm" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Confirm Deletion</h2>
+                <button class="close-btn" (click)="cancelDelete()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    Are you sure you want to delete this project?
+                </div>
+                @if (projectToDelete) {
+                <p><strong>{{ projectToDelete.title }}</strong></p>
+                <p class="text-muted">This action cannot be undone.</p>
+                }
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline" (click)="cancelDelete()" [disabled]="isDeleting">
+                    Cancel
+                </button>
+                <button class="btn btn-danger" (click)="executeDelete()" [disabled]="isDeleting">
+                    @if (isDeleting) {
+                    <span class="spinner-sm"></span>
+                    Deleting...
+                    } @else {
+                    Delete
+                    }
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+
+    <!-- Media Selector Modal -->
+    @if (showMediaSelectorModal) {
+    <div class="modal-overlay" (click)="closeMediaSelector()">
+        <div class="modal modal-lg" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Select Featured Image</h2>
+                <button class="close-btn" (click)="closeMediaSelector()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Search Bar -->
+                <div class="media-search-bar">
+                    <div class="search-input-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        <input type="text" [(ngModel)]="mediaSearchQuery" (ngModelChange)="filterMedia()"
+                            placeholder="Search media by name or alt text..." class="search-input">
+                        @if (mediaSearchQuery) {
+                        <button type="button" class="clear-btn" (click)="mediaSearchQuery = ''; filterMedia()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                        </button>
+                        }
+                    </div>
+                </div>
+
+                <!-- Search Results Info -->
+                <div class="media-search-results">
+                    <div class="media-count">
+                        @if (mediaSearchQuery) {
+                        Showing {{ filteredMediaList.length }} results for "<span class="search-query">{{
+                            mediaSearchQuery }}</span>"
+                        } @else {
+                        {{ filteredMediaList.length }} media files
+                        }
+                    </div>
+                    <div class="search-hint">Click to select an image</div>
+                </div>
+
+                @if (isLoadingMedia) {
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Loading media files...</p>
+                </div>
+                } @else if (filteredMediaList.length === 0) {
+                <div class="empty-state">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                        <circle cx="8.5" cy="8.5" r="1.5" />
+                        <polyline points="21 15 16 10 5 21" />
+                    </svg>
+                    @if (mediaSearchQuery) {
+                    <p>No media files found for "{{ mediaSearchQuery }}"</p>
+                    <button class="btn btn-outline btn-sm" (click)="mediaSearchQuery = ''; filterMedia()">
+                        Clear search
+                    </button>
+                    } @else {
+                    <p>No media files found</p>
+                    <p class="text-muted">Upload some images to get started</p>
+                    }
+                </div>
+                } @else {
+                <div class="media-grid">
+                    @for (media of filteredMediaList; track media.id) {
+                    <div class="media-item" [class.selected]="selectedMediaId === media.id"
+                        (click)="selectMedia(media.id)">
+                        <div class="media-thumbnail">
+                            <img [src]="media.fileUrl" [alt]="media.altText || media.fileName">
+                            @if (selectedMediaId === media.id) {
+                            <div class="selected-indicator">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                            </div>
+                            }
+                        </div>
+                        <div class="media-info">
+                            <p class="media-name">{{ media.originalFileName }}</p>
+                            <p class="media-meta">{{ (media.fileSize / 1024).toFixed(0) }} KB • {{ media.fileType }}</p>
+                        </div>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" (click)="closeMediaSelector()">
+                    Cancel
+                </button>
+                <button type="button" class="btn btn-primary" [disabled]="!selectedMediaId"
+                    (click)="confirmMediaSelection()">
+                    Select Image
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+</div>

@@ -23,7 +23,7 @@ export class AdminLayoutComponent implements OnInit {
 
   contentItems = [
     { icon: 'users', label: 'Users', route: '/admin/dashboard/user', active: false },
-    { icon: 'folder', label: 'Projects', route: '/admin/dashboard/projects', active: false },
+    { icon: 'folder', label: 'Projects', route: '/admin/dashboard/project', active: false },
     { icon: 'file-text', label: 'Blog Posts', route: '/admin/dashboard/blog-post', active: false },
     { icon: 'cpu', label: 'Technologies', route: '/admin/dashboard/tech', active: false },
     { icon: 'tag', label: 'Tags', route: '/admin/dashboard/tag', active: false },
