@@ -109,11 +109,11 @@ export const routes: Routes = [
       {
         path: 'email-template',
         loadComponent: () => import('./components/admin/email-template/email-template-manager.component').then(m => m.EmailTemplateManagerComponent)
-      }
-      // {
-      //   path: 'analytics',
-      //   loadComponent: () => import('./components/admin/analytics/admin-analytics.component').then(m => m.AdminAnalyticsComponent)
-      // },
+      },
+      {
+        path: 'analytics',
+        loadComponent: () => import('./components/admin/analytics/analytics.component').then(m => m.AnalyticsDashboardComponent)
+      },
       // {
       //   path: 'settings',
       //   loadComponent: () => import('./components/admin/settings/admin-settings.component').then(m => m.AdminSettingsComponent)

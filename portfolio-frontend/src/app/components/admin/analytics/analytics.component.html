@@ -1,0 +1,401 @@
+<!-- analytics-dashboard.component.html -->
+<div class="analytics-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1>Analytics Dashboard</h1>
+      <p>Comprehensive insights into your portfolio performance</p>
+    </div>
+     <div class="export-buttons">
+    <button class="btn btn-outline" (click)="exportCSV()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <path d="M16 13H8"/>
+        <path d="M16 17H8"/>
+        <path d="M10 9H8"/>
+      </svg>
+      Export CSV
+    </button>
+    <button class="btn btn-primary" (click)="exportPDF()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <path d="M16 13H8"/>
+        <path d="M16 17H8"/>
+        <path d="M10 9H8"/>
+      </svg>
+      Export PDF
+    </button>
+  </div>
+  </div>
+
+  <!-- Error Alert -->
+  @if (errorMessage) {
+  <div class="alert alert-error">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    <span>{{ errorMessage }}</span>
+    <button class="close-btn" (click)="dismissError()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  }
+
+  <!-- Filter Toolbar -->
+  <div class="card filter-toolbar">
+    <form [formGroup]="filterForm" class="filter-form">
+      <div class="date-inputs">
+        <div class="form-group">
+          <label>Start Date</label>
+          <input type="date" formControlName="startDate">
+        </div>
+        <div class="form-group">
+          <label>End Date</label>
+          <input type="date" formControlName="endDate">
+        </div>
+      </div>
+
+      <div class="preset-buttons">
+        @for (preset of datePresets; track preset.label) {
+        <button type="button" class="btn btn-outline btn-sm" (click)="applyPreset(preset.days)">
+          {{ preset.label }}
+        </button>
+        }
+      </div>
+
+      <div class="granularity-selector">
+        <label>Granularity</label>
+        <select [(ngModel)]="granularity" [ngModelOptions]="{standalone: true}" (change)="applyFilters()">
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+
+      <button type="button" class="btn btn-primary" (click)="applyFilters()">
+        Apply
+      </button>
+    </form>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    @for (card of kpiCards; track card.title) {
+    <div class="kpi-card" [style.--accent-color]="card.color">
+      <div class="kpi-icon" [style.background-color]="card.color + '15'" [style.color]="card.color">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          @switch (card.icon) {
+            @case ('eye') {
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            }
+            @case ('users') {
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            }
+            @case ('mail') {
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            }
+            @case ('message') {
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            }
+            @case ('file') {
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            }
+            @case ('star') {
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            }
+          }
+        </svg>
+      </div>
+      <div class="kpi-content">
+        <h3>{{ card.title }}</h3>
+        <div class="kpi-value">
+          @if (!card.isLoading) {
+            <span>{{ card.value }}</span>
+          } @else {
+            <div class="skeleton skeleton-value"></div>
+          }
+        </div>
+        @if (card.change) {
+          <p class="kpi-change">{{ card.change }}</p>
+        }
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-grid">
+    <!-- Traffic Chart -->
+    <div class="chart-card chart-large">
+      <div class="chart-header">
+        <h2>Traffic Over Time</h2>
+      </div>
+      @if (isLoadingCharts) {
+        <div class="chart-loading">
+          <div class="spinner"></div>
+          <p>Loading chart data...</p>
+        </div>
+      } @else {
+        <div class="chart-container">
+          <canvas #trafficChart></canvas>
+        </div>
+      }
+    </div>
+
+    <!-- Top Pages Chart -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <h2>Top Pages</h2>
+      </div>
+      @if (isLoadingCharts) {
+        <div class="chart-loading">
+          <div class="spinner"></div>
+        </div>
+      } @else {
+        <div class="chart-container">
+          <canvas #topPagesChart></canvas>
+        </div>
+      }
+    </div>
+
+    <!-- Blog Engagement Chart -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <h2>Blog Post Engagement</h2>
+      </div>
+      @if (isLoadingCharts) {
+        <div class="chart-loading">
+          <div class="spinner"></div>
+        </div>
+      } @else {
+        <div class="chart-container">
+          <canvas #blogEngagementChart></canvas>
+        </div>
+      }
+    </div>
+
+    <!-- Subscribers Chart -->
+    <div class="chart-card chart-large">
+      <div class="chart-header">
+        <h2>Subscriber Growth</h2>
+      </div>
+      @if (isLoadingCharts) {
+        <div class="chart-loading">
+          <div class="spinner"></div>
+        </div>
+      } @else {
+        <div class="chart-container">
+          <canvas #subscribersChart></canvas>
+        </div>
+      }
+    </div>
+
+    <!-- Projects Chart -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <h2>Top Projects by Views</h2>
+      </div>
+      @if (isLoadingCharts) {
+        <div class="chart-loading">
+          <div class="spinner"></div>
+        </div>
+      } @else {
+        <div class="chart-container">
+          <canvas #projectsChart></canvas>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Recent Items Section -->
+  <div class="recent-section">
+    <!-- Recent Messages -->
+    <div class="card">
+      <div class="section-header">
+        <h2>Recent Contact Messages</h2>
+      </div>
+
+      @if (isLoadingMessages) {
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading messages...</p>
+        </div>
+      } @else if (recentMessages.length === 0) {
+        <div class="empty-state">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          <h3>No Messages Yet</h3>
+          <p>Contact messages will appear here</p>
+        </div>
+      } @else {
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Subject</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (message of recentMessages; track message.id) {
+                <tr>
+                  <td>{{ message.name }}</td>
+                  <td>{{ message.email }}</td>
+                  <td>{{ message.subject }}</td>
+                  <td>{{ formatDate(message.createdAt) }}</td>
+                  <td>
+                    <span class="badge" [ngClass]="{
+                      'badge-success': message.status === 'resolved',
+                      'badge-warning': message.status === 'pending',
+                      'badge-info': message.status === 'in-progress'
+                    }">
+                      {{ message.status }}
+                    </span>
+                  </td>
+                  <td>
+                    <button class="btn btn-outline btn-sm" (click)="openMessageModal(message)">
+                      View
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+
+    <!-- Recent Posts -->
+    <div class="card">
+      <div class="section-header">
+        <h2>Recent Blog Posts</h2>
+      </div>
+
+      @if (isLoadingPosts) {
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading posts...</p>
+        </div>
+      } @else if (recentPosts.length === 0) {
+        <div class="empty-state">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          <h3>No Posts Yet</h3>
+          <p>Published posts will appear here</p>
+        </div>
+      } @else {
+        <div class="posts-list">
+          @for (post of recentPosts; track post.id) {
+            <div class="post-item">
+              <div class="post-content">
+                <h4>{{ post.title }}</h4>
+                <div class="post-meta">
+                  <span class="badge badge-outline">{{ post.status }}</span>
+                  <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    {{ post.viewCount }} views
+                  </span>
+                  <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                    {{ post.likeCount }} likes
+                  </span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- Message Modal -->
+@if (showMessageModal && selectedMessage) {
+  <div class="modal-overlay" (click)="closeMessageModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Message Details</h2>
+        <button class="close-btn" (click)="closeMessageModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="message-detail">
+          <div class="detail-row">
+            <strong>From:</strong>
+            <span>{{ selectedMessage.name }} ({{ selectedMessage.email }})</span>
+          </div>
+          @if (selectedMessage.phone) {
+            <div class="detail-row">
+              <strong>Phone:</strong>
+              <span>{{ selectedMessage.phone }}</span>
+            </div>
+          }
+          @if (selectedMessage.company) {
+            <div class="detail-row">
+              <strong>Company:</strong>
+              <span>{{ selectedMessage.company }}</span>
+            </div>
+          }
+          <div class="detail-row">
+            <strong>Subject:</strong>
+            <span>{{ selectedMessage.subject }}</span>
+          </div>
+          <div class="detail-row">
+            <strong>Date:</strong>
+            <span>{{ formatDate(selectedMessage.createdAt) }}</span>
+          </div>
+          <div class="detail-row">
+            <strong>Status:</strong>
+            <span class="badge" [ngClass]="{
+              'badge-success': selectedMessage.status === 'resolved',
+              'badge-warning': selectedMessage.status === 'pending',
+              'badge-info': selectedMessage.status === 'in-progress'
+            }">
+              {{ selectedMessage.status }}
+            </span>
+          </div>
+          <div class="detail-row message-body">
+            <strong>Message:</strong>
+            <p>{{ selectedMessage.message }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="closeMessageModal()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+}
