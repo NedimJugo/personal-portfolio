@@ -420,6 +420,12 @@ $comic-gray: #718096;
   }
 }
 
+.certificates-comic .section-header-comic {
+  @media (max-width: 768px) {
+    padding-top: 40px; // Add space at the top for the boom effect
+  }
+}
+
 @keyframes boom {
   0% { transform: scale(0) rotate(-45deg); opacity: 0; }
   50% { transform: scale(1.2) rotate(-12deg); }

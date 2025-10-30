@@ -1,13 +1,42 @@
 <footer class="footer-comic">
     <div class="container">
         <div class="footer-content-comic">
-            <div class="footer-social-comic">
-                @for (link of socialLinks$ | async; track link.url) {
-                <a [href]="link.url" target="_blank" class="social-link-comic" [title]="link.displayName">
-                    {{ link.platform }}
-                </a>
+            <!-- Social Links Section -->
+            <div class="footer-social-section">
+                <h3 class="footer-section-title">Connect With Me</h3>
+                <div class="footer-social-comic">
+                    @for (link of socialLinks$ | async; track link.url) {
+                    <a [href]="link.url" target="_blank" class="social-link-comic" 
+                       [title]="link.displayName"
+                       [style.--social-color]="link.color">
+                        <i [class]="link.iconClass"></i>
+                    </a>
+                    }
+                </div>
+            </div>
+
+            <!-- Newsletter Section -->
+            <div class="newsletter-section">
+                <h3 class="newsletter-title">Newsletter</h3>
+                <p class="newsletter-subtitle">Get updates</p>
+                <form [formGroup]="newsletterForm" (ngSubmit)="onSubscribe()" class="newsletter-form">
+                    <input type="email" formControlName="email" placeholder="Your email" class="newsletter-input"
+                        [class.error]="newsletterForm.get('email')?.invalid && newsletterForm.get('email')?.touched" />
+                    <button type="submit" class="newsletter-button" [disabled]="isSubmitting || newsletterForm.invalid">
+                        {{ isSubmitting ? '...' : '→' }}
+                    </button>
+                </form>
+                @if (successMessage) {
+                <p class="newsletter-message success">{{ successMessage }}</p>
+                }
+                @if (errorMessage) {
+                <p class="newsletter-message error">{{ errorMessage }}</p>
                 }
             </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="footer-bottom">
             <p class="footer-text">
                 © {{ currentYear }} John Doe. Crafted with ❤️ and lots of ☕
             </p>

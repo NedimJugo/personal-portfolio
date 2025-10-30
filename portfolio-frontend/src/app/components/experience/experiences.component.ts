@@ -1,4 +1,4 @@
-import { Component, type OnInit, ChangeDetectionStrategy } from "@angular/core"
+import { Component, type OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core"
 import { CommonModule } from "@angular/common"
 import { type Observable, of } from "rxjs"
 import { map, catchError } from "rxjs/operators"
@@ -20,15 +20,19 @@ import { NavBarComponent } from "../nav-bar/nav-bar.component";
   styleUrls: ["./experiences.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ExperiencesComponent implements OnInit {
+export class ExperiencesComponent implements OnInit, OnDestroy {
   experiences$!: Observable<ParsedExperience[]>
   skills$!: Observable<SkillResponse[]>
   testimonials$!: Observable<TestimonialResponse[]>
+  currentSlide = 0;
+  private testimonials: TestimonialResponse[] = [];
+  private autoAdvanceInterval: any;
 
   constructor(
     private experienceService: ExperienceService,
     private skillService: SkillService,
     private testimonialService: TestimonialService,
+    private cdr: ChangeDetectorRef  // Add ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -51,9 +55,52 @@ export class ExperiencesComponent implements OnInit {
         retrieveAll: true,
       })
       .pipe(
-        map((result) => result.items || []),
+        map((result) => {
+          const items = result.items || [];
+          this.testimonials = items;
+          // Start auto-advance after testimonials are loaded
+          this.startAutoAdvance();
+          return items;
+        }),
         catchError(() => of([])),
-      )
+      );
+  }
+
+  private startAutoAdvance(): void {
+    // Clear any existing interval
+    if (this.autoAdvanceInterval) {
+      clearInterval(this.autoAdvanceInterval);
+    }
+
+    // Only start if we have testimonials
+    if (this.testimonials.length > 1) {
+      this.autoAdvanceInterval = setInterval(() => {
+        this.nextSlide();
+      }, 5000);
+    }
+  }
+
+  nextSlide(): void {
+    if (this.testimonials.length === 0) return;
+    
+    this.currentSlide = (this.currentSlide + 1) % this.testimonials.length;
+    this.cdr.markForCheck(); // Trigger change detection
+  }
+
+  previousSlide(): void {
+    if (this.testimonials.length === 0) return;
+    
+    this.currentSlide = this.currentSlide === 0 
+      ? this.testimonials.length - 1 
+      : this.currentSlide - 1;
+    this.cdr.markForCheck(); // Trigger change detection
+  }
+
+  goToSlide(index: number): void {
+    if (index >= 0 && index < this.testimonials.length) {
+      this.currentSlide = index;
+      this.cdr.markForCheck(); // Trigger change detection
+    }
   }
 
   private parseExperience(exp: ExperienceResponse): ParsedExperience {
@@ -99,5 +146,11 @@ export class ExperiencesComponent implements OnInit {
   getSkillsByCategory(skills: SkillResponse[] | null, category: string): SkillResponse[] {
     if (!skills) return []
     return skills.filter((skill) => skill.category === category).sort((a, b) => a.displayOrder - b.displayOrder)
+  }
+
+  ngOnDestroy(): void {
+    if (this.autoAdvanceInterval) {
+      clearInterval(this.autoAdvanceInterval);
+    }
   }
 }

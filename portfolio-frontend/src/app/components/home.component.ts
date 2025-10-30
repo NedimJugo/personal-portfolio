@@ -28,6 +28,7 @@ import { BlogPostLikeService } from "../services/blog-post-like.service"
 import { BlogPostLikeStatus } from "../models/blog-post-like/blog-post-like-status.model"
 import { BlogPostWithLikeStatus } from "../models/blog-post/blog-post-with-like-status.model"
 import { BlogPostStatus } from "../models/enums/blog-post-status.enum"
+import { Router } from "@angular/router"
 
 @Component({
   selector: "app-home",
@@ -65,12 +66,13 @@ export class HomeComponent implements OnInit {
     private mediaService: MediaService,
     private visitorTrackingService: VisitorTrackingService,
     private blogPostLikeService: BlogPostLikeService,
-    private cdr: ChangeDetectorRef
-  ) {}
+    private cdr: ChangeDetectorRef,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.visitorId = this.visitorTrackingService.getOrCreateVisitorId()
-    
+
     // Track home page view
     this.visitorTrackingService.trackPageView('/home').subscribe({
       next: () => console.log('Home page view tracked'),
@@ -79,9 +81,9 @@ export class HomeComponent implements OnInit {
 
     this.heroContent$ = this.loadHeroContent()
     this.featuredProjects$ = this.loadProjectsWithImages()
-    
+
     // Load latest blog posts with like status
-    this.latestBlogPosts$ = this.blogService.get({ pageSize: 3, status: BlogPostStatus.Published  }).pipe(
+    this.latestBlogPosts$ = this.blogService.get({ pageSize: 3, status: BlogPostStatus.Published }).pipe(
       map((result) => result.items || []),
       switchMap((posts) => this.loadLikeStatusForPosts(posts)),
       catchError(() => of([])),
@@ -136,12 +138,12 @@ export class HomeComponent implements OnInit {
     return this.projectService.get({ isFeatured: true, pageSize: 3 }).pipe(
       switchMap((result) => {
         const projects = result.items || []
-        
+
         if (projects.length === 0) {
           return of([])
         }
 
-        const projectsWithImages$ = projects.map(project => 
+        const projectsWithImages$ = projects.map(project =>
           this.loadProjectHeroImage(project)
         )
 
@@ -155,14 +157,14 @@ export class HomeComponent implements OnInit {
   }
 
   private loadProjectHeroImage(project: ProjectResponse): Observable<ProjectWithImage> {
-    return this.projectImageService.get({ 
-      projectId: project.id, 
+    return this.projectImageService.get({
+      projectId: project.id,
       isHero: true,
-      pageSize: 1 
+      pageSize: 1
     }).pipe(
       switchMap((imageResult) => {
         const projectImage = imageResult.items?.[0]
-        
+
         if (!projectImage) {
           return of({
             ...project,
@@ -213,7 +215,7 @@ export class HomeComponent implements OnInit {
       map((result) => {
         if (result.items && result.items.length > 0) {
           const heroData = result.items.find(item => item.contentType === 'json')
-          
+
           if (heroData) {
             return this.parseHeroContent(heroData)
           }
@@ -250,16 +252,22 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  downloadResume(): void {
-    console.log("Downloading resume...")
+  viewProjectDetails(projectId: string): void {
+    this.router.navigate(['/projects', projectId])
   }
 
-  viewProjects(): void {
-    window.location.href = "#projects"
+  
+  viewAllProjects(): void {
+    this.router.navigate(['/projects']);
   }
+
 
   contactMe(): void {
-    window.location.href = "#contact"
+    this.router.navigate(['/contact']);
+  }
+
+  viewAllExperience(): void {
+    this.router.navigate(['/experience']);
   }
 
   getStars(rating: number): number[] {
@@ -270,4 +278,5 @@ export class HomeComponent implements OnInit {
     const img = event.target as HTMLImageElement
     img.src = this.defaultProjectImage
   }
+
 }
