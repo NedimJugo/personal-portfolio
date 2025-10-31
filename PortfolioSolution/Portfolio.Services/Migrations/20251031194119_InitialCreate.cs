@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Portfolio.Services.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate3 : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,14 +18,14 @@ namespace Portfolio.Services.Migrations
                 name: "EmailTemplates",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Subject = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    HtmlContent = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TextContent = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Subject = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    HtmlContent = table.Column<string>(type: "text", nullable: false),
+                    TextContent = table.Column<string>(type: "text", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -35,11 +36,11 @@ namespace Portfolio.Services.Migrations
                 name: "Roles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -50,10 +51,10 @@ namespace Portfolio.Services.Migrations
                 name: "Settings",
                 columns: table => new
                 {
-                    Key = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                    Key = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Value = table.Column<string>(type: "character varying(4000)", maxLength: 4000, nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -64,13 +65,13 @@ namespace Portfolio.Services.Migrations
                 name: "SiteContents",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Section = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ContentType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsPublished = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Section = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    ContentType = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: false),
+                    IsPublished = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -81,16 +82,16 @@ namespace Portfolio.Services.Migrations
                 name: "SocialLinks",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Platform = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    DisplayName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Url = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    IconClass = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Color = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsVisible = table.Column<bool>(type: "bit", nullable: false),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Platform = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    DisplayName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Url = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    IconClass = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    Color = table.Column<string>(type: "text", nullable: true),
+                    IsVisible = table.Column<bool>(type: "boolean", nullable: false),
+                    DisplayOrder = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -101,13 +102,13 @@ namespace Portfolio.Services.Migrations
                 name: "Subscribers",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    Source = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SubscribedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    UnsubscribedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    Source = table.Column<string>(type: "text", nullable: true),
+                    SubscribedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UnsubscribedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -118,9 +119,9 @@ namespace Portfolio.Services.Migrations
                 name: "Tags",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Slug = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Slug = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -131,27 +132,27 @@ namespace Portfolio.Services.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FullName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    LastLoginAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FullName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    LastLoginAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -162,11 +163,11 @@ namespace Portfolio.Services.Migrations
                 name: "RoleClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<int>(type: "int", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RoleId = table.Column<int>(type: "integer", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -183,26 +184,26 @@ namespace Portfolio.Services.Migrations
                 name: "ContactMessages",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Subject = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    Message = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Company = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    ProjectType = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    BudgetRange = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    IpAddress = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    UserAgent = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    Source = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Priority = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    HandledById = table.Column<int>(type: "int", nullable: true),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    DeletedById = table.Column<int>(type: "int", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Subject = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    Message = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
+                    Phone = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    Company = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    ProjectType = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    BudgetRange = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    IpAddress = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    UserAgent = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    Source = table.Column<string>(type: "text", nullable: true),
+                    Status = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    Priority = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    HandledById = table.Column<int>(type: "integer", nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    DeletedById = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -225,24 +226,24 @@ namespace Portfolio.Services.Migrations
                 name: "Experiences",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", maxLength: 36, nullable: false),
-                    CompanyName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    CompanyLogo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Position = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Location = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    EmploymentType = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", maxLength: 36, nullable: false),
+                    CompanyName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    CompanyLogo = table.Column<string>(type: "text", nullable: true),
+                    Position = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Location = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    EmploymentType = table.Column<int>(type: "integer", nullable: false),
                     StartDate = table.Column<DateOnly>(type: "date", nullable: false),
                     EndDate = table.Column<DateOnly>(type: "date", nullable: true),
-                    IsCurrent = table.Column<bool>(type: "bit", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Achievements = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Technologies = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    DeletedById = table.Column<int>(type: "int", nullable: true)
+                    IsCurrent = table.Column<bool>(type: "boolean", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Achievements = table.Column<string>(type: "text", nullable: false),
+                    Technologies = table.Column<string>(type: "text", nullable: false),
+                    DisplayOrder = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    DeletedById = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -259,22 +260,22 @@ namespace Portfolio.Services.Migrations
                 name: "Media",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FileName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    OriginalFileName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FileUrl = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    StorageProvider = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    FileType = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    FileName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    OriginalFileName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    FileUrl = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
+                    StorageProvider = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    FileType = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     FileSize = table.Column<long>(type: "bigint", nullable: false),
-                    MimeType = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Width = table.Column<int>(type: "int", nullable: true),
-                    Height = table.Column<int>(type: "int", nullable: true),
-                    AltText = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Caption = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
-                    Folder = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    UploadedById = table.Column<int>(type: "int", nullable: false),
-                    UploadedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    ApplicationUserId = table.Column<int>(type: "int", nullable: true)
+                    MimeType = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Width = table.Column<int>(type: "integer", nullable: true),
+                    Height = table.Column<int>(type: "integer", nullable: true),
+                    AltText = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Caption = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: true),
+                    Folder = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    UploadedById = table.Column<int>(type: "integer", nullable: false),
+                    UploadedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ApplicationUserId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -296,12 +297,12 @@ namespace Portfolio.Services.Migrations
                 name: "RefreshTokens",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Token = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    ExpiresAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    IsRevoked = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Token = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    ExpiresAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    IsRevoked = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -318,11 +319,11 @@ namespace Portfolio.Services.Migrations
                 name: "UserClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -339,10 +340,10 @@ namespace Portfolio.Services.Migrations
                 name: "UserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    LoginProvider = table.Column<string>(type: "text", nullable: false),
+                    ProviderKey = table.Column<string>(type: "text", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -359,8 +360,8 @@ namespace Portfolio.Services.Migrations
                 name: "UserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    RoleId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -383,10 +384,10 @@ namespace Portfolio.Services.Migrations
                 name: "UserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    LoginProvider = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -400,33 +401,163 @@ namespace Portfolio.Services.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ContactMessageReplies",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ContactMessageId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ReplyMessage = table.Column<string>(type: "character varying(5000)", maxLength: 5000, nullable: false),
+                    ReplyToEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Subject = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    RepliedById = table.Column<int>(type: "integer", nullable: false),
+                    RepliedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    DeliveryStatus = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    DeliveredAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    ErrorMessage = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
+                    IsInternal = table.Column<bool>(type: "boolean", nullable: false),
+                    ExternalMessageId = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    DeletedById = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ContactMessageReplies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ContactMessageReplies_ContactMessages_ContactMessageId",
+                        column: x => x.ContactMessageId,
+                        principalTable: "ContactMessages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ContactMessageReplies_Users_DeletedById",
+                        column: x => x.DeletedById,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ContactMessageReplies_Users_RepliedById",
+                        column: x => x.RepliedById,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Certificates",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    IssuingOrganization = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    IssueDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ExpirationDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CredentialId = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    CredentialUrl = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
+                    Description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
+                    Skills = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
+                    CertificateType = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    IsPublished = table.Column<bool>(type: "boolean", nullable: false),
+                    DisplayOrder = table.Column<int>(type: "integer", nullable: false),
+                    LogoMediaId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CertificateMediaId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    DeletedById = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Certificates", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Certificates_Media_CertificateMediaId",
+                        column: x => x.CertificateMediaId,
+                        principalTable: "Media",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Certificates_Media_LogoMediaId",
+                        column: x => x.LogoMediaId,
+                        principalTable: "Media",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Certificates_Users_DeletedById",
+                        column: x => x.DeletedById,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Educations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    InstitutionName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Degree = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    FieldOfStudy = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    Location = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    StartDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    EndDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    IsCurrent = table.Column<bool>(type: "boolean", nullable: false),
+                    Grade = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    Description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
+                    EducationType = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    DisplayOrder = table.Column<int>(type: "integer", nullable: false),
+                    LogoMediaId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    DeletedById = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Educations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Educations_Media_LogoMediaId",
+                        column: x => x.LogoMediaId,
+                        principalTable: "Media",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Educations_Users_DeletedById",
+                        column: x => x.DeletedById,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Projects",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Slug = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    ShortDescription = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
-                    FullDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProjectType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    IsFeatured = table.Column<bool>(type: "bit", nullable: false),
-                    FeaturedMediaId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    RepoUrl = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    LiveUrl = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Slug = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    ShortDescription = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: false),
+                    FullDescription = table.Column<string>(type: "text", nullable: false),
+                    ProjectType = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    Status = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    IsFeatured = table.Column<bool>(type: "boolean", nullable: false),
+                    FeaturedMediaId = table.Column<Guid>(type: "uuid", nullable: true),
+                    RepoUrl = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
+                    LiveUrl = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
                     StartDate = table.Column<DateOnly>(type: "date", nullable: true),
                     EndDate = table.Column<DateOnly>(type: "date", nullable: true),
-                    IsPublished = table.Column<bool>(type: "bit", nullable: false),
-                    PublishedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
-                    ViewCount = table.Column<int>(type: "int", nullable: false),
-                    CreatedById = table.Column<int>(type: "int", nullable: false),
-                    UpdatedById = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    DeletedById = table.Column<int>(type: "int", nullable: true)
+                    IsPublished = table.Column<bool>(type: "boolean", nullable: false),
+                    PublishedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    DisplayOrder = table.Column<int>(type: "integer", nullable: false),
+                    ViewCount = table.Column<int>(type: "integer", nullable: false),
+                    CreatedById = table.Column<int>(type: "integer", nullable: false),
+                    UpdatedById = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    DeletedById = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -461,17 +592,17 @@ namespace Portfolio.Services.Migrations
                 name: "Skills",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Category = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    ProficiencyLevel = table.Column<int>(type: "int", nullable: false),
-                    YearsExperience = table.Column<int>(type: "int", nullable: false),
-                    IsFeatured = table.Column<bool>(type: "bit", nullable: false),
-                    IconMediaId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Color = table.Column<string>(type: "nvarchar(7)", maxLength: 7, nullable: true),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Category = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    ProficiencyLevel = table.Column<int>(type: "integer", nullable: false),
+                    YearsExperience = table.Column<int>(type: "integer", nullable: false),
+                    IsFeatured = table.Column<bool>(type: "boolean", nullable: false),
+                    IconMediaId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Color = table.Column<string>(type: "character varying(7)", maxLength: 7, nullable: true),
+                    DisplayOrder = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -488,11 +619,11 @@ namespace Portfolio.Services.Migrations
                 name: "Techs",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Slug = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Category = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    IconMediaId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Slug = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Category = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    IconMediaId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -509,26 +640,26 @@ namespace Portfolio.Services.Migrations
                 name: "BlogPosts",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Slug = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Excerpt = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FeaturedImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    Tags = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Categories = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReadingTime = table.Column<int>(type: "int", nullable: false),
-                    ViewCount = table.Column<int>(type: "int", nullable: false),
-                    LikeCount = table.Column<int>(type: "int", nullable: false),
-                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CreatedById = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    PublishedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    DeletedById = table.Column<int>(type: "int", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Slug = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Excerpt = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: false),
+                    FeaturedImage = table.Column<string>(type: "text", nullable: true),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    Tags = table.Column<string>(type: "text", nullable: false),
+                    Categories = table.Column<string>(type: "text", nullable: false),
+                    ReadingTime = table.Column<int>(type: "integer", nullable: false),
+                    ViewCount = table.Column<int>(type: "integer", nullable: false),
+                    LikeCount = table.Column<int>(type: "integer", nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreatedById = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    PublishedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    DeletedById = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -556,12 +687,12 @@ namespace Portfolio.Services.Migrations
                 name: "ProjectImages",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    MediaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Caption = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Order = table.Column<int>(type: "int", nullable: false),
-                    IsHero = table.Column<bool>(type: "bit", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uuid", nullable: false),
+                    MediaId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Caption = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Order = table.Column<int>(type: "integer", nullable: false),
+                    IsHero = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -584,8 +715,8 @@ namespace Portfolio.Services.Migrations
                 name: "ProjectTags",
                 columns: table => new
                 {
-                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TagId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ProjectId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TagId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -608,22 +739,22 @@ namespace Portfolio.Services.Migrations
                 name: "Testimonials",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ClientName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    ClientTitle = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    ClientCompany = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    ClientAvatar = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    Content = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    Rating = table.Column<int>(type: "int", nullable: false),
-                    IsApproved = table.Column<bool>(type: "bit", nullable: false),
-                    IsFeatured = table.Column<bool>(type: "bit", nullable: false),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
-                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    DeletedById = table.Column<int>(type: "int", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ClientName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    ClientTitle = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    ClientCompany = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    ClientAvatar = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    Content = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
+                    Rating = table.Column<int>(type: "integer", nullable: false),
+                    IsApproved = table.Column<bool>(type: "boolean", nullable: false),
+                    IsFeatured = table.Column<bool>(type: "boolean", nullable: false),
+                    DisplayOrder = table.Column<int>(type: "integer", nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    DeletedById = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -646,8 +777,8 @@ namespace Portfolio.Services.Migrations
                 name: "ProjectTechs",
                 columns: table => new
                 {
-                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TechId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ProjectId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TechId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -667,19 +798,40 @@ namespace Portfolio.Services.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BlogPostLikes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    BlogPostId = table.Column<Guid>(type: "uuid", nullable: false),
+                    VisitorKey = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    LikedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BlogPostLikes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BlogPostLikes_BlogPosts_BlogPostId",
+                        column: x => x.BlogPostId,
+                        principalTable: "BlogPosts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PageViews",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Path = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    Referrer = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserAgent = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ViewedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    BlogPostId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Path = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    Referrer = table.Column<string>(type: "text", nullable: true),
+                    UserAgent = table.Column<string>(type: "text", nullable: true),
+                    IpAddress = table.Column<string>(type: "text", nullable: true),
+                    Country = table.Column<string>(type: "text", nullable: true),
+                    City = table.Column<string>(type: "text", nullable: true),
+                    ViewedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uuid", nullable: true),
+                    BlogPostId = table.Column<Guid>(type: "uuid", nullable: true),
+                    VisitorKey = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -731,11 +883,11 @@ namespace Portfolio.Services.Migrations
                 columns: new[] { "Key", "Id", "UpdatedAt", "Value" },
                 values: new object[,]
                 {
-                    { "contact_email", new Guid("00000000-0000-0000-0000-000000000003"), new DateTimeOffset(new DateTime(2025, 9, 25, 18, 15, 18, 674, DateTimeKind.Unspecified).AddTicks(3525), new TimeSpan(0, 0, 0, 0, 0)), "contact@portfolio.com" },
-                    { "github_url", new Guid("00000000-0000-0000-0000-000000000004"), new DateTimeOffset(new DateTime(2025, 9, 25, 18, 15, 18, 674, DateTimeKind.Unspecified).AddTicks(3527), new TimeSpan(0, 0, 0, 0, 0)), "https://github.com/yourusername" },
-                    { "linkedin_url", new Guid("00000000-0000-0000-0000-000000000005"), new DateTimeOffset(new DateTime(2025, 9, 25, 18, 15, 18, 674, DateTimeKind.Unspecified).AddTicks(3530), new TimeSpan(0, 0, 0, 0, 0)), "https://linkedin.com/in/yourusername" },
-                    { "site_description", new Guid("00000000-0000-0000-0000-000000000002"), new DateTimeOffset(new DateTime(2025, 9, 25, 18, 15, 18, 674, DateTimeKind.Unspecified).AddTicks(3520), new TimeSpan(0, 0, 0, 0, 0)), "Full Stack Developer Portfolio" },
-                    { "site_title", new Guid("00000000-0000-0000-0000-000000000001"), new DateTimeOffset(new DateTime(2025, 9, 25, 18, 15, 18, 674, DateTimeKind.Unspecified).AddTicks(2339), new TimeSpan(0, 0, 0, 0, 0)), "My Portfolio" }
+                    { "contact_email", new Guid("00000000-0000-0000-0000-000000000003"), new DateTimeOffset(new DateTime(2025, 10, 31, 19, 41, 18, 80, DateTimeKind.Unspecified).AddTicks(6529), new TimeSpan(0, 0, 0, 0, 0)), "contact@portfolio.com" },
+                    { "github_url", new Guid("00000000-0000-0000-0000-000000000004"), new DateTimeOffset(new DateTime(2025, 10, 31, 19, 41, 18, 80, DateTimeKind.Unspecified).AddTicks(6532), new TimeSpan(0, 0, 0, 0, 0)), "https://github.com/yourusername" },
+                    { "linkedin_url", new Guid("00000000-0000-0000-0000-000000000005"), new DateTimeOffset(new DateTime(2025, 10, 31, 19, 41, 18, 80, DateTimeKind.Unspecified).AddTicks(6535), new TimeSpan(0, 0, 0, 0, 0)), "https://linkedin.com/in/yourusername" },
+                    { "site_description", new Guid("00000000-0000-0000-0000-000000000002"), new DateTimeOffset(new DateTime(2025, 10, 31, 19, 41, 18, 80, DateTimeKind.Unspecified).AddTicks(6524), new TimeSpan(0, 0, 0, 0, 0)), "Full Stack Developer Portfolio" },
+                    { "site_title", new Guid("00000000-0000-0000-0000-000000000001"), new DateTimeOffset(new DateTime(2025, 10, 31, 19, 41, 18, 80, DateTimeKind.Unspecified).AddTicks(5726), new TimeSpan(0, 0, 0, 0, 0)), "My Portfolio" }
                 });
 
             migrationBuilder.InsertData(
@@ -842,6 +994,12 @@ namespace Portfolio.Services.Migrations
                 values: new object[] { 1, 1 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_BlogPostLike_BlogPostId_VisitorKey",
+                table: "BlogPostLikes",
+                columns: new[] { "BlogPostId", "VisitorKey" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BlogPosts_CreatedById",
                 table: "BlogPosts",
                 column: "CreatedById");
@@ -873,6 +1031,61 @@ namespace Portfolio.Services.Migrations
                 columns: new[] { "Status", "PublishedAt" });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Certificates_CertificateMediaId",
+                table: "Certificates",
+                column: "CertificateMediaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Certificates_DeletedById",
+                table: "Certificates",
+                column: "DeletedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Certificates_DisplayOrder",
+                table: "Certificates",
+                column: "DisplayOrder");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Certificates_ExpirationDate",
+                table: "Certificates",
+                column: "ExpirationDate");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Certificates_IsActive_IssueDate",
+                table: "Certificates",
+                columns: new[] { "IsActive", "IssueDate" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Certificates_IsDeleted",
+                table: "Certificates",
+                column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Certificates_IsPublished",
+                table: "Certificates",
+                column: "IsPublished");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Certificates_LogoMediaId",
+                table: "Certificates",
+                column: "LogoMediaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ContactMessageReplies_ContactMessageId",
+                table: "ContactMessageReplies",
+                column: "ContactMessageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ContactMessageReplies_DeletedById",
+                table: "ContactMessageReplies",
+                column: "DeletedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ContactMessageReplies_RepliedById",
+                table: "ContactMessageReplies",
+                column: "RepliedById");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ContactMessages_CreatedAt",
                 table: "ContactMessages",
                 column: "CreatedAt");
@@ -896,6 +1109,31 @@ namespace Portfolio.Services.Migrations
                 name: "IX_ContactMessages_Status",
                 table: "ContactMessages",
                 column: "Status");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Educations_DeletedById",
+                table: "Educations",
+                column: "DeletedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Educations_DisplayOrder",
+                table: "Educations",
+                column: "DisplayOrder");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Educations_IsDeleted",
+                table: "Educations",
+                column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Educations_LogoMediaId",
+                table: "Educations",
+                column: "LogoMediaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Educations_StartDate_EndDate",
+                table: "Educations",
+                columns: new[] { "StartDate", "EndDate" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_EmailTemplates_IsActive",
@@ -1034,8 +1272,7 @@ namespace Portfolio.Services.Migrations
                 name: "RoleNameIndex",
                 table: "Roles",
                 column: "NormalizedName",
-                unique: true,
-                filter: "[NormalizedName] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_SiteContents_IsPublished",
@@ -1144,22 +1381,29 @@ namespace Portfolio.Services.Migrations
                 name: "IX_Users_Email",
                 table: "Users",
                 column: "Email",
-                unique: true,
-                filter: "[Email] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "Users",
                 column: "NormalizedUserName",
-                unique: true,
-                filter: "[NormalizedUserName] IS NOT NULL");
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ContactMessages");
+                name: "BlogPostLikes");
+
+            migrationBuilder.DropTable(
+                name: "Certificates");
+
+            migrationBuilder.DropTable(
+                name: "ContactMessageReplies");
+
+            migrationBuilder.DropTable(
+                name: "Educations");
 
             migrationBuilder.DropTable(
                 name: "EmailTemplates");
@@ -1214,6 +1458,9 @@ namespace Portfolio.Services.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserTokens");
+
+            migrationBuilder.DropTable(
+                name: "ContactMessages");
 
             migrationBuilder.DropTable(
                 name: "BlogPosts");

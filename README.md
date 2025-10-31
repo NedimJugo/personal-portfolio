@@ -18,7 +18,7 @@ A full-stack personal portfolio website showcasing projects, skills, blog posts,
 - [Configuration](#-configuration)
 - [API Documentation](#-api-documentation)
 - [Project Structure](#-project-structure)
-- [Roadmap](#-roadmap)
+- [Future Enhancements](#-future-enhancements)
 - [Contributing](#-contributing)
 - [Contact](#-contact)
 
@@ -37,7 +37,7 @@ A full-stack personal portfolio website showcasing projects, skills, blog posts,
 ### 🔧 Backend
 - **RESTful API** - Built with ASP.NET Core 8.0
 - **Clean Architecture** - Layered design with separation of concerns
-- **Entity Framework Core** - SQL Server database with code-first migrations
+- **Entity Framework Core** - PostgreSQL database with code-first migrations
 - **Azure Blob Storage** - Cloud-based media storage and management
 - **Email Integration** - SMTP/IMAP support for contact messages and notifications
 - **Analytics** - Page view tracking and visitor analytics
@@ -75,7 +75,7 @@ A full-stack personal portfolio website showcasing projects, skills, blog posts,
 | .NET | 8.0 | Backend framework |
 | ASP.NET Core | 8.0 | Web API |
 | Entity Framework Core | 9.0.x | ORM |
-| SQL Server | - | Database |
+| PostgreSQL | - | Database |
 | AutoMapper | 12.0.x | Object mapping |
 | FluentValidation | 11.3.x | Validation |
 | BCrypt.Net | 4.0.x | Password hashing |
@@ -129,7 +129,7 @@ portfolio-frontend/
 ### Prerequisites
 - [Node.js](https://nodejs.org/) (v18 or higher)
 - [.NET 8 SDK](https://dotnet.microsoft.com/download)
-- [SQL Server](https://www.microsoft.com/sql-server) (LocalDB or Express)
+- [PostgreSQL](https://www.postgresql.org/download/) (v12 or higher)
 - [Angular CLI](https://angular.io/cli) (`npm install -g @angular/cli`)
 
 ### Installation
@@ -184,7 +184,7 @@ The application will be available at `http://localhost:4200`
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=PortfolioDb;Trusted_Connection=True;"
+    "DefaultConnection": "Host=localhost;Port=5432;Database=PortfolioDb;Username=your_username;Password=your_password"
   }
 }
 ```
@@ -283,35 +283,12 @@ Once the backend is running, visit the Swagger UI documentation:
 
 ---
 
-## 📅 Roadmap
+## � Future Enhancements
 
-### Completed ✅
-- [x] Backend API with ASP.NET Core
-- [x] Database schema and migrations
-- [x] JWT authentication
-- [x] Azure Blob Storage integration
-- [x] Email functionality
-- [x] Blog system with likes
-- [x] Project portfolio management
-- [x] Angular frontend with SSR
-- [x] Responsive UI with Material Design
-
-### In Progress 🚧
-- [ ] Admin dashboard UI
-- [ ] Blog post editor
-- [ ] Advanced search and filtering
-- [ ] SEO optimization
-- [ ] Performance improvements
-
-### Planned 📋
+- [ ] SEO optimization (meta tags, sitemaps, structured data)
 - [ ] Dark mode theme
-- [ ] Multi-language support
-- [ ] Advanced analytics dashboard
+- [ ] Multi-language support (i18n)
 - [ ] Comment system for blog posts
-- [ ] Real-time notifications
-- [ ] CI/CD pipeline
-- [ ] Docker containerization
-- [ ] Unit and integration tests
 
 ---
 

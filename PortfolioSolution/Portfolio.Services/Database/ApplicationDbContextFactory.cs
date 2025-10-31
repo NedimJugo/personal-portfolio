@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
+
 
 namespace Portfolio.Services.Database
 {
@@ -13,7 +15,7 @@ namespace Portfolio.Services.Database
         public ApplicationDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            optionsBuilder.UseSqlServer("Server=localhost;Database=PortfolioDb;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=True"); // temporary design-time connection
+            optionsBuilder.UseNpgsql("Host=localhost;Database=PortfolioDb;Username=postgres;Password=NewStrongPassword123!;"); // temporary design-time connection
 
             return new ApplicationDbContext(optionsBuilder.Options);
         }
