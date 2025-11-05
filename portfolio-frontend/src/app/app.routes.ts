@@ -38,6 +38,10 @@ export const routes: Routes = [
         loadComponent: () => import('./components/admin/CRUDs/education/education-CRUD.component').then(m => m.EducationCrudComponent)
       },
       {
+        path: 'experience',
+        loadComponent: () => import('./components/admin/CRUDs/experience/experience-CRUD.component').then(m => m.ExperienceCrudComponent)
+      },
+      {
         path: 'tech',
         loadComponent: () => import('./components/admin/CRUDs/tech/tech-CRUD.component').then(m => m.TechCrudComponent)
       },

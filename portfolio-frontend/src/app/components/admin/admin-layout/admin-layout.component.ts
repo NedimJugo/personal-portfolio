@@ -28,6 +28,7 @@ export class AdminLayoutComponent implements OnInit {
     { icon: 'cpu', label: 'Technologies', route: '/admin/dashboard/tech', active: false },
     { icon: 'tag', label: 'Tags', route: '/admin/dashboard/tag', active: false },
     { icon: 'share-2', label: 'Social Links', route: '/admin/dashboard/social-link', active: false },
+      { icon: 'briefcase', label: 'Experience', route: '/admin/dashboard/experience', active: false }, 
     { icon: 'graduation-cap', label: 'Education', route: '/admin/dashboard/education', active: false },
     { icon: 'award', label: 'Certificates', route: '/admin/dashboard/certificate', active: false },
     { icon: 'zap', label: 'Skills', route: '/admin/dashboard/skill', active: false },
