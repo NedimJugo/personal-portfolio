@@ -465,7 +465,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - 💼 **LinkedIn:** [linkedin.com/in/nedim-jugo-492b99277](https://www.linkedin.com/in/nedim-jugo-492b99277)
 - 🐙 **GitHub:** [github.com/NedimJugo](https://github.com/NedimJugo)
 - 📧 **Email:** nedim.jugo@edu.fit.ba
-- 🌐 **Portfolio:** [Your Portfolio URL]
+- 🌐 **Portfolio:** https://nedim-jugo.vercel.app/
 
 ---
 
