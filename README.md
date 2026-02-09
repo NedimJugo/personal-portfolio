@@ -1,125 +1,145 @@
-# 🌐 Portfolio Website
+# 🌐 Personal Portfolio
 
-A full-stack personal portfolio website showcasing projects, skills, blog posts, and professional experience. Built with Angular and ASP.NET Core, featuring a comprehensive content management system with authentication, media management, and analytics.
+<div align="center">
 
-[![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=.net)](https://dotnet.microsoft.com/)
-[![Angular](https://img.shields.io/badge/Angular-20.3-DD0031?logo=angular)](https://angular.io/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript)](https://www.typescriptlang.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
+![Angular](https://img.shields.io/badge/Angular-20.3-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Azure](https://img.shields.io/badge/Azure-0078D4?style=for-the-badge&logo=microsoft-azure&logoColor=white)
+
+**A full-stack personal portfolio website with comprehensive CMS**
+
+*Showcasing projects, skills, blog posts, and professional experience*
 
 ---
 
-## 📋 Table of Contents
+</div>
 
-- [Features](#-features)
-- [Tech Stack](#-tech-stack)
-- [Architecture](#-architecture)
-- [Getting Started](#-getting-started)
-- [Configuration](#-configuration)
-- [API Documentation](#-api-documentation)
-- [Project Structure](#-project-structure)
-- [Future Enhancements](#-future-enhancements)
-- [Contributing](#-contributing)
-- [Contact](#-contact)
+## 📖 About
+
+**Personal Portfolio** is a full-stack personal portfolio platform built with modern web technologies. The application combines a sleek Angular frontend with a robust ASP.NET Core backend, providing a complete content management system for showcasing professional work, writing blog posts, and managing visitor engagement.
+
+Built with Angular 20+ featuring Server-Side Rendering (SSR) and ASP.NET Core 8.0, the platform offers a comprehensive solution for managing projects, blog content, work experience, skills, and certifications. The system includes advanced features like Azure Blob Storage integration, email management, visitor analytics, and JWT-based authentication.
+
+The application demonstrates enterprise-level architecture with clean separation of concerns, Entity Framework Core for data management, PostgreSQL database, and cloud storage capabilities. Perfect for developers, designers, and professionals looking to establish a strong online presence with full control over their content.
 
 ---
 
 ## ✨ Features
 
-### 🎨 Frontend
+### 🎨 Frontend Capabilities
 - **Modern Angular Application** - Built with Angular 20+ and Server-Side Rendering (SSR)
 - **Responsive Design** - Mobile-first approach with Angular Material components
-- **Rich User Experience** - Interactive project showcase, blog with likes, and contact forms
+- **Interactive Portfolio** - Dynamic project showcase with filtering and search
+- **Blog System** - Full-featured blog with likes and engagement tracking
 - **PDF Generation** - Export capabilities using jsPDF and html2canvas
 - **Real-time Updates** - Reactive forms and state management with RxJS
-- **Authentication** - JWT-based authentication with secure token management
+- **Smooth Animations** - Enhanced UX with Angular animations
 
-### 🔧 Backend
-- **RESTful API** - Built with ASP.NET Core 8.0
+### 🔧 Backend Infrastructure
+- **RESTful API** - Built with ASP.NET Core 8.0 Web API
 - **Clean Architecture** - Layered design with separation of concerns
-- **Entity Framework Core** - PostgreSQL database with code-first migrations
-- **Azure Blob Storage** - Cloud-based media storage and management
-- **Email Integration** - SMTP/IMAP support for contact messages and notifications
-- **Analytics** - Page view tracking and visitor analytics
-- **Blog System** - Full-featured blog with posts, likes, and status management
-- **Authentication & Authorization** - JWT tokens with refresh token support
-- **Validation** - FluentValidation for comprehensive request validation
+- **Entity Framework Core** - Code-first approach with PostgreSQL
+- **Azure Blob Storage** - Cloud-based media storage and CDN
+- **Email Integration** - SMTP/IMAP support for notifications
+- **JWT Authentication** - Secure token-based auth with refresh tokens
+- **Comprehensive Validation** - FluentValidation for request validation
+- **API Documentation** - Swagger/OpenAPI integration
 
 ### 📊 Content Management
-- Projects portfolio with images, tags, and technologies
-- Blog posts with draft/published status
-- Work experience and education history
-- Skills and certifications showcase
-- Testimonials and social links
-- Newsletter subscriber management
-- Site settings and customizable content
+- **Project Portfolio** - Showcase with images, tags, and technologies
+- **Blog Management** - Posts with draft/published status and likes
+- **Experience Tracking** - Work history and education timeline
+- **Skills Showcase** - Technical skills and certifications
+- **Testimonials** - Client feedback and recommendations
+- **Analytics Dashboard** - Page views and visitor tracking
+- **Newsletter System** - Subscriber management
+- **Site Settings** - Customizable content and configuration
+
+### 🔐 Security & Performance
+- **Authentication & Authorization** - Role-based access control
+- **Password Security** - BCrypt encryption for credentials
+- **Token Management** - JWT with refresh token rotation
+- **Input Validation** - Server-side validation with FluentValidation
+- **SSR Optimization** - Fast initial page loads
+- **Azure CDN** - Optimized media delivery
 
 ---
 
-## 🛠 Tech Stack
+## 🛠️ Built With
 
-### Frontend
+### Frontend Stack
+
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| Angular | 20.3.x | Frontend framework |
-| TypeScript | 5.9.x | Type-safe development |
-| Angular Material | 20.2.x | UI component library |
-| RxJS | 7.8.x | Reactive programming |
-| Chart.js | 4.5.x | Data visualization |
-| JWT-Decode | 4.0.x | Token handling |
-| FontAwesome | 7.1.x | Icons |
+| ![Angular](https://img.shields.io/badge/Angular-20.3-DD0031?style=flat&logo=angular&logoColor=white) | 20.3.x | Frontend Framework |
+| ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat&logo=typescript&logoColor=white) | 5.9.x | Type-Safe Development |
+| **Angular Material** | 20.2.x | UI Component Library |
+| **RxJS** | 7.8.x | Reactive Programming |
+| **Chart.js** | 4.5.x | Data Visualization |
+| **jsPDF** | Latest | PDF Generation |
+| **FontAwesome** | 7.1.x | Icon Library |
+| **JWT-Decode** | 4.0.x | Token Handling |
 
-### Backend
+### Backend Stack
+
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| .NET | 8.0 | Backend framework |
-| ASP.NET Core | 8.0 | Web API |
-| Entity Framework Core | 9.0.x | ORM |
-| PostgreSQL | - | Database |
-| AutoMapper | 12.0.x | Object mapping |
-| FluentValidation | 11.3.x | Validation |
-| BCrypt.Net | 4.0.x | Password hashing |
-| Azure Storage Blobs | - | Media storage |
-| Swashbuckle | 9.0.x | API documentation |
+| ![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?style=flat&logo=dotnet&logoColor=white) | 8.0 | Backend Framework |
+| ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=flat&logo=postgresql&logoColor=white) | Latest | Primary Database |
+| **Entity Framework Core** | 9.0.x | ORM & Data Access |
+| **AutoMapper** | 12.0.x | Object Mapping |
+| **FluentValidation** | 11.3.x | Request Validation |
+| **BCrypt.Net** | 4.0.x | Password Hashing |
+| **Azure Storage Blobs** | Latest | Cloud Media Storage |
+| **Swashbuckle** | 9.0.x | API Documentation |
 
 ---
 
-## 🏗 Architecture
+## 🏗️ Architecture
 
 ### Backend Structure
+
 ```
 PortfolioSolution/
-├── Portfolio.Models/          # DTOs, Requests, Responses, Enums
-│   ├── Configuration/         # Settings models
-│   ├── Requests/             # API request models
-│   ├── Responses/            # API response models
-│   └── SearchObjects/        # Search and filter models
-├── Portfolio.Services/        # Business logic layer
-│   ├── Database/             # EF Core DbContext
-│   ├── Services/             # Service implementations
-│   ├── Interfaces/           # Service contracts
-│   ├── Migrations/           # Database migrations
-│   └── Mapping/              # AutoMapper profiles
-└── PortfolioApi/             # Web API layer
-    ├── Controllers/          # API endpoints
-    ├── Middleware/           # Custom middleware
-    ├── Extensions/           # Service extensions
-    └── Filter/               # Action filters
+│
+├── 📂 Portfolio.Models/              # DTOs and Data Models
+│   ├── 📂 Configuration/             # Settings and config models
+│   ├── 📂 Requests/                  # API request models
+│   ├── 📂 Responses/                 # API response models
+│   └── 📂 SearchObjects/             # Search and filter models
+│
+├── 📂 Portfolio.Services/            # Business Logic Layer
+│   ├── 📂 Database/                  # EF Core DbContext
+│   ├── 📂 Services/                  # Service implementations
+│   ├── 📂 Interfaces/                # Service contracts
+│   ├── 📂 Migrations/                # Database migrations
+│   └── 📂 Mapping/                   # AutoMapper profiles
+│
+└── 📂 PortfolioApi/                  # Web API Layer
+    ├── 📂 Controllers/               # API endpoints (26 controllers)
+    ├── 📂 Middleware/                # Custom middleware
+    ├── 📂 Extensions/                # Service extensions
+    └── 📂 Filter/                    # Action filters
 ```
 
 ### Frontend Structure
+
 ```
 portfolio-frontend/
-├── src/
-│   ├── app/
-│   │   ├── components/       # Feature components
-│   │   ├── guards/           # Route guards
-│   │   ├── interceptors/     # HTTP interceptors
-│   │   ├── models/           # TypeScript models
-│   │   ├── pipes/            # Custom pipes
-│   │   ├── services/         # API services
-│   │   └── shared/           # Shared components
-│   └── environments/         # Environment configs
+│
+├── 📂 src/
+│   ├── 📂 app/
+│   │   ├── 📂 components/           # Feature components
+│   │   ├── 📂 guards/               # Route guards
+│   │   ├── 📂 interceptors/         # HTTP interceptors
+│   │   ├── 📂 models/               # TypeScript interfaces
+│   │   ├── 📂 pipes/                # Custom pipes
+│   │   ├── 📂 services/             # API services
+│   │   └── 📂 shared/               # Shared components
+│   ├── 📂 environments/             # Environment configs
+│   └── 📂 assets/                   # Static assets
 ```
 
 ---
@@ -127,14 +147,17 @@ portfolio-frontend/
 ## 🚀 Getting Started
 
 ### Prerequisites
-- [Node.js](https://nodejs.org/) (v18 or higher)
-- [.NET 8 SDK](https://dotnet.microsoft.com/download)
-- [PostgreSQL](https://www.postgresql.org/download/) (v12 or higher)
+
+- [Node.js](https://nodejs.org/) 18+ installed
+- [.NET SDK 8.0+](https://dotnet.microsoft.com/download)
+- [PostgreSQL 12+](https://www.postgresql.org/download/)
 - [Angular CLI](https://angular.io/cli) (`npm install -g @angular/cli`)
+- Azure Storage Account (optional, for cloud media storage)
 
 ### Installation
 
-#### 1. Clone the repository
+#### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/NedimJugo/Portofolio-website.git
 cd Portofolio-website
@@ -142,43 +165,70 @@ cd Portofolio-website
 
 #### 2. Backend Setup
 
-```powershell
-# Navigate to the API project
+**Navigate to API Project:**
+```bash
 cd PortfolioSolution/PortfolioApi
+```
 
-# Restore dependencies
+**Restore Dependencies:**
+```bash
 dotnet restore
+```
 
-# Update database connection string in appsettings.json
-# Then run migrations
-dotnet ef database update --project .\Portfolio.Services\Portfolio.Services.csproj --startup-project .\PortfolioApi\Portfolio.WebAPI.csproj
+**Configure Database Connection:**
+- Open `appsettings.json`
+- Update the PostgreSQL connection string (see [Configuration](#-configuration))
 
-# Run the API
+**Run Database Migrations:**
+```bash
+dotnet ef database update --project ../Portfolio.Services/Portfolio.Services.csproj --startup-project ./Portfolio.WebAPI.csproj
+```
+
+**Start the API Server:**
+```bash
 dotnet run
 ```
 
-The API will be available at `https://localhost:5001` or `http://localhost:5000`
+The API will be available at:
+- HTTPS: `https://localhost:5001`
+- HTTP: `http://localhost:5000`
+- Swagger: `https://localhost:5001/swagger`
 
 #### 3. Frontend Setup
 
-```powershell
-# Navigate to the frontend project
+**Navigate to Frontend Project:**
+```bash
 cd portfolio-frontend
+```
 
-# Install dependencies
+**Install Dependencies:**
+```bash
 npm install
+```
 
-# Start development server
+**Configure Environment:**
+- Update `src/environments/environment.ts` with API URL
+- See [Configuration](#-configuration) for details
+
+**Start Development Server:**
+```bash
 npm start
+```
+
+**Or for SSR:**
+```bash
+npm run dev:ssr
 ```
 
 The application will be available at `http://localhost:4200`
 
 ---
 
-## ⚙ Configuration
+## ⚙️ Configuration
 
-### Backend Configuration (`appsettings.json`)
+### Backend Configuration
+
+**File:** `PortfolioSolution/PortfolioApi/appsettings.json`
 
 #### Database Connection
 ```json
@@ -189,23 +239,26 @@ The application will be available at `http://localhost:4200`
 }
 ```
 
-#### JWT Settings (Environment Variables Recommended)
+#### JWT Settings
 ```json
 {
   "JwtSettings": {
-    "SecretKey": "YOUR_SECRET_KEY_HERE",
+    "SecretKey": "YOUR_SECRET_KEY_MIN_32_CHARS",
     "Issuer": "PortfolioApi",
     "Audience": "PortfolioClient",
-    "ExpirationMinutes": 60
+    "ExpirationMinutes": 60,
+    "RefreshTokenExpirationDays": 7
   }
 }
 ```
+
+> 💡 **Tip:** Generate secure key with: `openssl rand -base64 32`
 
 #### Azure Storage (Optional)
 ```json
 {
   "AzureStorageSettings": {
-    "ConnectionString": "YOUR_AZURE_STORAGE_CONNECTION_STRING",
+    "ConnectionString": "DefaultEndpointsProtocol=https;AccountName=...;AccountKey=...;EndpointSuffix=core.windows.net",
     "ContainerName": "portfolioimagecontainer"
   }
 }
@@ -218,16 +271,30 @@ The application will be available at `http://localhost:4200`
     "SmtpHost": "smtp.gmail.com",
     "SmtpPort": "587",
     "Username": "your_email@example.com",
-    "Password": "YOUR_APP_PASSWORD"
+    "Password": "YOUR_APP_SPECIFIC_PASSWORD",
+    "EnableSsl": true
   }
 }
 ```
 
-### Frontend Configuration (`environment.ts`)
+### Frontend Configuration
+
+**File:** `portfolio-frontend/src/environments/environment.ts`
+
 ```typescript
 export const environment = {
   production: false,
-  apiUrl: 'https://localhost:5001/api'
+  apiUrl: 'https://localhost:5001/api',
+  apiVersion: 'v1'
+};
+```
+
+**Production:** `environment.prod.ts`
+```typescript
+export const environment = {
+  production: true,
+  apiUrl: 'https://your-production-api.com/api',
+  apiVersion: 'v1'
 };
 ```
 
@@ -235,60 +302,123 @@ export const environment = {
 
 ## 📚 API Documentation
 
-Once the backend is running, visit the Swagger UI documentation:
-- **Swagger UI**: `https://localhost:5001/swagger`
+### Swagger Documentation
+
+Once the backend is running, access interactive API documentation:
+- **Swagger UI:** `https://localhost:5001/swagger`
+- **JSON Schema:** `https://localhost:5001/swagger/v1/swagger.json`
 
 ### Main API Endpoints
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/auth/login` | POST | User authentication |
-| `/api/auth/register` | POST | User registration |
-| `/api/projects` | GET | Get all projects |
-| `/api/blogposts` | GET | Get blog posts |
-| `/api/experiences` | GET | Get work experience |
-| `/api/skills` | GET | Get skills |
-| `/api/contactmessages` | POST | Submit contact message |
-| `/api/media/upload` | POST | Upload media files |
+#### Authentication
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/login` | User authentication |
+| POST | `/api/auth/register` | User registration |
+| POST | `/api/auth/refresh` | Refresh access token |
+| POST | `/api/auth/logout` | User logout |
+
+#### Content Management
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/projects` | Get all projects |
+| POST | `/api/projects` | Create new project |
+| GET | `/api/blogposts` | Get blog posts |
+| POST | `/api/blogposts` | Create blog post |
+| GET | `/api/experiences` | Get work experience |
+| GET | `/api/skills` | Get skills |
+| GET | `/api/certifications` | Get certifications |
+
+#### Media & Files
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/media/upload` | Upload media file |
+| DELETE | `/api/media/{id}` | Delete media file |
+| GET | `/api/media/{id}` | Get media file |
+
+#### Analytics & Engagement
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/pageviews` | Track page view |
+| GET | `/api/analytics` | Get analytics data |
+| POST | `/api/blogposts/{id}/like` | Like blog post |
+| POST | `/api/contactmessages` | Submit contact message |
 
 ---
 
-## 📁 Project Structure
+## 💻 Key Features Detail
 
-### Key Components
+### Project Portfolio
+- Create and manage project entries with rich descriptions
+- Upload multiple images per project
+- Tag projects with relevant technologies
+- Filter and search capabilities
+- Project status management (Active, Archived)
 
-**Controllers** (26 endpoints):
-- Authentication & User Management
-- Blog System (Posts, Likes)
-- Project Portfolio (Projects, Images, Tags, Technologies)
-- Contact Messages & Email Management
-- Experience & Education
-- Skills & Certifications
-- Media Management
-- Analytics (Page Views)
-- Settings & Site Content
+### Blog System
+- Write and publish blog posts with rich text editor
+- Draft/Published status workflow
+- Like functionality for reader engagement
+- Category and tag organization
+- Featured post highlighting
 
-**Services Layer**:
-- Base CRUD operations with generic repository pattern
-- Business logic implementation
-- Data validation and transformation
-- Email sending and synchronization
-- Azure Blob Storage integration
+### Media Management
+- Azure Blob Storage integration for scalability
+- Image upload with validation
+- Automatic thumbnail generation
+- CDN delivery for optimized performance
+- Media library with search and filter
 
-**Models Layer**:
-- Request/Response DTOs
-- Domain models
-- Configuration settings
-- Search and pagination objects
+### Analytics
+- Page view tracking for all routes
+- Visitor statistics and trends
+- Popular content identification
+- Engagement metrics (likes, comments)
+- Custom date range reports
 
 ---
 
-## � Future Enhancements
+## 📁 Project Components
+
+### Controllers (26 Endpoints)
+
+**Core Functionality:**
+- 🔐 Authentication & User Management
+- 📝 Blog System (Posts, Likes, Categories)
+- 💼 Project Portfolio (Projects, Images, Tags, Technologies)
+- 📧 Contact Messages & Email Management
+- 💼 Experience & Education Timeline
+- 🎯 Skills & Certifications
+- 📸 Media Management (Upload, Delete, Retrieve)
+- 📊 Analytics (Page Views, Engagement)
+- ⚙️ Settings & Site Configuration
+
+### Services Layer
+
+- **Base CRUD Operations** - Generic repository pattern
+- **Business Logic** - Domain-specific implementations
+- **Data Validation** - FluentValidation integration
+- **Email Services** - SMTP sending and IMAP synchronization
+- **Azure Storage** - Blob upload, download, delete
+- **Authentication** - JWT token generation and validation
+- **Analytics** - View tracking and reporting
+
+---
+
+## 🔮 Future Enhancements
 
 - [ ] SEO optimization (meta tags, sitemaps, structured data)
-- [ ] Dark mode theme
-- [ ] Multi-language support (i18n)
-- [ ] Comment system for blog posts
+- [ ] Dark mode theme with user preference persistence
+- [ ] Multi-language support (i18n) for global audience
+- [ ] Comment system for blog posts with moderation
+- [ ] Social media integration and sharing
+- [ ] Advanced analytics dashboard with charts
+- [ ] Real-time notifications using SignalR
+- [ ] Mobile application (React Native/Flutter)
+- [ ] GraphQL API option
+- [ ] Performance monitoring and logging
+- [ ] Automated backups and disaster recovery
+- [ ] A/B testing framework
 
 ---
 
@@ -296,11 +426,29 @@ Once the backend is running, visit the Swagger UI documentation:
 
 Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/NedimJugo/Portofolio-website/issues).
 
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+### How to Contribute
+
+1. **Fork the project**
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/Portofolio-website.git
+   ```
+
+2. **Create your feature branch**
+   ```bash
+   git checkout -b feature/AmazingFeature
+   ```
+
+3. **Commit your changes**
+   ```bash
+   git commit -m 'Add some AmazingFeature'
+   ```
+
+4. **Push to the branch**
+   ```bash
+   git push origin feature/AmazingFeature
+   ```
+
+5. **Open a Pull Request**
 
 ---
 
@@ -314,24 +462,28 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Nedim Jugo**
 
-- 💼 LinkedIn: [linkedin.com/in/nedim-jugo-492b99277](https://www.linkedin.com/in/nedim-jugo-492b99277)
-- 🐙 GitHub: [github.com/NedimJugo](https://github.com/NedimJugo)
-- 📧 Email: nedim.jugo@edu.fit.ba
+- 💼 **LinkedIn:** [linkedin.com/in/nedim-jugo-492b99277](https://www.linkedin.com/in/nedim-jugo-492b99277)
+- 🐙 **GitHub:** [github.com/NedimJugo](https://github.com/NedimJugo)
+- 📧 **Email:** nedim.jugo@edu.fit.ba
+- 🌐 **Portfolio:** [Your Portfolio URL]
 
 ---
 
 ## 🙏 Acknowledgments
 
-- Angular team for the amazing framework
-- Microsoft for .NET and Entity Framework Core
+- Angular team for the amazing framework and SSR capabilities
+- Microsoft for .NET Core and Entity Framework
+- PostgreSQL community for the robust database system
+- Azure team for cloud storage solutions
+- Angular Material for beautiful UI components
 - The open-source community for incredible tools and libraries
 
 ---
 
 <div align="center">
 
-**⭐️ If you like this project, please give it a star! ⭐️**
+**⭐ If you like this project, please give it a star! ⭐**
 
-Made with ❤️ by Nedim Jugo
+*Built with 💻 by Nedim Jugo*
 
 </div>
