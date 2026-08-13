@@ -19,9 +19,9 @@ export const DEFAULT_HERO_CONTENT: HeroContent = {
   description: "I turn coffee into code and ideas into reality. Specializing in building modern web applications that users actually enjoy using!",
   primaryButtonText: "View My Work",
   secondaryButtonText: "Get In Touch",
-  characterImageUrl: "https://portfolio-backend-jsyz.onrender.com/api/media/download/uploads/character.jpeg",
+  characterImageUrl: "https://ecochallengeblob.blob.core.windows.net/ecochallenge/ChatGPT Image Oct 1, 2025, 12_13_18 AM.png",
   speechBubbleText: "Let's build something amazing!",
-  flipPhotoUrl: 'https://portfolio-backend-jsyz.onrender.com/api/media/download/uploads/flip-photo.png',
+  flipPhotoUrl: 'https://ecochallengeblob.blob.core.windows.net/ecochallenge/134308049.jpeg',
   flipPhotoCaption: 'Discover more about me!'
 
 };
