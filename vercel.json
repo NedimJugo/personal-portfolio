@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "buildCommand": "cd portfolio-frontend && npm run build",
+  "outputDirectory": "portfolio-frontend/dist/portfolio-frontend/browser",
+  "rewrites": [
+    {
+      "source": "/assets/(.*)",
+      "destination": "/assets/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
