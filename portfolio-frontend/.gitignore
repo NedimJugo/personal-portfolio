@@ -4,6 +4,10 @@
 /out-tsc
 /bazel-out
 
+.angular/
+*.log
+
+
 # dependencies
 /node_modules
 /node_modules/*
@@ -47,3 +51,4 @@ Thumbs.db
 # Build output
 *.tgz
 *.tar.gz
+.vercel

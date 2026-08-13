@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,5 +21,6 @@ namespace Portfolio.Models.Requests.InsertRequests
         public string? Caption { get; set; }
         public string? Folder { get; set; }
         public int UploadedById { get; set; }
+        public byte[]? FileData { get; set; }
     }
 }

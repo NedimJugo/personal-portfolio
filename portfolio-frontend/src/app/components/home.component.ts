@@ -1,4 +1,4 @@
-import { Component, type OnInit, ChangeDetectorRef } from "@angular/core"
+import { Component, type OnInit, ChangeDetectorRef, OnDestroy } from "@angular/core"
 import { CommonModule } from "@angular/common"
 import { FormsModule } from "@angular/forms"
 import { forkJoin, type Observable, of } from "rxjs"
@@ -37,7 +37,7 @@ import { Router } from "@angular/router"
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy  {
   featuredProjects$!: Observable<ProjectWithImage[]>
   latestBlogPosts$!: Observable<BlogPostWithLikeStatus[]>
   experiences$!: Observable<ExperienceResponse[]>
@@ -54,6 +54,8 @@ export class HomeComponent implements OnInit {
   isFlipped = false
   flipPhotoUrl = ''
   flipPhotoCaption = 'This is me in action!'
+  isTouchDevice = false
+  flipTimer: any
 
   constructor(
     private projectService: ProjectService,
@@ -72,7 +74,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.visitorId = this.visitorTrackingService.getOrCreateVisitorId()
-
+    this.isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
     // Track home page view
     this.visitorTrackingService.trackPageView('/home').subscribe({
       next: () => console.log('Home page view tracked'),
@@ -157,6 +159,25 @@ export class HomeComponent implements OnInit {
   }
 
   private loadProjectHeroImage(project: ProjectResponse): Observable<ProjectWithImage> {
+    // If project has a featuredMediaId, use it directly
+    if (project.featuredMediaId) {
+      return this.mediaService.getById(project.featuredMediaId).pipe(
+        map((media) => ({
+          ...project,
+          heroImageUrl: media.fileUrl,
+          heroImageAlt: media.altText || project.title
+        } as ProjectWithImage)),
+        catchError(() => {
+          return of({
+            ...project,
+            heroImageUrl: `${this.defaultProjectImage}?height=300&width=400&query=${encodeURIComponent(project.title)}`,
+            heroImageAlt: project.title
+          } as ProjectWithImage)
+        })
+      )
+    }
+
+    // Fallback: try to find via ProjectImage service
     return this.projectImageService.get({
       projectId: project.id,
       isHero: true,
@@ -198,16 +219,46 @@ export class HomeComponent implements OnInit {
     )
   }
 
+   onFlipCardInteract(event?: Event): void {
+    if (this.isTouchDevice) {
+      // On touch devices: tap to toggle
+      this.isFlipped = !this.isFlipped
+    } else {
+      // On desktop: hover to show, leave to hide (handled by separate methods)
+      this.isFlipped = true
+    }
+  }
+
   onFlipCardHover(): void {
-    this.isFlipped = true
+    // Only for desktop (mouse hover)
+    if (!this.isTouchDevice) {
+      this.isFlipped = true
+    }
   }
 
   onFlipCardLeave(): void {
-    this.isFlipped = false
+    // Only for desktop (mouse leave)
+    if (!this.isTouchDevice) {
+      this.isFlipped = false
+    }
   }
 
   toggleFlip(): void {
     this.isFlipped = !this.isFlipped
+  }
+
+   onFlipCardTap(): void {
+    this.isFlipped = !this.isFlipped
+    
+    // Auto flip back after 5 seconds on touch devices
+    if (this.isTouchDevice && this.isFlipped) {
+      if (this.flipTimer) {
+        clearTimeout(this.flipTimer)
+      }
+      this.flipTimer = setTimeout(() => {
+        this.isFlipped = false
+      }, 5000)
+    }
   }
 
   private loadHeroContent(): Observable<HeroContent> {
@@ -279,4 +330,9 @@ export class HomeComponent implements OnInit {
     img.src = this.defaultProjectImage
   }
 
+   ngOnDestroy(): void {
+    if (this.flipTimer) {
+      clearTimeout(this.flipTimer)
+    }
+  }
 }

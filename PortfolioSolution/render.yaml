@@ -1,0 +1,59 @@
+services:
+  - type: web
+    name: portfolio-backend
+    env: docker
+    region: frankfurt  # or oregon, singapore, etc.
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: PORT
+        value: 8080
+      - key: ConnectionStrings__DefaultConnection
+        value: postgresql://REDACTED@REDACTED/REDACTED?sslmode=require
+      - key: JwtSettings__SecretKey
+        value: REDACTED_JWT_SECRET
+      - key: JwtSettings__Issuer
+        value: PortfolioApi
+      - key: JwtSettings__Audience
+        value: PortfolioClient
+      - key: JwtSettings__ExpirationMinutes
+        value: 60
+      - key: JwtSettings__RefreshTokenExpirationDays
+        value: 7
+      - key: Email__SmtpHost
+        value: smtp.gmail.com
+      - key: Email__SmtpPort
+        value: 587
+      - key: Email__ImapHost
+        value: imap.gmail.com
+      - key: Email__ImapPort
+        value: 993
+      - key: Email__ImapUseSsl
+        value: true
+      - key: Email__Username
+        value: nedim.jugo.portfolio@gmail.com
+      - key: Email__Password
+        value: REDACTED_GMAIL_APP_PASSWORD
+      - key: Email__FromEmail
+        value: nedim.jugo.portfolio@gmail.com
+      - key: Email__FromName
+        value: Nedim Jugo
+      - key: AzureStorageSettings__ConnectionString
+        sync: false
+      - key: AzureStorageSettings__BaseUrl
+        value: https://nedimjportfolioblob.blob.core.windows.net
+      - key: AzureStorageSettings__ContainerName
+        value: portfolioimagecontainer
+      - key: SendGrid__ApiKey
+        sync: false
+      - key: SendGrid__FromEmail
+        value: nedim.jugo.portfolio@gmail.com
+      - key: SendGrid__FromName
+        value: Nedim Jugo
+      - key: CorsSettings__AllowedOrigins__0
+        value: https://nedim-jugo.vercel.app
+      - key: CorsSettings__AllowedOrigins__1
+        value: http://localhost:4200

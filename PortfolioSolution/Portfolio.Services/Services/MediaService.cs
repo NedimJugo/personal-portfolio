@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Portfolio.Models.Requests.InsertRequests;
 using Portfolio.Models.Requests.UpdateRequests;
@@ -65,24 +65,30 @@ namespace Portfolio.Services.Services
             CancellationToken cancellationToken = default)
         {
             entity.UploadedAt = DateTimeOffset.UtcNow;
+            if (request.FileData != null && request.FileData.Length > 0)
+            {
+                entity.FileData = request.FileData;
+                entity.StorageProvider = "Database";
+            }
 
-            // If using Azure storage and FileName is set, generate the file URL
+            if (string.IsNullOrWhiteSpace(entity.FileUrl) || entity.FileUrl.Contains("blob.core.windows.net"))
+            {
+                entity.FileUrl = $"https://portfolio-backend-jsyz.onrender.com/api/media/{entity.Id}/download";
+            }
+
+            // Fallback for Azure storage if specified
             if (entity.StorageProvider == "Azure" && !string.IsNullOrWhiteSpace(entity.FileName))
             {
                 try
                 {
                     entity.FileUrl = await _blobStorageService.GetFileUrlAsync(entity.FileName);
-                    _logger.LogInformation(
-                        "Generated Azure Blob URL for media: {FileName} -> {FileUrl}",
-                        entity.FileName,
-                        entity.FileUrl);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogWarning(ex,
-                        "Failed to generate file URL for {FileName}. Setting empty URL.",
+                        "Failed to generate Azure file URL for {FileName}. Using local download URL.",
                         entity.FileName);
-                    entity.FileUrl = string.Empty;
+                    entity.FileUrl = $"https://portfolio-backend-jsyz.onrender.com/api/media/{entity.Id}/download";
                 }
             }
 

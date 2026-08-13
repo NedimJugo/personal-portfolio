@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Portfolio.Services.Database.Entities
 {
@@ -28,6 +28,7 @@ namespace Portfolio.Services.Database.Entities
         public string? Folder { get; set; }
         public int UploadedById { get; set; }
         public DateTimeOffset UploadedAt { get; set; } = DateTimeOffset.UtcNow;
+        public byte[]? FileData { get; set; }
 
         // Navigation properties
         public virtual ApplicationUser UploadedBy { get; set; } = null!;

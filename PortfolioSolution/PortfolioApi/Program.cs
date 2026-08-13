@@ -33,7 +33,7 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(ApplicationUserP
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient<IGeolocationService, GeolocationService>();
 
-builder.Services.AddScoped<IAzureBlobStorageService, AzureBlobStorageService>();
+builder.Services.AddScoped<IAzureBlobStorageService, DatabaseBlobStorageService>();
 builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
 builder.Services.AddScoped<IBlogPostService, BlogPostService>();
 builder.Services.AddScoped<IContactMessageService, ContactMessageService>();
@@ -59,7 +59,7 @@ builder.Services.AddScoped<IGeolocationService, GeolocationService>();
 builder.Services.AddScoped<ICertificateService, CertificateService>();
 builder.Services.AddScoped<IEducationService, EducationService>();
 builder.Services.AddScoped<IContactMessageReplyService, ContactMessageReplyService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IEmailService, SendGridEmailService>();
 builder.Services.AddScoped<IEmailSyncService, EmailSyncService>();
 builder.Services.AddScoped<IUnsubscribeTokenService, UnsubscribeTokenService>();
 
@@ -109,10 +109,51 @@ builder.Services.AddSwaggerGen(c =>
 
 });
 
-// Update this DbContext configuration to suppress the warning
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgresql://"))
+{
+    try
+    {
+        var uri = new Uri(connectionString);
+        var userInfo = uri.UserInfo.Split(':');
+
+        // Use default PostgreSQL port (5432) if not specified
+        var dbPort = uri.Port > 0 ? uri.Port : 5432;  // Changed from 'port' to 'dbPort'
+
+        connectionString = $"Host={uri.Host};Port={dbPort};Database={uri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+
+        Console.WriteLine("Converted PostgreSQL URI to Npgsql connection string format");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error parsing connection string: {ex.Message}");
+    }
+}
+
+// Safe password masking
+try
+{
+    var maskedConnectionString = connectionString;
+    if (!string.IsNullOrEmpty(connectionString) && connectionString.Contains("Password="))
+    {
+        var parts = connectionString.Split("Password=");
+        if (parts.Length > 1)
+        {
+            var passwordEnd = parts[1].IndexOf(';');
+            maskedConnectionString = passwordEnd > 0
+                ? parts[0] + "Password=***" + parts[1].Substring(passwordEnd)
+                : parts[0] + "Password=***";
+        }
+    }
+    Console.WriteLine($"Final Connection String: {maskedConnectionString}");
+}
+catch
+{
+    Console.WriteLine("Final Connection String: [masked]");
+}
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(connectionString);
     options.ConfigureWarnings(warnings =>
         warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
 });
@@ -223,17 +264,25 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddLogging();
 
+// Configure Kestrel to listen on Railway's PORT
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+
+
 var app = builder.Build();
 
+// Add health check endpoint for Railway
+app.MapGet("/health", () => Results.Ok("Healthy"));
+
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Portfolio API V1");
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Portfolio API v1");
+    c.RoutePrefix = string.Empty; // Makes Swagger available at "/"
+});
+
 
 app.UseHttpsRedirection();
 app.UseCors();

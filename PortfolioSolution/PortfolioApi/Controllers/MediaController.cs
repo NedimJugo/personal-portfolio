@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Portfolio.Models.Requests.InsertRequests;
@@ -81,13 +81,26 @@ namespace Portfolio.WebAPI.Controllers
                     file.FileName,
                     file.Length);
 
-                // Upload to Azure Blob Storage
-                var blobName = await _blobStorageService.UploadFileAsync(
-                    file,
-                    folder ?? "uploads",
-                    cancellationToken);
+                // Read file bytes for database storage
+                byte[] fileBytes;
+                using (var ms = new MemoryStream())
+                {
+                    await file.CopyToAsync(ms, cancellationToken);
+                    fileBytes = ms.ToArray();
+                }
 
-                // Get the file URL
+                // Upload to Storage Service
+                using (var stream = new MemoryStream(fileBytes))
+                {
+                    await _blobStorageService.UploadFileAsync(
+                        stream,
+                        file.FileName,
+                        file.ContentType ?? "application/octet-stream",
+                        folder ?? "uploads",
+                        cancellationToken);
+                }
+
+                var blobName = $"{folder ?? "uploads"}/{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
                 var fileUrl = await _blobStorageService.GetFileUrlAsync(blobName);
 
                 // Determine file type from content type
@@ -100,7 +113,7 @@ namespace Portfolio.WebAPI.Controllers
                 {
                     try
                     {
-                        using var imageStream = file.OpenReadStream();
+                        using var imageStream = new MemoryStream(fileBytes);
                         using var image = await Image.LoadAsync(imageStream, cancellationToken);
                         width = image.Width;
                         height = image.Height;
@@ -117,7 +130,7 @@ namespace Portfolio.WebAPI.Controllers
                     FileName = blobName,
                     OriginalFileName = file.FileName,
                     FileUrl = fileUrl,
-                    StorageProvider = "Azure",
+                    StorageProvider = "Database",
                     FileType = fileType,
                     FileSize = file.Length,
                     MimeType = file.ContentType ?? "application/octet-stream",
@@ -126,7 +139,8 @@ namespace Portfolio.WebAPI.Controllers
                     AltText = altText,
                     Caption = caption,
                     Folder = folder,
-                    UploadedById = userId.Value
+                    UploadedById = userId.Value,
+                    FileData = fileBytes
                 };
 
                 var result = await _mediaService.CreateAsync(mediaRequest, cancellationToken);
@@ -288,15 +302,9 @@ namespace Portfolio.WebAPI.Controllers
                     return NotFound($"Media with ID {id} not found");
                 }
 
-                // Only download from Azure storage
-                if (media.StorageProvider != "Azure")
-                {
-                    return BadRequest($"Media is stored in {media.StorageProvider}, not Azure");
-                }
-
                 _logger.LogInformation("Downloading file for media {Id}: {FileName}", id, media.FileName);
 
-                // Download from blob storage
+                // Download from storage service
                 var stream = await _blobStorageService.DownloadFileAsync(media.FileName, cancellationToken);
 
                 // Return file stream

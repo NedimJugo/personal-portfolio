@@ -27,6 +27,9 @@ $comic-gray: #718096;
   background: $comic-cream;
   padding-top: 72px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 
   @media (max-width: 768px) {
     padding-top: 64px;
@@ -112,6 +115,10 @@ $comic-gray: #718096;
   border: 4px solid $comic-black;
   position: relative;
   letter-spacing: 0.5px;
+
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
 
   &.large {
     padding: 20px 40px;
@@ -611,6 +618,10 @@ $comic-gray: #718096;
   transform: rotate(15deg);
   animation: pulse 2s ease-in-out infinite;
 
+  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-color: $comic-black;
+  paint-order: stroke fill;
+
   @media (max-width: 768px) {
     font-size: 32px;
     top: -30px;
@@ -873,6 +884,10 @@ $comic-gray: #718096;
   margin-bottom: 24px;
   animation: boom 1s ease-in-out;
 
+  -webkit-text-stroke-width: 4px;
+  -webkit-text-stroke-color: $comic-black;
+  paint-order: stroke fill;
+
   @media (max-width: 768px) {
     font-size: 48px;
   }
@@ -969,6 +984,14 @@ $comic-gray: #718096;
   perspective: 1000px;
   margin: 0 auto;
   filter: drop-shadow(8px 8px 0 $comic-black);
+ // ADD THESE LINES:
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-perspective: 1000px;
+  will-change: transform;
+   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
 
   @media (max-width: 968px) {
     height: 300px;
@@ -985,8 +1008,13 @@ $comic-gray: #718096;
   transform-style: preserve-3d;
   cursor: pointer;
 
+  -webkit-transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+
   &.flipped {
-    transform: rotateY(180deg);
+   transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg); // ADD THIS
   }
 }
 
@@ -1000,6 +1028,9 @@ $comic-gray: #718096;
   border: 4px solid $comic-black;
   background: $comic-white;
   box-shadow: 6px 6px 0 $comic-black;
+
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 .flip-card-front {
@@ -1024,6 +1055,7 @@ $comic-gray: #718096;
 );
 
   transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg); // ADD THIS
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1037,6 +1069,9 @@ $comic-gray: #718096;
   height: 100%;
   object-fit: cover;
   animation: float 3s ease-in-out infinite;
+
+  -webkit-filter: drop-shadow(8px 8px 0 $comic-black);
+  will-change: transform;
 }
 
 .flip-photo {
@@ -1062,6 +1097,7 @@ $comic-gray: #718096;
   letter-spacing: 0.5px;
   box-shadow: 3px 3px 0 $comic-black;
   animation: pulse 2s ease-in-out infinite;
+    pointer-events: none; 
   
   span {
     color: $comic-black;
@@ -1179,7 +1215,7 @@ $comic-gray: #718096;
   
   // Auto-flip on touch devices after delay
   .flip-card-inner {
-    animation: autoFlip 10s ease-in-out infinite;
+    animation: none !important; // REMOVE auto-flip
   }
   
   @keyframes autoFlip {
@@ -1282,3 +1318,33 @@ $comic-gray: #718096;
   }
 }
 
+@supports (-webkit-touch-callout: none) {
+  .flip-card {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .flip-card-inner {
+    // Disable auto-flip on iOS if you don't want it
+    &:not(.flipped) {
+      animation: none !important;
+    }
+  }
+  
+  .portfolio-comic {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  input, textarea, select {
+    font-size: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

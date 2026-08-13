@@ -73,6 +73,7 @@ export class SkillCrudComponent implements OnInit, OnDestroy {
     'Full Stack',
     'DevOps',
     'Data Science',
+    'Database',
     'Mobile',
     'Design',
     'Other'

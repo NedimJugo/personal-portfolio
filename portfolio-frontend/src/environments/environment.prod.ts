@@ -1,4 +1,4 @@
 export const environment = {
-  production: true,
-  apiUrl: 'http://localhost:7001/api',
+production: true,
+apiUrl: 'https://portfolio-backend-jsyz.onrender.com/api', // We'll update this later
 };

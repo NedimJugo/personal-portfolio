@@ -7,12 +7,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { routes } from './app/app.routes';
 import { authInterceptor } from './app/interceptors/auth.interceptor';
 import { errorInterceptor } from './app/interceptors/error.interceptor';
+import { warmupInterceptor } from './app/interceptors/warmup.interceptor';
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
     provideHttpClient(
-      withInterceptors([authInterceptor, errorInterceptor])
+      withInterceptors([warmupInterceptor,authInterceptor, errorInterceptor])
     ),
     importProvidersFrom(FormsModule, ReactiveFormsModule)
   ]

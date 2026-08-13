@@ -10,16 +10,22 @@
       <div class="hero-content">
         <div class="hero-illustration">
           <!-- Flip Card Container -->
-          <div class="flip-card" (mouseenter)="onFlipCardHover()" (mouseleave)="onFlipCardLeave()">
+          <!-- Replace this section in your template: -->
+          <div class="flip-card" (mouseenter)="onFlipCardHover()" (mouseleave)="onFlipCardLeave()"
+            (click)="onFlipCardTap()">
             <div class="flip-card-inner" [class.flipped]="isFlipped">
-              <!-- Front Side (Character Image) -->
+              <!-- Front Side -->
               <div class="flip-card-front">
                 <img [src]="hero.flipPhotoUrl" alt="Developer character" class="character-img" />
-                <div class="flip-hint">
+                <div class="flip-hint" *ngIf="!isTouchDevice">
                   <span>Hover me</span>
+                </div>
+                <div class="flip-hint" *ngIf="isTouchDevice">
+                  <span>Tap me</span>
                 </div>
               </div>
 
+              <!-- Back Side -->
               <div class="flip-card-back">
                 <img [src]="hero.characterImageUrl" alt="Additional photo" class="flip-photo" />
                 <div class="flip-text">
@@ -51,7 +57,7 @@
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </button>
-            <button class="btn-comic secondary" (click)="contactMe()">  
+            <button class="btn-comic secondary" (click)="contactMe()">
               <span>{{ hero.secondaryButtonText }}</span>
             </button>
           </div>
