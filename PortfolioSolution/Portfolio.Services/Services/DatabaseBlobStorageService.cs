@@ -92,6 +92,11 @@ namespace Portfolio.Services.Services
             {
                 media = await _context.Media.FirstOrDefaultAsync(m => m.Id == mediaId, cancellationToken);
             }
+            if (media == null)
+            {
+                var baseName = Path.GetFileName(fileName);
+                media = await _context.Media.FirstOrDefaultAsync(m => m.FileName.EndsWith(baseName), cancellationToken);
+            }
 
             if (media == null || media.FileData == null || media.FileData.Length == 0)
             {

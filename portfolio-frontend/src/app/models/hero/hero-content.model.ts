@@ -19,9 +19,9 @@ export const DEFAULT_HERO_CONTENT: HeroContent = {
   description: "I turn coffee into code and ideas into reality. Specializing in building modern web applications that users actually enjoy using!",
   primaryButtonText: "View My Work",
   secondaryButtonText: "Get In Touch",
-  characterImageUrl: "/assets/images/character.jpeg",
+  characterImageUrl: "https://portfolio-backend-jsyz.onrender.com/api/media/download/uploads/character.jpeg",
   speechBubbleText: "Let's build something amazing!",
-  flipPhotoUrl: '/assets/images/flip-photo.png',
+  flipPhotoUrl: 'https://portfolio-backend-jsyz.onrender.com/api/media/download/uploads/flip-photo.png',
   flipPhotoCaption: 'Discover more about me!'
 
 };
