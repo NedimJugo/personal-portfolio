@@ -19,9 +19,9 @@ export const DEFAULT_HERO_CONTENT: HeroContent = {
   description: "I turn coffee into code and ideas into reality. Specializing in building modern web applications that users actually enjoy using!",
   primaryButtonText: "View My Work",
   secondaryButtonText: "Get In Touch",
-  characterImageUrl: "https://ecochallengeblob.blob.core.windows.net/ecochallenge/134308049.jpeg",
+  characterImageUrl: "/assets/images/134308049.jpeg",
   speechBubbleText: "Let's build something amazing!",
-  flipPhotoUrl: 'https://ecochallengeblob.blob.core.windows.net/ecochallenge/ChatGPT Image Oct 1, 2025, 12_13_18 AM.png',
+  flipPhotoUrl: '/assets/images/ChatGPT Image Oct 1, 2025, 12_13_18 AM (1).png',
   flipPhotoCaption: 'Discover more about me!'
 
 };

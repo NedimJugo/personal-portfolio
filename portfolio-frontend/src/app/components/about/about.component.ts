@@ -31,7 +31,7 @@ export class AboutComponent implements OnInit {
   educations$!: Observable<EducationWithLogo[]>;
   certificates$!: Observable<CertificateWithLogos[]>;
 
-  readonly defaultLogo = 'https://ecochallengeblob.blob.core.windows.net/ecochallenge/istockphoto-2173059563-612x612.jpg';
+  readonly defaultLogo = '/assets/images/istockphoto-2173059563-612x612.jpg';
 
   constructor(
     private siteContentService: SiteContentService,

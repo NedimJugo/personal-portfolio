@@ -22,7 +22,7 @@ import { VisitorTrackingService } from "../../services/visitor-tracking.service"
 export class ProjectsComponent implements OnInit {
   projects$!: Observable<ProjectWithImage[]>
   
-  readonly defaultProjectImage = 'https://ecochallengeblob.blob.core.windows.net/ecochallenge/istockphoto-2173059563-612x612.jpg'
+  readonly defaultProjectImage = '/assets/images/istockphoto-2173059563-612x612.jpg';
 
   constructor(
     private projectService: ProjectService,

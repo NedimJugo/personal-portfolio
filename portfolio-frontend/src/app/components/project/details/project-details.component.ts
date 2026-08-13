@@ -34,7 +34,7 @@ interface ProjectState {
 export class ProjectDetailsComponent implements OnInit {
   projectState$!: Observable<ProjectState>
   
-  readonly defaultProjectImage = 'https://ecochallengeblob.blob.core.windows.net/ecochallenge/istockphoto-2173059563-612x612.jpg'
+  readonly defaultProjectImage = '/assets/images/istockphoto-2173059563-612x612.jpg';
 
   constructor(
     private route: ActivatedRoute,
