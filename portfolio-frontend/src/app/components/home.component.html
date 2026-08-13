@@ -16,7 +16,7 @@
             <div class="flip-card-inner" [class.flipped]="isFlipped">
               <!-- Front Side -->
               <div class="flip-card-front">
-                <img [src]="hero.flipPhotoUrl" alt="Developer character" class="character-img" />
+                <img [src]="hero.characterImageUrl" alt="Developer character" class="character-img" />
                 <div class="flip-hint" *ngIf="!isTouchDevice">
                   <span>Hover me</span>
                 </div>
@@ -27,7 +27,7 @@
 
               <!-- Back Side -->
               <div class="flip-card-back">
-                <img [src]="hero.characterImageUrl" alt="Additional photo" class="flip-photo" />
+                <img [src]="hero.flipPhotoUrl" alt="Additional photo" class="flip-photo" />
                 <div class="flip-text">
                   <p>{{ hero.flipPhotoCaption }}</p>
                 </div>
