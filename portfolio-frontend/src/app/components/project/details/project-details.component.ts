@@ -34,7 +34,7 @@ interface ProjectState {
 export class ProjectDetailsComponent implements OnInit {
   projectState$!: Observable<ProjectState>
   
-  readonly defaultProjectImage = '/assets/images/istockphoto-2173059563-612x612.jpg';
+  readonly defaultProjectImage = '/assets/images/default-project.jpg';
 
   constructor(
     private route: ActivatedRoute,

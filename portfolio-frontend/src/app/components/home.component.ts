@@ -45,7 +45,7 @@ export class HomeComponent implements OnInit, OnDestroy  {
   testimonials$!: Observable<TestimonialResponse[]>
   heroContent$!: Observable<HeroContent>
 
-  readonly defaultProjectImage = '/assets/images/istockphoto-2173059563-612x612.jpg';
+  readonly defaultProjectImage = '/assets/images/default-project.jpg';
 
   newsletterEmail = ""
   newsletterSubscribed = false

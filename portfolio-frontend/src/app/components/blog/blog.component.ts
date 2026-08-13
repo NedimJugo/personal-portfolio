@@ -32,7 +32,7 @@ export class BlogComponent implements OnInit {
   visitorId: string = ''
 
   readonly defaultBlogImage =
-    "/assets/images/istockphoto-2173059563-612x612.jpg"
+    "/assets/images/default-project.jpg"
 
   constructor(private blogService: BlogPostService,
     private visitorTrackingService: VisitorTrackingService,

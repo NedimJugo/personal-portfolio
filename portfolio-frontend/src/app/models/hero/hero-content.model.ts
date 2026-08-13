@@ -19,9 +19,9 @@ export const DEFAULT_HERO_CONTENT: HeroContent = {
   description: "I turn coffee into code and ideas into reality. Specializing in building modern web applications that users actually enjoy using!",
   primaryButtonText: "View My Work",
   secondaryButtonText: "Get In Touch",
-  characterImageUrl: "/assets/images/134308049.jpeg",
+  characterImageUrl: "/assets/images/character.jpeg",
   speechBubbleText: "Let's build something amazing!",
-  flipPhotoUrl: '/assets/images/ChatGPT Image Oct 1, 2025, 12_13_18 AM (1).png',
+  flipPhotoUrl: '/assets/images/flip-photo.png',
   flipPhotoCaption: 'Discover more about me!'
 
 };
