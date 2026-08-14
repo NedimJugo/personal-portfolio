@@ -84,7 +84,7 @@
           <div class="project-frame">
             <div class="project-image-comic">
               <img [src]="project.heroImageUrl || defaultProjectImage" [alt]="project.heroImageAlt || project.title"
-                (error)="onImageError($event)" />
+                loading="lazy" (error)="onImageError($event)" />
               <div class="image-overlay">
                 <div class="project-links-comic">
                   <a *ngIf="project.repoUrl" [href]="project.repoUrl" target="_blank" class="link-badge"

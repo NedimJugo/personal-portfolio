@@ -35,9 +35,10 @@
             
             <div class="panel-content">
               <div class="education-logo">
-                <img 
-                  [src]="edu.logoUrl || defaultLogo" 
+                <img
+                  [src]="edu.logoUrl || defaultLogo"
                   [alt]="edu.institutionName"
+                  loading="lazy"
                   (error)="onImageError($event)" />
               </div>
               
@@ -99,9 +100,10 @@
             <div class="certificate-frame">
               
               <div class="cert-logo">
-                <img 
-                  [src]="cert.logoUrl || defaultLogo" 
+                <img
+                  [src]="cert.logoUrl || defaultLogo"
                   [alt]="cert.issuingOrganization"
+                  loading="lazy"
                   (error)="onImageError($event)" />
               </div>
               

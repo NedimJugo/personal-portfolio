@@ -69,7 +69,7 @@
           <article class="blog-card-panel" (click)="selectPost(post)">
             <div class="blog-card-frame">
               <div class="blog-card-image">
-                <img [src]="getImageUrl(post)" [alt]="post.title" (error)="onImageError($event)" />
+                <img [src]="getImageUrl(post)" [alt]="post.title" loading="lazy" (error)="onImageError($event)" />
                 <div class="image-overlay-blog">
                   <span class="read-more-overlay">Read More →</span>
                 </div>

@@ -20,9 +20,10 @@
         <article class="project-panel" (click)="viewProjectDetails(project.id)">
           <div class="project-frame">
             <div class="project-image-comic">
-              <img 
-                [src]="project.heroImageUrl || defaultProjectImage" 
+              <img
+                [src]="project.heroImageUrl || defaultProjectImage"
                 [alt]="project.heroImageAlt || project.title"
+                loading="lazy"
                 (error)="onImageError($event)" />
               <div class="image-overlay">
                 <div class="project-status-badge" [class]="project.status">
