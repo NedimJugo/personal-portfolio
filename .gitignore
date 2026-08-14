@@ -1,0 +1,7 @@
+# Scratch/throwaway scripts - never commit their build output
+scratch/**/bin/
+scratch/**/obj/
+
+# .NET build output anywhere in the repo
+**/bin/
+**/obj/
