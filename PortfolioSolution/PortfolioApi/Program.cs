@@ -21,6 +21,7 @@ Console.WriteLine($"Connection String: {builder.Configuration.GetConnectionStrin
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 builder.Services.Configure<AzureStorageSettings>(
     builder.Configuration.GetSection("AzureStorageSettings"));
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(ApplicationUserProfile).Assembly, typeof(BlogPostProfile).Assembly,
     typeof(ContactMessageProfile).Assembly, typeof(EmailTemplateProfile).Assembly, typeof(ExperienceProfile).Assembly, typeof(MediaProfile).Assembly,

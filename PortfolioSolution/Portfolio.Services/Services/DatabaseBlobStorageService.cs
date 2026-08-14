@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Portfolio.Models.Configuration;
 using Portfolio.Services.Database;
 using Portfolio.Services.Database.Entities;
 using Portfolio.Services.Interfaces;
@@ -21,13 +23,17 @@ namespace Portfolio.Services.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<DatabaseBlobStorageService> _logger;
+        private readonly string _publicBaseUrl;
 
         public DatabaseBlobStorageService(
             ApplicationDbContext context,
-            ILogger<DatabaseBlobStorageService> logger)
+            ILogger<DatabaseBlobStorageService> logger,
+            IOptions<AppSettings> appSettings)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _publicBaseUrl = appSettings?.Value?.PublicBaseUrl?.TrimEnd('/')
+                ?? throw new ArgumentNullException(nameof(appSettings));
         }
 
         public async Task<string> UploadFileAsync(
@@ -131,8 +137,7 @@ namespace Portfolio.Services.Services
 
         public Task<string> GetFileUrlAsync(string fileName)
         {
-            var baseUrl = "https://portfolio-backend-jsyz.onrender.com";
-            return Task.FromResult($"{baseUrl}/api/media/download/{fileName}");
+            return Task.FromResult($"{_publicBaseUrl}/api/media/download/{fileName}");
         }
 
         public Task<string> GenerateSasUrlAsync(string fileName, TimeSpan expiry)

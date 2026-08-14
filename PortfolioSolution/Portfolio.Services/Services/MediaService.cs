@@ -1,5 +1,7 @@
 using AutoMapper;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Portfolio.Models.Configuration;
 using Portfolio.Models.Requests.InsertRequests;
 using Portfolio.Models.Requests.UpdateRequests;
 using Portfolio.Models.Responses;
@@ -25,15 +27,19 @@ namespace Portfolio.Services.Services
           IMediaService
     {
         private readonly IAzureBlobStorageService _blobStorageService;
+        private readonly string _publicBaseUrl;
 
         public MediaService(
             ApplicationDbContext context,
             IMapper mapper,
             ILogger<MediaService> logger,
-            IAzureBlobStorageService blobStorageService)
+            IAzureBlobStorageService blobStorageService,
+            IOptions<AppSettings> appSettings)
             : base(context, mapper, logger)
         {
             _blobStorageService = blobStorageService ?? throw new ArgumentNullException(nameof(blobStorageService));
+            _publicBaseUrl = appSettings?.Value?.PublicBaseUrl?.TrimEnd('/')
+                ?? throw new ArgumentNullException(nameof(appSettings));
         }
 
         protected override IQueryable<Media> ApplyFilter(IQueryable<Media> query, MediaSearchObject? search = null)
@@ -88,7 +94,7 @@ namespace Portfolio.Services.Services
                     _logger.LogWarning(ex,
                         "Failed to generate Azure file URL for {FileName}. Using local download URL.",
                         entity.FileName);
-                    entity.FileUrl = $"https://portfolio-backend-jsyz.onrender.com/api/media/{entity.Id}/download";
+                    entity.FileUrl = $"{_publicBaseUrl}/api/media/{entity.Id}/download";
                 }
             }
 

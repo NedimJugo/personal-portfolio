@@ -89,17 +89,8 @@ namespace Portfolio.WebAPI.Controllers
                     fileBytes = ms.ToArray();
                 }
 
-                // Upload to Storage Service
-                using (var stream = new MemoryStream(fileBytes))
-                {
-                    await _blobStorageService.UploadFileAsync(
-                        stream,
-                        file.FileName,
-                        file.ContentType ?? "application/octet-stream",
-                        folder ?? "uploads",
-                        cancellationToken);
-                }
-
+                // The file bytes are stored directly on the Media record below (StorageProvider = "Database"),
+                // so we only need a unique name for the FileName/FileUrl fields here.
                 var blobName = $"{folder ?? "uploads"}/{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
                 var fileUrl = await _blobStorageService.GetFileUrlAsync(blobName);
 
@@ -211,13 +202,15 @@ namespace Portfolio.WebAPI.Controllers
 
                     try
                     {
-                        // Upload to Azure Blob Storage
-                        var blobName = await _blobStorageService.UploadFileAsync(
-                            file,
-                            folder ?? "uploads",
-                            cancellationToken);
+                        // Read file bytes for database storage
+                        byte[] fileBytes;
+                        using (var ms = new MemoryStream())
+                        {
+                            await file.CopyToAsync(ms, cancellationToken);
+                            fileBytes = ms.ToArray();
+                        }
 
-                        // Get the file URL
+                        var blobName = $"{folder ?? "uploads"}/{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
                         var fileUrl = await _blobStorageService.GetFileUrlAsync(blobName);
 
                         // Determine file type
@@ -230,7 +223,7 @@ namespace Portfolio.WebAPI.Controllers
                         {
                             try
                             {
-                                using var imageStream = file.OpenReadStream();
+                                using var imageStream = new MemoryStream(fileBytes);
                                 using var image = await Image.LoadAsync(imageStream, cancellationToken);
                                 width = image.Width;
                                 height = image.Height;
@@ -244,14 +237,15 @@ namespace Portfolio.WebAPI.Controllers
                             FileName = blobName,
                             OriginalFileName = file.FileName,
                             FileUrl = fileUrl,
-                            StorageProvider = "Azure",
+                            StorageProvider = "Database",
                             FileType = fileType,
                             FileSize = file.Length,
                             MimeType = file.ContentType ?? "application/octet-stream",
                             Width = width,
                             Height = height,
                             Folder = folder,
-                            UploadedById = userId.Value
+                            UploadedById = userId.Value,
+                            FileData = fileBytes
                         };
 
                         var result = await _mediaService.CreateAsync(mediaRequest, cancellationToken);
@@ -307,6 +301,10 @@ namespace Portfolio.WebAPI.Controllers
                 // Download from storage service
                 var stream = await _blobStorageService.DownloadFileAsync(media.FileName, cancellationToken);
 
+                // Media content is immutable once uploaded (edits create a new record), so it's safe to cache long-term.
+                Response.Headers.CacheControl = "public, max-age=31536000, immutable";
+                Response.Headers.ETag = $"\"{media.Id}\"";
+
                 // Return file stream
                 return File(stream, media.MimeType, media.OriginalFileName);
             }
@@ -351,6 +349,9 @@ namespace Portfolio.WebAPI.Controllers
 
                 // Try to determine content type from extension
                 var contentType = GetContentTypeFromExtension(fileName);
+
+                // Media content is immutable once uploaded (edits create a new record), so it's safe to cache long-term.
+                Response.Headers.CacheControl = "public, max-age=31536000, immutable";
 
                 return File(stream, contentType, Path.GetFileName(fileName));
             }
@@ -496,98 +497,6 @@ namespace Portfolio.WebAPI.Controllers
                 ".mp3" => "audio/mpeg",
                 _ => "application/octet-stream"
             };
-        }
-        /// <summary>
-        /// Regenerates all media URLs to remove expired SAS tokens.
-        /// Use this after changing from SAS tokens to public container access.
-        /// </summary>
-        [HttpPost("fix-urls")]
-        [AllowAnonymous]  // Remove this after running once
-        public async Task<IActionResult> FixMediaUrls(CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                _logger.LogInformation("Starting media URL fix...");
-
-                // Get all Azure media records
-                var allMedia = await _mediaService.GetAsync(new MediaSearchObject
-                {
-                    Page = 0,
-                    PageSize = 10000,
-                    RetrieveAll = true,
-                    StorageProvider = "Azure"
-                }, cancellationToken);
-
-                int updated = 0;
-                int errors = 0;
-
-                foreach (var media in allMedia.Items)
-                {
-                    try
-                    {
-                        // Check if URL has SAS token (contains query parameters)
-                        if (media.FileUrl.Contains("?"))
-                        {
-                            // Generate new public URL without SAS token
-                            var newUrl = $"https://nedimjportfolioblob.blob.core.windows.net/potrfolioimagecontainer/{media.FileName}";
-
-                            _logger.LogInformation(
-                                "Updating media {Id}: {OldUrl} -> {NewUrl}",
-                                media.Id,
-                                media.FileUrl,
-                                newUrl);
-
-                            // Update directly in database
-                            var entity = await _mediaService.GetByIdAsync(media.Id, cancellationToken);
-                            if (entity != null)
-                            {
-                                // Create update request with new URL
-                                var updateRequest = new MediaUpdateRequest
-                                {
-                                    FileName = media.FileName,
-                                    OriginalFileName = media.OriginalFileName,
-                                    FileUrl = newUrl,  // New URL without SAS
-                                    StorageProvider = media.StorageProvider,
-                                    FileType = media.FileType,
-                                    FileSize = media.FileSize,
-                                    MimeType = media.MimeType,
-                                    Width = media.Width,
-                                    Height = media.Height,
-                                    AltText = media.AltText,
-                                    Caption = media.Caption,
-                                    Folder = media.Folder
-                                };
-
-                                await _mediaService.UpdateAsync(media.Id, updateRequest, cancellationToken);
-                                updated++;
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "Error updating media {Id}", media.Id);
-                        errors++;
-                    }
-                }
-
-                _logger.LogInformation(
-                    "Media URL fix completed: {Updated} updated, {Errors} errors",
-                    updated,
-                    errors);
-
-                return Ok(new
-                {
-                    success = true,
-                    updated = updated,
-                    errors = errors,
-                    total = allMedia.TotalCount
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error fixing media URLs");
-                return StatusCode(500, new { error = ex.Message });
-            }
         }
         #endregion
     }
