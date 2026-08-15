@@ -32,7 +32,8 @@ export class FooterComponent implements OnInit {
 
   ngOnInit(): void {
   this.newsletterForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]]
+    email: ['', [Validators.required, Validators.email]],
+    website: [''] // honeypot - must stay empty
   });
 
   this.socialLinks$ = this.socialLinkService.get({ isVisible: true }).pipe(
@@ -53,7 +54,8 @@ export class FooterComponent implements OnInit {
     const request = {
       email: this.newsletterForm.value.email,
       isActive: true,
-      source: 'footer_newsletter'
+      source: 'footer_newsletter',
+      website: this.newsletterForm.value.website
     };
 
     this.subscriberService.create(request).subscribe({

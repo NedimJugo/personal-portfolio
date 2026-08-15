@@ -28,6 +28,12 @@
 
                         <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
 
+                            <!-- Honeypot field: hidden from real users, catches naive bots -->
+                            <div class="honeypot-field" aria-hidden="true">
+                                <label for="website">Website</label>
+                                <input type="text" id="website" formControlName="website" tabindex="-1" autocomplete="off" />
+                            </div>
+
                             <!-- Name & Email Row -->
                             <div class="form-row">
                                 <div class="form-group">

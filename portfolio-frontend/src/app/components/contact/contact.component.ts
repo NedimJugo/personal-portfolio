@@ -135,7 +135,8 @@ export class ContactComponent implements OnInit {
       subject: ['', [Validators.required, Validators.maxLength(300)]],
       message: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(2000)]],
       projectType: [''],
-      budgetRange: ['']
+      budgetRange: [''],
+      website: [''] // honeypot - must stay empty
     });
   }
 

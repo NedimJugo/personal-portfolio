@@ -20,6 +20,10 @@
                 <h3 class="newsletter-title">Newsletter</h3>
                 <p class="newsletter-subtitle">Get updates</p>
                 <form [formGroup]="newsletterForm" (ngSubmit)="onSubscribe()" class="newsletter-form">
+                    <div class="honeypot-field" aria-hidden="true">
+                        <label for="newsletter-website">Website</label>
+                        <input type="text" id="newsletter-website" formControlName="website" tabindex="-1" autocomplete="off" />
+                    </div>
                     <input type="email" formControlName="email" placeholder="Your email" class="newsletter-input"
                         [class.error]="newsletterForm.get('email')?.invalid && newsletterForm.get('email')?.touched" />
                     <button type="submit" class="newsletter-button" [disabled]="isSubmitting || newsletterForm.invalid">
@@ -38,7 +42,7 @@
         <!-- Copyright -->
         <div class="footer-bottom">
             <p class="footer-text">
-                © {{ currentYear }} John Doe. Crafted with ❤️ and lots of ☕
+                © {{ currentYear }} Nedim Jugo. Crafted with ❤️ and lots of ☕
             </p>
         </div>
     </div>

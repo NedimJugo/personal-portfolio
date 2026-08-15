@@ -14,6 +14,16 @@ $comic-gray: #718096;
   }
 }
 
+// Honeypot anti-spam field - hidden from sighted and screen-reader users, left in the tab order for nobody
+.honeypot-field {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 // Footer
 .footer-comic {
   padding: 48px 0 24px;

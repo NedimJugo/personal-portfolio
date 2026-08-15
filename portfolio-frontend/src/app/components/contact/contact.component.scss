@@ -185,6 +185,16 @@ $comic-gray: #718096;
   gap: 24px;
 }
 
+// Honeypot anti-spam field - hidden from sighted and screen-reader users, left in the tab order for nobody
+.honeypot-field {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;

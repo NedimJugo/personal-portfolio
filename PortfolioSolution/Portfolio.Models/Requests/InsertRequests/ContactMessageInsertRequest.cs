@@ -22,5 +22,11 @@ namespace Portfolio.Models.Requests.InsertRequests
         public string Status { get; set; } = "new";
         public string Priority { get; set; } = "medium";
         public int? HandledById { get; set; }
+
+        /// <summary>
+        /// Honeypot anti-spam field. Left blank by real users (hidden via CSS),
+        /// filled in by naive bots. Any non-empty value causes the submission to be silently dropped.
+        /// </summary>
+        public string? Website { get; set; }
     }
 }

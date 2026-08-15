@@ -27,6 +27,12 @@ namespace Portfolio.WebAPI.Controllers
            [FromBody] ContactMessageInsertRequest request,
            CancellationToken cancellationToken = default)
         {
+            if (!string.IsNullOrWhiteSpace(request.Website))
+            {
+                _logger.LogInformation("Dropped contact message submission that filled the honeypot field");
+                return Ok();
+            }
+
             return await base.Create(request, cancellationToken);
         }
     }
