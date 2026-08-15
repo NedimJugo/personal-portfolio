@@ -16,6 +16,10 @@
       "destination": "/sitemap.xml"
     },
     {
+      "source": "/blog/rss.xml",
+      "destination": "https://portfolio-backend-jsyz.onrender.com/api/blogposts/rss"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
