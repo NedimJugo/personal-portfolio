@@ -1,8 +1,8 @@
-// Comic Color Palette
-$comic-yellow: #FFD93D;
-$comic-black: #1A202C;
-$comic-white: #FFFFFF;
-$comic-gray: #718096;
+// Comic Color Palette (theme-aware CSS variables, see styles.scss)
+$comic-yellow: var(--comic-yellow);
+$comic-black: var(--comic-black);
+$comic-white: var(--comic-white);
+$comic-gray: var(--comic-gray);
 
 .container {
   max-width: 1200px;
@@ -75,7 +75,7 @@ $comic-gray: #718096;
   border: 3px solid $comic-yellow;
   color: $comic-yellow;
   transition: all 0.2s ease;
-  box-shadow: 3px 3px 0 rgba($comic-yellow, 0.3);
+  box-shadow: 3px 3px 0 rgba(var(--comic-yellow-rgb), 0.3);
 
   // Style the SVG icons from iconHtml
   :deep(svg) {
@@ -86,9 +86,9 @@ $comic-gray: #718096;
 
   &:hover {
     background: $comic-yellow;
-    color: $comic-black;
+    color: var(--on-accent-text);
     transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0 rgba($comic-yellow, 0.5);
+    box-shadow: 5px 5px 0 rgba(var(--comic-yellow-rgb), 0.5);
   }
 }
 
@@ -151,7 +151,7 @@ $comic-gray: #718096;
 .newsletter-button {
   padding: 10px 16px;
   background: $comic-yellow;
-  color: $comic-black;
+  color: var(--on-accent-text);
   border: 3px solid $comic-yellow;
   font-size: 18px;
   font-weight: 800;
@@ -189,7 +189,7 @@ $comic-gray: #718096;
 .footer-bottom {
   text-align: center;
   padding-top: 24px;
-  border-top: 2px solid rgba($comic-yellow, 0.2);
+  border-top: 2px solid rgba(var(--comic-yellow-rgb), 0.2);
 }
 
 .footer-text {

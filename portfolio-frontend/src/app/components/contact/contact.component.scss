@@ -1,15 +1,12 @@
-@use "sass:color";
-
-// Import comic color palette
-$comic-yellow: #FFD93D;
-$comic-red: #FF6B6B;
-$comic-blue: #4ECDC4;
-$comic-purple: #A78BFA;
-$comic-dark: #2D3748;
-$comic-black: #1A202C;
-$comic-white: #FFFFFF;
-$comic-cream: #FFF8E7;
-$comic-gray: #718096;
+$comic-yellow: var(--comic-yellow);
+$comic-red: var(--comic-red);
+$comic-blue: var(--comic-blue);
+$comic-purple: var(--comic-purple);
+$comic-dark: var(--comic-dark);
+$comic-black: var(--comic-black);
+$comic-white: var(--comic-white);
+$comic-cream: var(--comic-cream);
+$comic-gray: var(--comic-gray);
 
 // Comic Mixins
 @mixin comic-border {
@@ -49,7 +46,7 @@ $comic-gray: #718096;
   background: linear-gradient(
     135deg,
     $comic-cream 0%,
-    color.adjust($comic-blue, $lightness: 35%) 100%
+    rgba(var(--comic-blue-rgb), 0.15) 100%
   );
   position: relative;
   overflow: hidden;
@@ -110,7 +107,7 @@ $comic-gray: #718096;
   text-transform: uppercase;
   letter-spacing: -0.02em;
   margin-bottom: 16px;
-  text-shadow: 4px 4px 0 rgba($comic-yellow, 0.3);
+  text-shadow: 4px 4px 0 rgba(var(--comic-yellow-rgb), 0.3);
 }
 
 .page-subtitle {
@@ -250,7 +247,7 @@ $comic-gray: #718096;
 
   &.invalid {
     border-color: $comic-red;
-    background: color.adjust($comic-red, $lightness: 45%);
+    background: rgba(var(--comic-red-rgb), 0.1);
   }
 }
 
@@ -310,7 +307,7 @@ $comic-gray: #718096;
 
   &.primary {
     background: $comic-yellow;
-    color: $comic-black;
+    color: var(--on-accent-text);
     box-shadow: 6px 6px 0 $comic-black;
 
     &:hover:not(:disabled) {
@@ -365,7 +362,7 @@ $comic-gray: #718096;
     padding: 28px;
 
     &.accent-frame {
-      background: color.adjust($comic-yellow, $lightness: 35%);
+      background: rgba(var(--comic-yellow-rgb), 0.15);
     }
   }
 }
@@ -456,15 +453,15 @@ $comic-gray: #718096;
   font-weight: 800;
   padding: 12px 16px;
   border: 3px solid $comic-black;
-  box-shadow: 4px 4px 0 rgba($comic-black, 0.2);
+  box-shadow: 4px 4px 0 rgba(var(--comic-black-rgb), 0.2);
   text-transform: uppercase;
   transition: all 0.2s ease;
 
   &:hover {
     background: $comic-yellow;
-    color: $comic-black;
+    color: var(--on-accent-text);
     transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 rgba($comic-black, 0.2);
+    box-shadow: 6px 6px 0 rgba(var(--comic-black-rgb), 0.2);
   }
 
   svg {
@@ -520,8 +517,8 @@ $comic-gray: #718096;
   padding: 80px 0 100px;
   background: linear-gradient(
     135deg,
-    color.adjust($comic-purple, $lightness: 30%) 0%,
-    color.adjust($comic-blue, $lightness: 35%) 100%
+    rgba(var(--comic-purple-rgb), 0.2) 0%,
+    rgba(var(--comic-blue-rgb), 0.15) 100%
   );
   position: relative;
   overflow: hidden;
@@ -607,7 +604,7 @@ $comic-gray: #718096;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba($comic-black, 0.8);
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -696,12 +693,12 @@ $comic-gray: #718096;
 }
 
 .success-icon {
-  background: color.adjust($comic-blue, $lightness: 40%);
+  background: rgba(var(--comic-blue-rgb), 0.12);
   color: $comic-blue;
 }
 
 .error-icon {
-  background: color.adjust($comic-red, $lightness: 40%);
+  background: rgba(var(--comic-red-rgb), 0.12);
   color: $comic-red;
 }
 

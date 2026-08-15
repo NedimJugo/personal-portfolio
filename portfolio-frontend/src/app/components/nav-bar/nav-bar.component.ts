@@ -4,6 +4,7 @@ import { RouterModule } from "@angular/router"
 import { SiteContentService } from "../../services/site-content.service" // Add this import
 import { map, catchError } from "rxjs/operators" // Add this import
 import { of } from "rxjs" // Add this import
+import { ThemeService } from "../../services/theme.service"
 
 @Component({
   selector: "app-nav-bar",
@@ -23,7 +24,10 @@ export class NavBarComponent {
     { label: "Contact", href: "/contact" },
   ]
 
-  constructor(private siteContentService: SiteContentService) {} // Add constructor
+  constructor(
+    private siteContentService: SiteContentService,
+    public themeService: ThemeService
+  ) {} // Add constructor
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen

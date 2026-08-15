@@ -1,15 +1,12 @@
-@use "sass:color";
-
-// Comic Color Palette (matching home page)
-$comic-yellow: #FFD93D;
-$comic-red: #FF6B6B;
-$comic-blue: #4ECDC4;
-$comic-purple: #A78BFA;
-$comic-dark: #2D3748;
-$comic-black: #1A202C;
-$comic-white: #FFFFFF;
-$comic-cream: #FFF8E7;
-$comic-gray: #718096;
+$comic-yellow: var(--comic-yellow);
+$comic-red: var(--comic-red);
+$comic-blue: var(--comic-blue);
+$comic-purple: var(--comic-purple);
+$comic-dark: var(--comic-dark);
+$comic-black: var(--comic-black);
+$comic-white: var(--comic-white);
+$comic-cream: var(--comic-cream);
+$comic-gray: var(--comic-gray);
 
 // Comic Mixins
 @mixin comic-border {
@@ -103,7 +100,7 @@ $comic-gray: #718096;
   background: linear-gradient(
     135deg,
     $comic-cream 0%,
-    color.adjust($comic-blue, $lightness: 35%) 100%
+    rgba(var(--comic-blue-rgb), 0.15) 100%
   );
   position: relative;
   overflow: hidden;
@@ -182,7 +179,7 @@ $comic-gray: #718096;
   padding: 100px 0;
   background: linear-gradient(
     135deg,
-    color.adjust($comic-purple, $lightness: 30%) 0%,
+    rgba(var(--comic-purple-rgb), 0.2) 0%,
     $comic-cream 100%
   );
 
@@ -332,7 +329,7 @@ $comic-gray: #718096;
 .field-badge {
   display: inline-block;
   background: $comic-blue;
-  color: $comic-white;
+  color: var(--on-accent-text-light);
   font-size: 14px;
   font-weight: 700;
   padding: 6px 16px;
@@ -375,7 +372,7 @@ $comic-gray: #718096;
 .grade-badge {
   display: inline-block;
   background: $comic-yellow;
-  color: $comic-black;
+  color: var(--on-accent-text);
   font-size: 13px;
   font-weight: 800;
   padding: 6px 14px;
@@ -496,7 +493,7 @@ $comic-gray: #718096;
 .cert-type-badge {
   display: inline-block;
   background: $comic-purple;
-  color: $comic-white;
+  color: var(--on-accent-text-light);
   font-size: 11px;
   font-weight: 800;
   padding: 6px 14px;
@@ -613,7 +610,7 @@ $comic-gray: #718096;
 
   &.primary {
     background: $comic-yellow;
-    color: $comic-black;
+    color: var(--on-accent-text);
     box-shadow: 4px 4px 0 $comic-black;
 
     &:hover {

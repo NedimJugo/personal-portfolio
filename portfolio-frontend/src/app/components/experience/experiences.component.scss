@@ -1,15 +1,12 @@
-@use "sass:color";
-
-// Comic Color Palette (matching home component)
-$comic-yellow: #FFD93D;
-$comic-red: #FF6B6B;
-$comic-blue: #4ECDC4;
-$comic-purple: #A78BFA;
-$comic-dark: #2D3748;
-$comic-black: #1A202C;
-$comic-white: #FFFFFF;
-$comic-cream: #FFF8E7;
-$comic-gray: #718096;
+$comic-yellow: var(--comic-yellow);
+$comic-red: var(--comic-red);
+$comic-blue: var(--comic-blue);
+$comic-purple: var(--comic-purple);
+$comic-dark: var(--comic-dark);
+$comic-black: var(--comic-black);
+$comic-white: var(--comic-white);
+$comic-cream: var(--comic-cream);
+$comic-gray: var(--comic-gray);
 
 // Comic Mixins
 @mixin comic-border {
@@ -50,7 +47,7 @@ $comic-gray: #718096;
   background: linear-gradient(
     135deg,
     $comic-cream 0%,
-    color.adjust($comic-blue, $lightness: 35%) 100%
+    rgba(var(--comic-blue-rgb), 0.15) 100%
   );
   position: relative;
   overflow: hidden;
@@ -71,7 +68,7 @@ $comic-gray: #718096;
 .comic-badge {
   display: inline-block;
   background: $comic-red;
-  color: $comic-white;
+  color: var(--on-accent-text-light);
   font-size: 14px;
   font-weight: 800;
   padding: 8px 20px;
@@ -192,7 +189,7 @@ $comic-gray: #718096;
   padding: 100px 0;
   background: linear-gradient(
     135deg,
-    color.adjust($comic-purple, $lightness: 30%) 0%,
+    rgba(var(--comic-purple-rgb), 0.2) 0%,
     $comic-cream 100%
   );
 
@@ -321,7 +318,7 @@ $comic-gray: #718096;
 .company-badge {
   display: inline-block;
   background: $comic-blue;
-  color: $comic-white;
+  color: var(--on-accent-text-light);
   font-size: 14px;
   font-weight: 700;
   padding: 6px 16px;
@@ -365,7 +362,7 @@ $comic-gray: #718096;
 .employment-type {
   display: inline-block;
   background: $comic-yellow;
-  color: $comic-black;
+  color: var(--on-accent-text);
   font-size: 11px;
   font-weight: 800;
   padding: 4px 10px;
@@ -522,7 +519,7 @@ $comic-gray: #718096;
 .proficiency-badge {
   display: inline-block;
   background: $comic-red;
-  color: $comic-white;
+  color: var(--on-accent-text-light);
   font-size: 10px; // Smaller font
   font-weight: 800;
   padding: 4px 8px; // Reduced padding
@@ -551,12 +548,12 @@ $comic-gray: #718096;
 
 .years-badge {
   background: $comic-blue;
-  color: $comic-white;
+  color: var(--on-accent-text-light);
 }
 
 .featured-badge {
   background: $comic-yellow;
-  color: $comic-black;
+  color: var(--on-accent-text);
 }
 
 .proficiency-bar {
@@ -584,7 +581,7 @@ $comic-gray: #718096;
   background: linear-gradient(
     135deg,
     $comic-cream 0%,
-    color.adjust($comic-red, $lightness: 35%) 100%
+    rgba(var(--comic-red-rgb), 0.15) 100%
   );
   position: relative;
   overflow: hidden;
