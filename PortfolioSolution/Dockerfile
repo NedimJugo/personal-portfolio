@@ -29,7 +29,9 @@ ENV ASPNETCORE_URLS=http://+:8080
 # Render's containers have a low inotify watch limit; ASP.NET Core's default
 # appsettings.json hot-reload watcher can exhaust it and crash the app on startup
 # ("configured user limit (128) on the number of inotify instances"). Not needed
-# in a deployed container, so disable it.
-ENV DOTNET_hostBuilder:reloadConfigOnChange=false
+# in a deployed container, so disable it. Must use double-underscore (not a literal
+# colon) - that's the documented env-var encoding for hierarchical config keys.
+ENV DOTNET_hostBuilder__reloadConfigOnChange=false
+ENV ASPNETCORE_hostBuilder__reloadConfigOnChange=false
 
 ENTRYPOINT ["dotnet", "Portfolio.WebAPI.dll"]
