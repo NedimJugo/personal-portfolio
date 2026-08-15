@@ -26,4 +26,10 @@ COPY --from=build /app/publish .
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
 
+# Render's containers have a low inotify watch limit; ASP.NET Core's default
+# appsettings.json hot-reload watcher can exhaust it and crash the app on startup
+# ("configured user limit (128) on the number of inotify instances"). Not needed
+# in a deployed container, so disable it.
+ENV DOTNET_hostBuilder:reloadConfigOnChange=false
+
 ENTRYPOINT ["dotnet", "Portfolio.WebAPI.dll"]
