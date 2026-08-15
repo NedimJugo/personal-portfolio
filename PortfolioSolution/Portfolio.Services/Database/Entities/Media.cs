@@ -30,6 +30,11 @@ namespace Portfolio.Services.Database.Entities
         public DateTimeOffset UploadedAt { get; set; } = DateTimeOffset.UtcNow;
         public byte[]? FileData { get; set; }
 
+        // Smaller resized copy (~400px wide) used for cards/list views, so those don't have to pull the full-size image.
+        public byte[]? ThumbnailData { get; set; }
+        [MaxLength(1000)]
+        public string? ThumbnailUrl { get; set; }
+
         // Navigation properties
         public virtual ApplicationUser UploadedBy { get; set; } = null!;
         public virtual ICollection<Project> FeaturedProjects { get; set; } = new List<Project>();

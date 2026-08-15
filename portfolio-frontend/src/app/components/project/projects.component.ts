@@ -73,7 +73,7 @@ export class ProjectsComponent implements OnInit {
     return this.mediaService.getById(project.featuredMediaId).pipe(
       map((media) => ({
         ...project,
-        heroImageUrl: media.fileUrl,
+        heroImageUrl: media.thumbnailUrl || media.fileUrl,
         heroImageAlt: media.altText || project.title
       } as ProjectWithImage)),
       catchError(() => this.getFallbackImage(project))
@@ -96,7 +96,7 @@ export class ProjectsComponent implements OnInit {
       return this.mediaService.getById(projectImage.mediaId).pipe(
         map((media) => ({
           ...project,
-          heroImageUrl: media.fileUrl,
+          heroImageUrl: media.thumbnailUrl || media.fileUrl,
           heroImageAlt: media.altText || projectImage.caption || project.title
         } as ProjectWithImage)),
         catchError(() => this.getFallbackImage(project))

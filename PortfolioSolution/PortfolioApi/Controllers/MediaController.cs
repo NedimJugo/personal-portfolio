@@ -8,7 +8,9 @@ using Portfolio.Models.SearchObjects;
 using Portfolio.Services.Interfaces;
 using Portfolio.WebAPI.BaseContoller;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Metadata;
+using SixLabors.ImageSharp.Processing;
 using System;
 using System.IO;
 using System.Linq;
@@ -97,9 +99,10 @@ namespace Portfolio.WebAPI.Controllers
                 // Determine file type from content type
                 var fileType = DetermineFileType(file.ContentType);
 
-                // Extract image dimensions if it's an image
+                // Extract image dimensions and generate a thumbnail if it's an image
                 int? width = null;
                 int? height = null;
+                byte[]? thumbnailBytes = null;
                 if (fileType == "image")
                 {
                     try
@@ -113,6 +116,8 @@ namespace Portfolio.WebAPI.Controllers
                     {
                         _logger.LogWarning(ex, "Failed to extract image dimensions for {FileName}", file.FileName);
                     }
+
+                    thumbnailBytes = await GenerateThumbnailAsync(fileBytes, cancellationToken);
                 }
 
                 // Create media record in database
@@ -131,7 +136,8 @@ namespace Portfolio.WebAPI.Controllers
                     Caption = caption,
                     Folder = folder,
                     UploadedById = userId.Value,
-                    FileData = fileBytes
+                    FileData = fileBytes,
+                    ThumbnailData = thumbnailBytes
                 };
 
                 var result = await _mediaService.CreateAsync(mediaRequest, cancellationToken);
@@ -216,9 +222,10 @@ namespace Portfolio.WebAPI.Controllers
                         // Determine file type
                         var fileType = DetermineFileType(file.ContentType);
 
-                        // Extract image dimensions if it's an image
+                        // Extract image dimensions and generate a thumbnail if it's an image
                         int? width = null;
                         int? height = null;
+                        byte[]? thumbnailBytes = null;
                         if (fileType == "image")
                         {
                             try
@@ -229,6 +236,8 @@ namespace Portfolio.WebAPI.Controllers
                                 height = image.Height;
                             }
                             catch { /* Ignore dimension extraction errors */ }
+
+                            thumbnailBytes = await GenerateThumbnailAsync(fileBytes, cancellationToken);
                         }
 
                         // Create media record
@@ -245,7 +254,8 @@ namespace Portfolio.WebAPI.Controllers
                             Height = height,
                             Folder = folder,
                             UploadedById = userId.Value,
-                            FileData = fileBytes
+                            FileData = fileBytes,
+                            ThumbnailData = thumbnailBytes
                         };
 
                         var result = await _mediaService.CreateAsync(mediaRequest, cancellationToken);
@@ -317,6 +327,43 @@ namespace Portfolio.WebAPI.Controllers
             {
                 _logger.LogError(ex, "Error downloading file for media {Id}", id);
                 return StatusCode(500, "An error occurred while downloading the file");
+            }
+        }
+
+        /// <summary>
+        /// Downloads the resized thumbnail for a media record, falling back to the full-size
+        /// image if no thumbnail was generated (e.g. media uploaded before this feature existed).
+        /// </summary>
+        /// <param name="id">Media record ID</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>File stream</returns>
+        [HttpGet("{id}/thumbnail")]
+        [ProducesResponseType(typeof(FileStreamResult), 200)]
+        [ProducesResponseType(404)]
+        [AllowAnonymous]
+        public async Task<IActionResult> DownloadThumbnail(
+            Guid id,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var thumbnail = await _mediaService.GetThumbnailAsync(id, cancellationToken);
+
+                Response.Headers.CacheControl = "public, max-age=31536000, immutable";
+                Response.Headers.ETag = $"\"{id}-thumb\"";
+
+                if (thumbnail != null)
+                {
+                    return File(thumbnail.Value.Data, thumbnail.Value.MimeType);
+                }
+
+                // No thumbnail stored (e.g. older upload) - fall back to the full-size image.
+                return await DownloadFile(id, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error downloading thumbnail for media {Id}", id);
+                return StatusCode(500, "An error occurred while downloading the thumbnail");
             }
         }
 
@@ -452,6 +499,40 @@ namespace Portfolio.WebAPI.Controllers
         }
 
         #region Helper Methods
+
+        private const int ThumbnailMaxWidth = 400;
+
+        /// <summary>
+        /// Resizes an image to a max width of <see cref="ThumbnailMaxWidth"/>px (keeping aspect ratio,
+        /// never upscaling) and re-encodes it in its original format. Returns null on failure.
+        /// </summary>
+        private static async Task<byte[]?> GenerateThumbnailAsync(byte[] fileBytes, CancellationToken cancellationToken)
+        {
+            try
+            {
+                using var imageStream = new MemoryStream(fileBytes);
+                var format = await Image.DetectFormatAsync(imageStream, cancellationToken);
+                imageStream.Position = 0;
+                using var image = await Image.LoadAsync(imageStream, cancellationToken);
+
+                if (image.Width > ThumbnailMaxWidth)
+                {
+                    image.Mutate(ctx => ctx.Resize(new ResizeOptions
+                    {
+                        Mode = ResizeMode.Max,
+                        Size = new SixLabors.ImageSharp.Size(ThumbnailMaxWidth, 0)
+                    }));
+                }
+
+                using var outputStream = new MemoryStream();
+                await image.SaveAsync(outputStream, format ?? JpegFormat.Instance, cancellationToken);
+                return outputStream.ToArray();
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Determines file type category from MIME type.

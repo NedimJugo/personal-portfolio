@@ -12,6 +12,7 @@ namespace Portfolio.Models.Responses
         public string FileName { get; set; } = string.Empty;
         public string OriginalFileName { get; set; } = string.Empty;
         public string FileUrl { get; set; } = string.Empty;
+        public string? ThumbnailUrl { get; set; }
         public string StorageProvider { get; set; } = "Local";
         public string FileType { get; set; } = "image";
         public long FileSize { get; set; }

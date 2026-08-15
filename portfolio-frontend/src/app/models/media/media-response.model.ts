@@ -3,6 +3,7 @@ export interface MediaResponse {
   fileName: string;
   originalFileName: string;
   fileUrl: string;
+  thumbnailUrl?: string;
   storageProvider: string;
   fileType: string;
   fileSize: number;

@@ -14,5 +14,9 @@ namespace Portfolio.Services.Interfaces
     public interface IMediaService
         : ICRUDService<MediaResponse, MediaSearchObject, MediaInsertRequest, MediaUpdateRequest, Guid>
     {
+        /// <summary>
+        /// Returns the stored thumbnail bytes and mime type for a media record, or null if none exists.
+        /// </summary>
+        Task<(byte[] Data, string MimeType)?> GetThumbnailAsync(Guid id, CancellationToken cancellationToken = default);
     }
 }

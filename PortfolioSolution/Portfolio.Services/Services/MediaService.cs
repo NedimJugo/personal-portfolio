@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Portfolio.Models.Configuration;
@@ -77,9 +78,15 @@ namespace Portfolio.Services.Services
                 entity.StorageProvider = "Database";
             }
 
+            if (request.ThumbnailData != null && request.ThumbnailData.Length > 0)
+            {
+                entity.ThumbnailData = request.ThumbnailData;
+                entity.ThumbnailUrl = $"{_publicBaseUrl}/api/media/{entity.Id}/thumbnail";
+            }
+
             if (string.IsNullOrWhiteSpace(entity.FileUrl) || entity.FileUrl.Contains("blob.core.windows.net"))
             {
-                entity.FileUrl = $"https://portfolio-backend-jsyz.onrender.com/api/media/{entity.Id}/download";
+                entity.FileUrl = $"{_publicBaseUrl}/api/media/{entity.Id}/download";
             }
 
             // Fallback for Azure storage if specified
@@ -202,6 +209,17 @@ namespace Portfolio.Services.Services
             }
 
             await Task.CompletedTask;
+        }
+
+        public async Task<(byte[] Data, string MimeType)?> GetThumbnailAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            var media = await _context.Media.FirstOrDefaultAsync(m => m.Id == id, cancellationToken);
+            if (media?.ThumbnailData == null || media.ThumbnailData.Length == 0)
+            {
+                return null;
+            }
+
+            return (media.ThumbnailData, media.MimeType);
         }
     }
 }

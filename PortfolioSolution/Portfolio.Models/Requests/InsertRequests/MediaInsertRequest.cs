@@ -22,5 +22,6 @@ namespace Portfolio.Models.Requests.InsertRequests
         public string? Folder { get; set; }
         public int UploadedById { get; set; }
         public byte[]? FileData { get; set; }
+        public byte[]? ThumbnailData { get; set; }
     }
 }
